@@ -1,5 +1,3 @@
-import React from 'react';
-
 const HeaderBox = ({ type = 'title', user, title, subtext, testType }) => {
   return (
     <div className="header-box">

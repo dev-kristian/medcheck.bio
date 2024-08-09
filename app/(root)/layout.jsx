@@ -9,9 +9,9 @@ import Image from "next/image";
 
 function RootLayout({ children }) {
   return (
-    <main className="flex font-inter">
+    <main className="flex h-screen w-full font-inter">
       <Sidebar/>
-      <div className=" w-full flex-col ">
+      <div className="h-[calc(100vh-54px)] w-full flex-col">
         <div className="root-layout">
           <Image
             src='/icons/logo.png'
