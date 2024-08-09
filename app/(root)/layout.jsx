@@ -9,7 +9,7 @@ import Image from "next/image";
 
 function RootLayout({ children }) {
   return (
-    <main className="flex h-screen w-full font-inter">
+    <main className="flex h-screen w-full font-inter overflow-y-hidden">
       <Sidebar/>
       <div className="flex size-full flex-col ">
         <div className="root-layout">
