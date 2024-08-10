@@ -54,7 +54,7 @@ const MyTestsPage = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <section className='my-tests-page flex-1'>
+    <section className='my-tests-page'>
       <div className='my-tests-content'>
         <header className='my-tests-header'>
           <Link href="/" className="back-link">

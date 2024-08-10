@@ -23,9 +23,8 @@ const TestResultPage = () => {
   }
 
   return (
-    <section className='test-result-page'>
+    <section className='flex'>
       <div className='test-result-content'>
-        <header className='test-result-header'>
           <Link href="/my-tests" className="back-link">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -37,7 +36,6 @@ const TestResultPage = () => {
             testType={result.testType}
             subtext="Detailed analysis of your test results"
           />
-        </header>
         
         <div className="test-result-box">
           <h2>Test Details</h2>

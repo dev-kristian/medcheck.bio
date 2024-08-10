@@ -9,23 +9,11 @@ import Image from "next/image";
 
 function RootLayout({ children }) {
   return (
-    <main className="flex h-screen w-full font-inter overflow-hidden">
+    <main className="flex h-screen w-full font-inter">
       <Sidebar/>
-      <div className="flex flex-col w-full overflow-hidden">
-        <div className="root-layout">
-          <Image
-            src='/icons/logo.png'
-            width={30}
-            height={30}
-            alt='logo'
-          />
-          <div>
-            <MobileNav/>
-          </div>
-        </div>
-        <div className="flex-1 overflow-y-auto">
+      <div className="flex size-full flex-col ">
+
         {children}
-        </div>
       </div>
     </main>
   );
