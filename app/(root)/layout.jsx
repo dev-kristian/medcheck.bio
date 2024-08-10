@@ -12,7 +12,7 @@ function RootLayout({ children }) {
     <main className="flex h-screen w-full font-inter">
       <Sidebar />
       <div className="flex flex-col w-full h-full">
-        <div className="root-layout md:hidden flex-shrink-0">
+        <div className="root-layout md:hidden">
           <Image
             src='/icons/logo.png'
             width={30}
@@ -21,8 +21,10 @@ function RootLayout({ children }) {
           />
           <MobileNav />
         </div>
-        <div className="flex-grow overflow-auto md:h-screen">
-          {children}
+        <div className="flex-grow overflow-y-auto md:h-screen">
+          <div className="min-h-[calc(100vh-4rem)] md:min-h-screen">
+            {children}
+          </div>
         </div>
       </div>
     </main>
