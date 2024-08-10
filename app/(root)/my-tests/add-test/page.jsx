@@ -95,7 +95,6 @@ const AddTestPage = () => {
   return (
     <section className='add-test-page'>
       <div className='add-test-content'>
-        <header className='mb-6'>
           <Link href="/my-tests" className="mb-4">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -107,7 +106,6 @@ const AddTestPage = () => {
             title="Add New Test"
             subtext="Select and add a new test to your list"
           />
-        </header>
         
         <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
           <div className="space-y-4">
