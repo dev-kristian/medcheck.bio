@@ -9,20 +9,35 @@ const openai = new OpenAI({
 
 export async function POST(req) {
   try {
-    const { testType, date, additionalInfo } = await req.json();
+    const { testType, date, images, additionalInfo } = await req.json();
 
-    const prompt = `Analyze the following test information:
-    Test Type: ${testType}
-    Test Date: ${date}
-    Additional Information: ${additionalInfo}
-
-    Provide a brief analysis of this test.`;
+    const messages = [
+      { role: "system", content: "You are a helpful assistant that analyzes medical test information and images." },
+      { 
+        role: "user", 
+        content: [
+          {
+            type: "text",
+            text: `Analyze the following test information:
+            Test Type: ${testType}
+            Test Date: ${date}
+            ${additionalInfo ? `Additional Information: ${additionalInfo}` : ''}
+            
+            Please provide a brief analysis of this test based on the information and the attached image(s).`
+          },
+          ...images.map(image => ({
+            type: "image_url",
+            image_url: {
+              url: `data:image/jpeg;base64,${image}`,
+              detail: "low"
+            }
+          }))
+        ]
+      }
+    ];
 
     const completion = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: "You are a helpful assistant that analyzes medical test information." },
-        { role: "user", content: prompt }
-      ],
+      messages: messages,
       model: "gpt-4o-mini",
     });
 

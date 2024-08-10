@@ -40,8 +40,8 @@ const RightSidebar = ({ user }) => {
       </section>
       <section className='subscription'>
         <div className='flex w-full justify-between'>
-          <h2 className='header-2'> My Subscription</h2>
-          <Link href={'/'} className='flex gap-2'>
+          <h2 className='header-2'> Subscription</h2>
+          <Link href={'/'} className='flex '>
             <Image
               src="/icons/creditcard.svg"
               width={20}

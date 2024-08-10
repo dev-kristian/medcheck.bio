@@ -4,26 +4,43 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '@/firebase/firebaseConfig'
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
+import { doc, getDoc } from 'firebase/firestore';
+import { createUserProfile } from '@/firebase/firebaseUtils';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const checkProfileCompletion = async (user) => {
+    const userRef = doc(db, 'users', user.uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists() && userSnap.data().profileCompleted) {
+      router.push('/');
+    } else {
+      router.push('/medical-details');
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle email/password sign in logic here
-    console.log('Sign in attempt with:', email, password);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await checkProfileCompletion(userCredential.user);
+    } catch (error) {
+      console.error('Error signing in with email/password', error);
+    }
   };
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      router.push('/');
+      const result = await signInWithPopup(auth, provider);
+      await createUserProfile(result.user);
+      await checkProfileCompletion(result.user);
     } catch (error) {
       console.error('Error signing in with Google', error);
     }

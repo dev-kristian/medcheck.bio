@@ -5,8 +5,13 @@ export const sidebarLinks = [
         label: 'Home',
     },
     {
-        imgUrl:'/icons/my-tests.svg',
+        imgUrl:'/icons/notes.svg',
         route:'/my-tests',
         label: 'My Tests',
+    },
+    {
+        imgUrl:'/icons/meal.svg',
+        route:'/meal-planner',
+        label: 'Meal Planner',
     }
 ]

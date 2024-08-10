@@ -92,7 +92,7 @@
     }
 
     .page {
-      @apply sm:flex w-full max-xl:max-h-screen overflow-y-scroll h-full;
+      @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll h-full no-scrollbar;
     }
 
     /* Mobile nav */
@@ -106,7 +106,7 @@
     
     /* Home */
     .home-content {
-      @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-7 lg:py-12 xl:max-h-screen xl:overflow-y-scroll;
+      @apply  w-full flex-col px-5 sm:px-8 py-6 lg:py-14 ;
     }
     .home-header {
       @apply flex flex-col justify-between gap-8;
@@ -121,7 +121,7 @@
       @apply text-14 lg:text-16 font-normal text-gray-600;
     }
     .tests-card {
-      @apply flex items-center justify-between bg-white rounded-lg shadow-creditCard cursor-pointer transition-all duration-300 hover:shadow-lg;
+      @apply bg-white rounded-lg shadow-creditCard cursor-pointer transition-all duration-300 hover:shadow-lg;
     }
     .tests-title {
       @apply text-20 font-semibold text-gray-900 ;
@@ -145,7 +145,7 @@
     }
     /* Right sidebar */
     .right-sidebar {
-      @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l border-gray-200 xl:flex w-[355px] xl:overflow-y-scroll !important;
+      @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l border-gray-200 xl:flex w-[364px] xl:overflow-y-scroll !important;
     }
     .profile-banner {
       @apply h-[120px] w-full bg-gradient-mesh bg-cover bg-no-repeat;
@@ -301,11 +301,11 @@
   }
 
   .image-preview-container {
-    @apply relative mt-4 w-32 h-32 mx-auto;
+    @apply relative mt-4 w-full mx-auto;
   }
 
   .image-preview {
-    @apply w-full h-full object-cover rounded-lg shadow-md;
+    @apply w-60 h-60 object-cover rounded-lg shadow-md;
   }
 
   .remove-file-button {

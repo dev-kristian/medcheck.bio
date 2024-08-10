@@ -1,73 +1,48 @@
+// /my-tests/add-test/page.jsx
+
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
-import CustomCalendar from "@/components/CustomCalendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { ArrowLeft, CalendarIcon, Upload, X } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import HeaderBox from "@/components/HeaderBox";
-import { cn } from "@/lib/utils"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { useRouter } from 'next/navigation';
+import { useTestContext } from '@/app/contexts/TestContext';
+import TestTypeSelector from '@/components/TestTypeSelector';
+import DateSelector from '@/components/DateSelector';
+import ImageUploader from '@/components/ImageUploader';
+import AdditionalInfoInput from '@/components/AdditionalInfoInput';
 
 const AddTestPage = () => {
   const router = useRouter()
   const [date, setDate] = useState()
-  const [file, setFile] = useState(null)
-  const [preview, setPreview] = useState(null)
+  const [images, setImages] = useState([])
   const [additionalInfo, setAdditionalInfo] = useState('')
   const [testType, setTestType] = useState('')
-
-  useEffect(() => {
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPreview(null);
-    }
-  }, [file]);
-
-  const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setFile(e.target.files[0])
-    }
-  }
-
-  const removeFile = () => {
-    setFile(null)
-    setPreview(null)
-  }
+  const { addTest } = useTestContext();
 
   const handleProcess = async () => {
+    if (!testType || !date || images.length === 0) {
+      alert('Please fill in all required fields (test type, date, and at least one image)');
+      return;
+    }
+  
     try {
+      const payload = {
+        testType,
+        date: format(date, "PPP"),
+        images: images.map(img => img.base64),
+        additionalInfo: additionalInfo.trim(),
+      };
+  
       const response = await fetch('/api/process-test', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          testType,
-          date: date ? format(date, "PPP") : '',
-          additionalInfo,
-        }),
+        body: JSON.stringify(payload),
       });
   
       if (!response.ok) {
@@ -77,120 +52,62 @@ const AddTestPage = () => {
       const data = await response.json();
       const resultId = Date.now().toString();
       
-      localStorage.setItem(`testResult_${resultId}`, JSON.stringify({
+      const newTest = {
+        id: resultId,
         testType,
-        date: date ? format(date, "PPP") : '',
+        date: format(date, "PPP"),
         additionalInfo,
         analysis: data.analysis,
-      }));
+      };
   
+      // Use the same resultId for both the storage key and the test object
+      addTest(resultId, newTest);
       router.push(`/my-tests/results/${resultId}`);
-
+  
     } catch (error) {
       console.error('Error processing test:', error);
-      // Handle error (e.g., show an error message to the user)
     }
   }
 
   return (
-    <section className='page'>
-      <div className='add-test-content'>
-          <Link href="/my-tests" className="mb-4">
+    <main className='page'>
+      <article className='add-test-content'>
+        <nav>
+          <Link href="/my-tests">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to My Tests
             </Button>
           </Link>
-          <HeaderBox
-            type="addTest"
-            title="Add New Test"
-            subtext="Select and add a new test to your list"
-          />
+        </nav>
         
-        <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
-          <div className="space-y-4">
-            <Select onValueChange={(value) => setTestType(value)}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a test" />
-              </SelectTrigger>
-              <SelectContent className='bg-white'>
-                <SelectGroup>
-                <SelectLabel>Tests</SelectLabel>
-                <SelectItem value="blood-test">Blood Test</SelectItem>
-                <SelectItem value="urine-test">Urine Test</SelectItem>
-                <SelectItem value="sugar-test">Sugar Test</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="mt-4">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Select test date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <CustomCalendar
-                  selectedDate={date}
-                  onDateSelect={setDate}
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          <div className="mt-6">
-            <input
-              type="file"
-              id="file-upload"
-              className="hidden"
-              onChange={handleFileChange}
-              accept=".pdf,image/*"
-            />
-            <label htmlFor="file-upload" className="file-upload-label">
-              <Upload className="h-6 w-6 mr-2" />
-              {file ? file.name : "Upload PDF or Image"}
-            </label>
-          </div>
-
-          {preview && (
-            <div className="image-preview-container">
-              <img src={preview} alt="Preview" className="image-preview" />
-              <button onClick={removeFile} className="remove-file-button">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <label htmlFor="additional-info" className="additional-info-label">Additional Information</label>
-            <Textarea
-              id="additional-info"
-              placeholder="Enter any additional notes or information about the test..."
-              value={additionalInfo}
-              onChange={(e) => setAdditionalInfo(e.target.value)}
-              className="additional-info-textarea"
-            />
-          </div>
-          <div className="mt-auto p-4 sm:p-6 bg-white">
+        <HeaderBox
+          type="addTest"
+          title="Add New Test"
+          subtext="Select and add a new test to your list"
+        />
+        
+        <section className="bg-white rounded-lg shadow-md p-6 space-y-6">
+          <TestTypeSelector testType={testType} setTestType={setTestType} />
+          <DateSelector date={date} setDate={setDate} />
+          <ImageUploader images={images} setImages={setImages} />
+          <AdditionalInfoInput 
+            additionalInfo={additionalInfo} 
+            setAdditionalInfo={setAdditionalInfo} 
+          />
+          
+          <footer className="mt-auto p-4 sm:p-6 bg-white">
             <Button 
               onClick={handleProcess} 
               className="process-button"
-              disabled={!testType || !date}
+              disabled={!testType || !date || images.length === 0}
             >
               Process Test
             </Button>
-          </div>
-        </div>
-      </div>
-    </section>
+          </footer>
+        </section>
+      </article>
+    </main>
   );
 }
 

@@ -1,46 +1,27 @@
-"use client"
+// app/my-tests/page.js
+'use client'
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import HeaderBox from "@/components/HeaderBox";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Plus, FileText, Filter } from 'lucide-react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+import { useTestContext } from '@/app/contexts/TestContext';
 
 const TESTS_PER_PAGE = 8;
 
-const MyTestsPage = () => {
-  const [tests, setTests] = useState([]);
+export default function MyTestsPage() {
+  const { tests, loading } = useTestContext();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
 
-  useEffect(() => {
-    // Retrieve all test results from localStorage
-    const allTests = Object.keys(localStorage)
-      .filter(key => key.startsWith('testResult_'))
-      .map(key => {
-        const test = JSON.parse(localStorage.getItem(key));
-        return { ...test, id: key.replace('testResult_', '') };
-      });
-    setTests(allTests);
-  }, []);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   const handleRowClick = (id) => {
     router.push(`/my-tests/results/${id}`);
@@ -179,5 +160,3 @@ const MyTestsPage = () => {
     </section>
   );
 }
-
-export default MyTestsPage;

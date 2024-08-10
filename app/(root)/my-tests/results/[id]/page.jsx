@@ -1,25 +1,26 @@
-"use client"
+// app/my-tests/results/[id]/page.js
+'use client'
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from 'lucide-react'
 import HeaderBox from "@/components/HeaderBox"
+import { useTestContext } from '@/app/contexts/TestContext'
 
-const TestResultPage = () => {
+export default function TestResultPage() {
   const { id } = useParams()
-  const [result, setResult] = useState(null)
+  const { tests, loading } = useTestContext()
 
-  useEffect(() => {
-    const storedResult = localStorage.getItem(`testResult_${id}`)
-    if (storedResult) {
-      setResult(JSON.parse(storedResult))
-    }
-  }, [id])
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  const result = tests.find(test => test.id === id)
 
   if (!result) {
-    return <div>Loading...</div>
+    return <div>Test not found</div>
   }
 
   return (
@@ -49,5 +50,3 @@ const TestResultPage = () => {
     </section>
   )
 }
-
-export default TestResultPage
