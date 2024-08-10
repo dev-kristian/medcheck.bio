@@ -23,7 +23,7 @@ const TestResultPage = () => {
   }
 
   return (
-    <section className='flex'>
+    <section className='page'>
       <div className='test-result-content'>
           <Link href="/my-tests" className="back-link">
             <Button variant="ghost" size="sm">

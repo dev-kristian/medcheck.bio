@@ -11,7 +11,7 @@ const Home = () => {
   const { user } = useAuth();
   
   return (
-    <section className='home'>
+    <section className='page'>
       <div className='home-content'>
         <header className='home-header'>
           <HeaderBox

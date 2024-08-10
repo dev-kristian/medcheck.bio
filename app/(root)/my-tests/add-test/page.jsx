@@ -93,7 +93,7 @@ const AddTestPage = () => {
   }
 
   return (
-    <section className='add-test-page'>
+    <section className='page'>
       <div className='add-test-content'>
           <Link href="/my-tests" className="mb-4">
             <Button variant="ghost" size="sm">
