@@ -85,13 +85,10 @@
     .text-36 {
       @apply text-[36px] leading-[44px];
     }
-    .h-screen-minus-nav {
-      height: calc(100vh - 4rem); /* Adjust 4rem if your MobileNav height is different */
-    }
-  
+
     /* Root Layout */
     .root-layout {
-      @apply flex h-16 items-center justify-between p-5 shadow-creditCard sm:p-8 md:hidden sticky top-0 bg-white z-10;
+      @apply flex h-16 items-center justify-between p-5 shadow-creditCard sm:p-8 md:hidden;
     }
 
     /* Mobile nav */
@@ -108,7 +105,7 @@
       @apply no-scrollbar flex w-full flex-row max-xl:max-h-screen max-xl:overflow-y-scroll;
     }
     .home-content {
-      @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-7 lg:py-12 h-screen-minus-nav md:h-auto xl:max-h-screen xl:overflow-y-auto;
+      @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-7 lg:py-12 xl:max-h-screen xl:overflow-y-scroll;
     }
     .home-header {
       @apply flex flex-col justify-between gap-8;
@@ -177,7 +174,7 @@
   }
 
   .my-tests-content {
-    @apply flex w-full flex-1 flex-col gap-4 px-5 sm:px-8 py-4 lg:py-8 h-screen-minus-nav;
+    @apply flex w-full flex-1 flex-col gap-4 px-5 sm:px-8 py-4 lg:py-8;
   }
 
   .my-tests-header {
