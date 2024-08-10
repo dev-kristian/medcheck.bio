@@ -87,9 +87,15 @@
     }
 
     /* Root Layout */
-    .root-layout {
-      @apply fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between p-5 shadow-creditCard sm:p-8 bg-white md:hidden;
-    }
+  /* Updated Root Layout */
+  .root-layout {
+    @apply flex items-center justify-between p-5 shadow-creditCard sm:p-8 md:hidden;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: 64px; /* Fixed height */
+    background-color: white; /* Ensure the background is solid */
+  }
 
     /* Mobile nav */
     .mobilenav-sheet {
@@ -102,10 +108,10 @@
     
     /* Home */
     .home {
-      @apply no-scrollbar flex w-full flex-row max-xl:max-h-screen max-xl:overflow-y-scroll pt-16 md:pt-0; /* Added pt-16 for padding-top */
+      @apply no-scrollbar flex w-full flex-row max-xl:max-h-screen max-xl:overflow-y-scroll;
     }
     .home-content {
-      @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-7 lg:py-12 xl:max-h-[calc(100vh-64px)] xl:overflow-y-scroll; /* Adjusted max-height */
+      @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-7 lg:py-12 xl:max-h-screen xl:overflow-y-scroll;
     }
     .home-header {
       @apply flex flex-col justify-between gap-8;
@@ -170,7 +176,7 @@
   
   /* My Tests Page */
   .my-tests-page {
-    @apply sm:flex w-full max-xl:max-h-screen overflow-y-scroll h-full pt-16 md:pt-0;
+    @apply sm:flex w-full max-xl:max-h-screen overflow-y-scroll h-full;
   }
 
   .my-tests-content {
@@ -235,7 +241,7 @@
 
   /* Add Test Page */
   .add-test-page {
-    @apply no-scrollbar flex w-full flex-row max-xl:max-h-screen max-xl:overflow-y-scroll bg-gray-50 h-full pt-16 md:pt-0;
+    @apply no-scrollbar flex w-full flex-row max-xl:max-h-screen max-xl:overflow-y-scroll bg-gray-50 h-full;
   }
   
   .add-test-content {
@@ -327,7 +333,7 @@
 
   /*RESULTS*/
   .test-result-page {
-    @apply sm:flex w-full max-xl:max-h-screen overflow-y-scroll h-full pt-16 md:pt-0;
+    @apply sm:flex w-full max-xl:max-h-screen overflow-y-scroll h-full;
   }
   
   .test-result-content {
