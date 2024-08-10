@@ -3,7 +3,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+:root {
+  --navbar-height: 64px;
+}
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -170,7 +172,7 @@
   
   /* My Tests Page */
   .my-tests-page {
-    @apply sm:flex  ;
+    @apply sm:flex w-full max-xl:max-h-screen overflow-y-scroll h-full;
   }
 
   .my-tests-content {
