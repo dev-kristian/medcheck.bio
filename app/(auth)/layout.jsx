@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function AuthLayout({ children, title, subtext }) {
+export default function AuthLayout({ children}) {
   return (
     <div className={`${inter.className} min-h-screen bg-gray-100 flex items-center justify-center`}>
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-md">

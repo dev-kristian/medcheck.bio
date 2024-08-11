@@ -1,7 +1,6 @@
-// (auth)/sign-up/page.jsx
-'use client'
+'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -9,34 +8,52 @@ import { auth } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
 import AuthForm from '@/components/AuthForm';
 import { checkOrCreateUserProfile, handleGoogleSignIn } from '@/lib/utils';
+import { useCustomToast } from '@/hooks/useToast';
+import Loader from '@/components/Loader';
+import { getFirebaseErrorMessage } from '@/lib/firebaseErrors';
 
 export default function SignUp() {
   const router = useRouter();
+  const { showToast } = useCustomToast();
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleSubmit = async ({ email, password, confirmPassword, agreeToTerms }) => {
     if (!agreeToTerms) {
-      alert("Please agree to the privacy policy and terms.");
+      showToast("Terms Agreement Required", "Please agree to the privacy policy and terms.", "warning");
       return;
     }
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      showToast("Password Mismatch", "Passwords do not match.", "error");
       return;
     }
+    setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const redirectPath = await checkOrCreateUserProfile(userCredential.user);
+      showToast("Sign Up Successful", "Welcome to our platform!", "success");
       router.push(redirectPath);
     } catch (error) {
       console.error('Error signing up:', error);
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      showToast("Sign Up Failed", errorMessage, "error");
+    } finally {
+      setLoading(false);
     }
   };
 
   const onGoogleSignIn = async () => {
+    setGoogleLoading(true);
     try {
       const redirectPath = await handleGoogleSignIn();
+      showToast("Google Sign In Successful", "Welcome back!", "success");
       router.push(redirectPath);
     } catch (error) {
-      // Handle error (e.g., show error message to user)
+      console.error('Error signing in with Google', error);
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      showToast("Google Sign In Failed", errorMessage, "error");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -60,15 +77,22 @@ export default function SignUp() {
         <div className="mt-6 grid grid-cols-1 gap-3">
           <button
             onClick={onGoogleSignIn}
-            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            className="w-full inline-flex align-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            disabled={googleLoading}
           >
-            <span> Continue with Google &nbsp;</span>
-            <Image
-              src="icons/google.svg"
-              width={20}
-              height={20}
-              alt="Google logo"
-            />
+            {googleLoading ? (
+              <Loader />
+            ) : (
+              <>
+                <span> Continue with Google &nbsp;</span>
+                <Image
+                  src="icons/google.svg"
+                  width={20}
+                  height={20}
+                  alt="Google logo"
+                />
+              </>
+            )}
           </button>
         </div>
       </div>

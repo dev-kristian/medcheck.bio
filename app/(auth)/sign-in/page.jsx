@@ -1,7 +1,6 @@
-// (auth)/sign-in/page.jsx
-'use client'
+'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -9,26 +8,44 @@ import { auth } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
 import AuthForm from '@/components/AuthForm';
 import { checkOrCreateUserProfile, handleGoogleSignIn } from '@/lib/utils';
+import { useCustomToast } from '@/hooks/useToast';
+import Loader from '@/components/Loader';
+import { getFirebaseErrorMessage } from '@/lib/firebaseErrors';
 
 export default function SignIn() {
   const router = useRouter();
+  const { showToast } = useCustomToast();
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleSubmit = async ({ email, password }) => {
+    setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const redirectPath = await checkOrCreateUserProfile(userCredential.user);
+      showToast("Sign In Successful", "Welcome back!", "success");
       router.push(redirectPath);
     } catch (error) {
       console.error('Error signing in with email/password', error);
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      showToast("Sign In Failed", errorMessage, "error");
+    } finally {
+      setLoading(false);
     }
   };
 
   const onGoogleSignIn = async () => {
+    setGoogleLoading(true);
     try {
       const redirectPath = await handleGoogleSignIn();
+      showToast("Google Sign In Successful", "Welcome back!", "success");
       router.push(redirectPath);
     } catch (error) {
-      // Handle error (e.g., show error message to user)
+      console.error('Error signing in with Google', error);
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      showToast("Google Sign In Failed", errorMessage, "error");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -53,14 +70,21 @@ export default function SignIn() {
           <button
             onClick={onGoogleSignIn}
             className="w-full inline-flex align-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            disabled={googleLoading}
           >
-            <span> Sign in with Google &nbsp;</span>
-            <Image
-              src="icons/google.svg"
-              width={20}
-              height={20}
-              alt="Google logo"
-            />
+            {googleLoading ? (
+              <Loader />
+            ) : (
+              <>
+                <span> Sign in with Google &nbsp;</span>
+                <Image
+                  src="icons/google.svg"
+                  width={20}
+                  height={20}
+                  alt="Google logo"
+                />
+              </>
+            )}
           </button>
         </div>
       </div>
