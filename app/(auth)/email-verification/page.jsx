@@ -1,14 +1,12 @@
-// app/(auth)/email-verification/page.jsx
-
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { applyActionCode, getAuth } from 'firebase/auth';
 import { useCustomToast } from '@/hooks/useToast';
 import Loader from '@/components/Loader';
 
-export default function EmailVerification() {
+function EmailVerification() {
   const [verificationStatus, setVerificationStatus] = useState('verifying');
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -16,7 +14,7 @@ export default function EmailVerification() {
 
   useEffect(() => {
     const oobCode = searchParams.get('oobCode');
-    
+
     if (!oobCode) {
       setVerificationStatus('error');
       showToast("Verification Failed", "Invalid verification link.", "error");
@@ -64,5 +62,13 @@ export default function EmailVerification() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SuspenseWrapper() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <EmailVerification />
+    </Suspense>
   );
 }
