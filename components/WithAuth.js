@@ -1,6 +1,6 @@
-// src/components/WithAuth.js
+//components/WithAuth.js
 
-'use client'
+'use client';
 
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
@@ -12,8 +12,12 @@ export function WithAuth(Component) {
     const router = useRouter();
 
     useEffect(() => {
-      if (!loading && !user) {
-        router.push('/sign-in');
+      if (!loading) {
+        if (!user) {
+          router.push('/sign-in');
+        } else if (!user.emailVerified) {
+          router.push('/verify-email');
+        }
       }
     }, [user, loading, router]);
 
@@ -21,7 +25,7 @@ export function WithAuth(Component) {
       return <div>Loading...</div>;
     }
 
-    if (!user) {
+    if (!user || !user.emailVerified) {
       return null;
     }
 

@@ -1,3 +1,5 @@
+// app/(auth)/sign-in/page.jsx
+
 'use client';
 
 import React, { useState } from 'react';
@@ -22,7 +24,15 @@ export default function SignIn() {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const redirectPath = await checkOrCreateUserProfile(userCredential.user);
+      const user = userCredential.user;
+
+      if (!user.emailVerified) {
+        showToast("Email Not Verified", "Please verify your email to proceed.", "warning");
+        router.push('/verify-email');
+        return;
+      }
+
+      const redirectPath = await checkOrCreateUserProfile(user);
       showToast("Sign In Successful", "Welcome back!", "success");
       router.push(redirectPath);
     } catch (error) {

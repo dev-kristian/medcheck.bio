@@ -1,9 +1,11 @@
+// app/(auth)/sign-up/page.jsx
+
 'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
 import AuthForm from '@/components/AuthForm';
@@ -30,9 +32,10 @@ export default function SignUp() {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const redirectPath = await checkOrCreateUserProfile(userCredential.user);
-      showToast("Sign Up Successful", "Welcome to our platform!", "success");
-      router.push(redirectPath);
+      await checkOrCreateUserProfile(userCredential.user);
+      await sendEmailVerification(userCredential.user);
+      showToast("Sign Up Successful", "Verification email sent. Please check your inbox.", "success");
+      router.push('/verify-email');
     } catch (error) {
       console.error('Error signing up:', error);
       const errorMessage = getFirebaseErrorMessage(error.code);

@@ -1,4 +1,4 @@
-//(welcome)/medical-details/page.jsx
+//(welcome)/welcome/page.jsx
 
 'use client'
 
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 
-function MedicalDetails() {
+function Welcome() {
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [medicalHistory, setMedicalHistory] = useState('');
@@ -139,4 +139,4 @@ function MedicalDetails() {
   );
 }
 
-export default MedicalDetails;
+export default Welcome;
