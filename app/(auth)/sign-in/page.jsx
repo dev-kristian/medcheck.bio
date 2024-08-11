@@ -5,22 +5,41 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '@/firebase/firebaseConfig';
+import { auth } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
-import { doc, getDoc } from 'firebase/firestore';
-import { createUserProfile } from '@/firebase/firebaseUtils';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const checkProfileCompletion = async (user) => {
-    const userRef = doc(db, 'users', user.uid);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists() && userSnap.data().profileCompleted) {
-      router.push('/');
-    } else {
+  const checkOrCreateUserProfile = async (user) => {
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+        }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.profileCompleted) {
+          router.push('/');
+        } else {
+          router.push('/medical-details');
+        }
+      } else {
+        console.error('Error checking or creating user profile:', data.error);
+        router.push('/medical-details');
+      }
+    } catch (error) {
+      console.error('Error checking or creating user profile:', error);
       router.push('/medical-details');
     }
   };
@@ -29,7 +48,7 @@ export default function SignIn() {
     e.preventDefault();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      await checkProfileCompletion(userCredential.user);
+      await checkOrCreateUserProfile(userCredential.user);
     } catch (error) {
       console.error('Error signing in with email/password', error);
     }
@@ -39,8 +58,7 @@ export default function SignIn() {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      await createUserProfile(result.user);
-      await checkProfileCompletion(result.user);
+      await checkOrCreateUserProfile(result.user);
     } catch (error) {
       console.error('Error signing in with Google', error);
     }
