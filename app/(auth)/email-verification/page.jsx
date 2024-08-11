@@ -1,15 +1,13 @@
-// app/(auth)/email-verification/page.jsx
-
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { applyActionCode, getAuth } from 'firebase/auth';
 import { useCustomToast } from '@/hooks/useToast';
 import Loader from '@/components/Loader';
-import { auth } from '@/firebase/firebaseConfig';  // Import auth from your Firebase config
+import { auth } from '@/firebase/firebaseConfig'; // Import auth from your Firebase config
 
-export default function EmailVerification() {
+function EmailVerification() {
   const [verificationStatus, setVerificationStatus] = useState('verifying');
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -17,7 +15,7 @@ export default function EmailVerification() {
 
   useEffect(() => {
     const oobCode = searchParams.get('oobCode');
-    
+
     if (!oobCode) {
       setVerificationStatus('error');
       showToast("Verification Failed", "Invalid verification link.", "error");
@@ -26,7 +24,7 @@ export default function EmailVerification() {
 
     const verifyEmail = async () => {
       try {
-        await applyActionCode(auth, oobCode);  // Use the imported auth instance
+        await applyActionCode(auth, oobCode); // Use the imported auth instance
         setVerificationStatus('success');
         showToast("Email Verified", "Your email has been successfully verified.", "success");
         setTimeout(() => router.push('/'), 3000); // Redirect to home after 3 seconds
@@ -64,5 +62,13 @@ export default function EmailVerification() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SuspenseWrapper() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <EmailVerification />
+    </Suspense>
   );
 }
