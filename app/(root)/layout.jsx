@@ -5,7 +5,7 @@ import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
 import { WithAuth } from '@/components/WithAuth';
 import { WithProfileCompletion } from '@/components/WithProfileCompletion';
-import { TestProvider } from '@/app/contexts/TestContext';
+import { TestProvider } from '@/app/context/TestContext';
 import Image from "next/image";
 
 function RootLayout({ children }) {

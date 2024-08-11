@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Plus, FileText, Filter } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
-import { useTestContext } from '@/app/contexts/TestContext';
+import { useTestContext } from '@/app/context/TestContext';
 
 const TESTS_PER_PAGE = 8;
 

@@ -3,7 +3,7 @@
 
 import HeaderBox from "@/components/HeaderBox";
 import { useAuth } from "@/hooks/useAuth";
-import { useTestContext } from '@/app/contexts/TestContext';
+import { useTestContext } from '@/app/context/TestContext';
 import RightSidebar from "@/components/RightSidebar";
 import Link from 'next/link';
 import Image from 'next/image';

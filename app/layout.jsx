@@ -1,10 +1,9 @@
 // app/layout.jsx
-export const dynamic = 'force-dynamic'
-
 import { Inter, IBM_Plex_Serif } from "next/font/google";
 import "@/styles/globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react"
+
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const ibmPlexSerif = IBM_Plex_Serif({
   subsets: ['latin'],

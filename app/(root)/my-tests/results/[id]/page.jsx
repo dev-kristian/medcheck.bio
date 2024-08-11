@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from 'lucide-react'
 import HeaderBox from "@/components/HeaderBox"
-import { useTestContext } from '@/app/contexts/TestContext'
+import { useTestContext } from '@/app/context/TestContext'
 
 export default function TestResultPage() {
   const { id } = useParams()

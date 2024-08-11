@@ -49,6 +49,7 @@ export const theme = {
         700: "#344054",
         900: "#101828",
       },
+      
     },
     boxShadow: {
       creditCard: "8px 10px 16px 0px rgba(0, 0, 0, 0.05)",
