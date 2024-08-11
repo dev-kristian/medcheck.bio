@@ -9,7 +9,6 @@ import { auth } from '@/firebase/firebaseConfig';
 
 function EmailVerification() {
   const [verificationStatus, setVerificationStatus] = useState('verifying');
-  const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { showToast } = useCustomToast();
@@ -32,7 +31,8 @@ function EmailVerification() {
         if (isMounted) {
           setVerificationStatus('success');
           showToast("Email Verified", "Your email has been successfully verified.", "success");
-          setIsRedirecting(true);
+          // Redirect immediately to welcome page
+          router.push('/welcome');
         }
       } catch (error) {
         console.error('Error verifying email:', error);
@@ -48,17 +48,11 @@ function EmailVerification() {
     return () => {
       isMounted = false;
     };
-  }, [searchParams, showToast, verificationStatus]);
+  }, [searchParams, showToast, verificationStatus, router]);
 
-  useEffect(() => {
-    if (isRedirecting) {
-      const redirectTimer = setTimeout(() => {
-        router.push('/');
-      }, 3000);
-
-      return () => clearTimeout(redirectTimer);
-    }
-  }, [isRedirecting, router]);
+  if (verificationStatus === 'success') {
+    return null; // Return nothing as we're redirecting
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -68,12 +62,6 @@ function EmailVerification() {
           <div className="flex flex-col items-center">
             <Loader />
             <p className="mt-4">Verifying your email...</p>
-          </div>
-        )}
-        {verificationStatus === 'success' && (
-          <div>
-            <p className="text-green-600">Your email has been successfully verified!</p>
-            <p className="mt-2">Redirecting you to the home page...</p>
           </div>
         )}
         {verificationStatus === 'error' && (
