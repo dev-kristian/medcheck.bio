@@ -66,11 +66,3 @@ export default function EmailVerification() {
     </div>
   );
 }
-
-export default function SuspenseWrapper() {
-  return (
-    <Suspense fallback={<Loader />}>
-      <EmailVerification />
-    </Suspense>
-  );
-}
