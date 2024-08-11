@@ -2,19 +2,21 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { applyActionCode, getAuth } from 'firebase/auth';
+import { applyActionCode } from 'firebase/auth';
 import { useCustomToast } from '@/hooks/useToast';
 import Loader from '@/components/Loader';
-import { auth } from '@/firebase/firebaseConfig'; // Import auth from your Firebase config
+import { auth } from '@/firebase/firebaseConfig';
 
 function EmailVerification() {
   const [verificationStatus, setVerificationStatus] = useState('verifying');
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { showToast } = useCustomToast();
 
   useEffect(() => {
     const oobCode = searchParams.get('oobCode');
+    let isMounted = true;
 
     if (!oobCode) {
       setVerificationStatus('error');
@@ -23,20 +25,40 @@ function EmailVerification() {
     }
 
     const verifyEmail = async () => {
+      if (verificationStatus !== 'verifying') return;
+
       try {
-        await applyActionCode(auth, oobCode); // Use the imported auth instance
-        setVerificationStatus('success');
-        showToast("Email Verified", "Your email has been successfully verified.", "success");
-        setTimeout(() => router.push('/'), 3000); // Redirect to home after 3 seconds
+        await applyActionCode(auth, oobCode);
+        if (isMounted) {
+          setVerificationStatus('success');
+          showToast("Email Verified", "Your email has been successfully verified.", "success");
+          setIsRedirecting(true);
+        }
       } catch (error) {
         console.error('Error verifying email:', error);
-        setVerificationStatus('error');
-        showToast("Verification Failed", "Unable to verify your email. Please try again.", "error");
+        if (isMounted) {
+          setVerificationStatus('error');
+          showToast("Verification Failed", "Unable to verify your email. Please try again.", "error");
+        }
       }
     };
 
     verifyEmail();
-  }, [searchParams, showToast, router]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [searchParams, showToast, verificationStatus]);
+
+  useEffect(() => {
+    if (isRedirecting) {
+      const redirectTimer = setTimeout(() => {
+        router.push('/');
+      }, 3000);
+
+      return () => clearTimeout(redirectTimer);
+    }
+  }, [isRedirecting, router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
