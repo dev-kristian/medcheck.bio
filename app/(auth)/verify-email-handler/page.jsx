@@ -1,13 +1,11 @@
-// app/(auth)/verify-email-handler/page.jsx
-
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { applyActionCode, getAuth } from 'firebase/auth';
 import { useCustomToast } from '@/hooks/useToast';
 
-export default function VerifyEmailHandler() {
+function VerifyEmailHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { showToast } = useCustomToast();
@@ -44,4 +42,12 @@ export default function VerifyEmailHandler() {
   }
 
   return null;
+}
+
+export default function SuspenseWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailHandler />
+    </Suspense>
+  );
 }
