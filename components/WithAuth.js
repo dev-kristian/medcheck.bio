@@ -15,7 +15,7 @@ export function WithAuth(Component) {
       if (!loading) {
         if (!user) {
           router.push('/sign-in');
-        } else if (!user.emailVerified) {
+        } else if (!user.emailVerified && router.pathname !== '/email-verification') {
           router.push('/verify-email');
         }
       }

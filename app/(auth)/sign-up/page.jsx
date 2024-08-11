@@ -31,12 +31,18 @@ export default function SignUp() {
     }
     setLoading(true);
     try {
+      // Create the user account
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // Create or check user profile
       await checkOrCreateUserProfile(userCredential.user);
+      
+      // Send verification email with custom action URL
       await sendEmailVerification(userCredential.user, {
-        url: 'https://next-medcheck.vercel.app/verify-email-handler',
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/email-verification`,
         handleCodeInApp: true,
       });
+      
       showToast("Sign Up Successful", "Verification email sent. Please check your inbox.", "success");
       router.push('/verify-email');
     } catch (error) {
