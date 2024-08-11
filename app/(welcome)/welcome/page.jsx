@@ -54,7 +54,7 @@ function MedicalDetails() {
     if (!user) return;
 
     try {
-      const response = await fetch('/api/users/medical-details', {
+      const response = await fetch('/api/users/welcome', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

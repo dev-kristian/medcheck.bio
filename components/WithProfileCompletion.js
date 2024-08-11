@@ -22,7 +22,7 @@ export function WithProfileCompletion(Component) {
             if (response.ok) {
               setProfileCompleted(data.profileCompleted);
               if (!data.profileCompleted) {
-                router.push('/medical-details');
+                router.push('/welcome');
               }
             } else {
               console.error('Error checking profile completion:', data.error);
