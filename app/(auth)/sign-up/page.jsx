@@ -34,7 +34,7 @@ export default function SignUp() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await checkOrCreateUserProfile(userCredential.user);
       await sendEmailVerification(userCredential.user, {
-        url: 'https://next-medcheck.vercel.com/verify-email-handler',
+        url: 'https://next-medcheck.vercel.app/verify-email-handler',
         handleCodeInApp: true,
       });
       showToast("Sign Up Successful", "Verification email sent. Please check your inbox.", "success");
