@@ -1,9 +1,10 @@
+//(welcome)/medical-details/page.jsx
+
 'use client'
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { WithAuth } from '@/components/WithAuth';
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
@@ -131,11 +132,11 @@ function MedicalDetails() {
           </form>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">Submit</Button>
+          <Button type="submit" className="w-full" onClick={handleSubmit} >Submit</Button>
         </CardFooter>
       </Card>
     </div>
   );
 }
 
-export default WithAuth(MedicalDetails);
+export default MedicalDetails;

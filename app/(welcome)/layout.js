@@ -1,12 +1,17 @@
-//(auth)/layout.jsx
-import { Inter } from "next/font/google";
+// (welcome)/layout.js
 
-const inter = Inter({ subsets: ["latin"] });
+'use client'
 
-export default function AuthLayout({ children }) {
+import { WithAuth } from "@/components/WithAuth";
+
+function WelcomeLayout({ children }) {
   return (
-    <div className={`${inter.className} min-h-screen bg-gray-100 flex items-center justify-center`}>
+    <main className="flex h-screen w-full font-inter">
+      <div className="flex size-full flex-col">
         {children}
-    </div>
+      </div>
+    </main>
   );
 }
+
+export default WithAuth(WelcomeLayout);

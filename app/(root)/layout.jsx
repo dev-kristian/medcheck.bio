@@ -4,6 +4,7 @@
 import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
 import { WithAuth } from '@/components/WithAuth';
+import { WithProfileCompletion } from '@/components/WithProfileCompletion';
 import { TestProvider } from '@/app/contexts/TestContext';
 import Image from "next/image";
 
@@ -32,4 +33,4 @@ function RootLayout({ children }) {
 }
 
 // Wrap the entire layout with WithAuth
-export default WithAuth(RootLayout);
+export default WithAuth(WithProfileCompletion(RootLayout));
