@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { applyActionCode, confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import Loader from '@/components/Loader';
 
-export default function EmailAction() {
+function EmailAction() {
   const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -143,4 +143,12 @@ export default function EmailAction() {
   }
 
   return null;
+}
+
+export default function SuspenseWrapper() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <EmailAction />
+    </Suspense>
+  );
 }
