@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from './ui/button';
 import Loader from '@/components/Loader';
 import Image from 'next/image';
-import {  handleGoogleSignIn } from '@/lib/utils';
+import { handleGoogleSignIn } from '@/lib/utils';
 import { useCustomToast } from '@/hooks/useToast';
 import { getFirebaseErrorMessage } from '@/lib/firebaseErrors';
 import { useRouter } from 'next/navigation';

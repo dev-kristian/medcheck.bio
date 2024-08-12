@@ -11,10 +11,12 @@ import AuthForm from '@/components/AuthForm';
 import { checkOrCreateUserProfile } from '@/lib/utils';
 import { getFirebaseErrorMessage } from '@/lib/firebaseErrors';
 import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { useCustomToast } from '@/hooks/useToast';
 
 export default function SignUp() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { showToast } = useCustomToast();
 
   const handleSubmit = async ({ email, password, confirmPassword, agreeToTerms }) => {
     if (!agreeToTerms) {
