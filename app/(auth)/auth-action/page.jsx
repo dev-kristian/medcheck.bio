@@ -1,17 +1,16 @@
-// app/(auth)/auth-action/page.jsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { applyActionCode, confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth';
+import { applyActionCode, confirmPasswordReset } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
 import { useCustomToast } from '@/hooks/useToast';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import Loader from '@/components/Loader';
+import Loader from '@/components/Loader'; // Assuming you have a Loader component
 
-export default function AuthAction() {
+function AuthAction() {
   const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,7 +23,7 @@ export default function AuthAction() {
   useEffect(() => {
     const mode = searchParams.get('mode');
     const oobCode = searchParams.get('oobCode');
-    
+
     if (mode && oobCode) {
       setMode(mode);
       setOobCode(oobCode);
@@ -116,4 +115,12 @@ export default function AuthAction() {
   }
 
   return null;
+}
+
+export default function SuspenseWrapper() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <AuthAction />
+    </Suspense>
+  );
 }
