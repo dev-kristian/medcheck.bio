@@ -8,19 +8,24 @@ import Image from 'next/image';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
-import AuthForm from '@/components/AuthForm';
 import { checkOrCreateUserProfile, handleGoogleSignIn } from '@/lib/utils';
 import { useCustomToast } from '@/hooks/useToast';
 import Loader from '@/components/Loader';
 import { getFirebaseErrorMessage } from '@/lib/firebaseErrors';
+import AuthForm from '@/components/AuthForm';
 
 export default function SignUp() {
   const router = useRouter();
   const { showToast } = useCustomToast();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const handleSubmit = async ({ email, password, confirmPassword, agreeToTerms }) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!agreeToTerms) {
       showToast("Terms Agreement Required", "Please agree to the privacy policy and terms.", "warning");
       return;
@@ -31,15 +36,12 @@ export default function SignUp() {
     }
     setLoading(true);
     try {
-      // Create the user account
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Create or check user profile
       await checkOrCreateUserProfile(userCredential.user);
       
-      // Send verification email with custom action URL
       await sendEmailVerification(userCredential.user, {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/email-verification`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/email-action?mode=verifyEmail`,
         handleCodeInApp: true,
       });
       
@@ -58,7 +60,7 @@ export default function SignUp() {
     setGoogleLoading(true);
     try {
       const redirectPath = await handleGoogleSignIn();
-      showToast("Google Sign In Successful", "Welcome back!", "success");
+      showToast("Google Sign In Successful", "Welcome!", "success");
       router.push(redirectPath);
     } catch (error) {
       console.error('Error signing in with Google', error);

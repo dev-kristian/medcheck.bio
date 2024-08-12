@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useCustomToast } from '@/hooks/useToast';
 import { getAuth, reload } from 'firebase/auth';
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 export default function VerifyEmail() {
   const { user } = useAuth();
@@ -35,22 +37,28 @@ export default function VerifyEmail() {
   };
 
   return (
-    <>
-      <h2 className="text-2xl font-bold mb-4">Verify your email</h2>
-      <p className="mb-4">
-        Account activation link sent to your email address:
-        Please follow the link inside to continue.
-      </p>
-      <button
-        onClick={handleRefresh}
-        className="text-indigo-600 hover:text-indigo-800"
-        disabled={loading}
-      >
-        {loading ? 'Checking...' : 'I have verified my email'}
-      </button>
-      <Link href="/sign-in" className="text-indigo-600 hover:text-indigo-800 block mt-4">
-        Go back to sign in
-      </Link>
-    </>
+    <div>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">Verify your email</CardTitle>
+        <CardDescription>
+          Account activation link sent to your email address.
+          Please follow the link inside to continue.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Button
+          onClick={handleRefresh}
+          className="w-full bg-teal-500 hover:bg-teal-700"
+          disabled={loading}
+        >
+          {loading ? 'Checking...' : 'I have verified my email'}
+        </Button>
+      </CardContent>
+      <CardFooter className="flex justify-center">
+        <Link href="/sign-in" className="text-teal-600 hover:text-teal-800">
+          Go back to sign in
+        </Link>
+      </CardFooter>
+    </div>
   );
 }

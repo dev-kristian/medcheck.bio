@@ -1,47 +1,73 @@
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '@/firebase/firebaseConfig';
+import { useCustomToast } from '@/hooks/useToast';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 const ForgotPasswordPage = () => {
-  const handleSubmit = (e) => {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { showToast } = useCustomToast();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add logic to handle password reset request
+    setLoading(true);
+
+    try {
+      await sendPasswordResetEmail(auth, email, {
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/email-action?mode=resetPassword`,
+        handleCodeInApp: true,
+      });
+      showToast("Reset Link Sent", "Please check your email to reset your password.", "success");
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      showToast("Error", "Failed to send reset link. Please try again.", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <>
-      <h2 className="mt-6 text-2xl font-bold text-gray-900">Forgot Password 🔒</h2>
-      <p className="mt-2 text-sm text-gray-600">
-        Enter your email and we'll send you instructions to reset your password
-      </p>
+    <div>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">Forgot Password 🔒</CardTitle>
+        <CardDescription>
+          Enter your email and we'll send you instructions to reset your password
+        </CardDescription>
+      </CardHeader>
       
-      <form className="mt-8 space-y-6" >
-        <div>
-          <label htmlFor="email" className="sr-only">Email</label>
-          <input
-            id="email"
-            name="email"
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
-            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-teal-500 focus:border-teal-500 focus:z-10 sm:text-sm"
             placeholder="Enter your email"
+            className='focus-visible:ring-teal-500'
           />
-        </div>
-        
-        <div>
-          <button
+          
+          <Button
             type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+            className="w-full bg-teal-500 hover:bg-teal-700"
+            disabled={loading}
           >
-            Send Reset Link
-          </button>
-        </div>
-      </form>
+            {loading ? 'Sending...' : 'Send Reset Link'}
+          </Button>
+        </form>
+      </CardContent>
       
-      <div className="text-center">
+      <CardFooter className="flex justify-center">
         <Link href="/sign-in" className="font-medium text-teal-600 hover:text-teal-500">
           ← Back to login
         </Link>
-      </div>
-    </>
+      </CardFooter>
+    </div>
   );
 };
 

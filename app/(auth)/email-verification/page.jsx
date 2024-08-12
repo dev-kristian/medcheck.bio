@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { applyActionCode } from 'firebase/auth';
 import { useCustomToast } from '@/hooks/useToast';
 import Loader from '@/components/Loader';
@@ -10,7 +10,6 @@ import { auth } from '@/firebase/firebaseConfig';
 
 function EmailVerification() {
   const [verificationStatus, setVerificationStatus] = useState('verifying');
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { showToast } = useCustomToast();
 
@@ -32,8 +31,6 @@ function EmailVerification() {
         if (isMounted) {
           setVerificationStatus('success');
           showToast("Email Verified", "Your email has been successfully verified.", "success");
-          // Redirect immediately to welcome page
-          router.push('/welcome');
         }
       } catch (error) {
         console.error('Error verifying email:', error);
@@ -49,15 +46,14 @@ function EmailVerification() {
     return () => {
       isMounted = false;
     };
-  }, [searchParams, showToast, verificationStatus, router]);
+  }, [searchParams, showToast, verificationStatus]);
 
   if (verificationStatus === 'success') {
-    return null; // Return nothing as we're redirecting
+    return null;
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-8 bg-white shadow-md rounded-lg">
+      <>
         <h1 className="text-2xl font-bold mb-4">Email Verification</h1>
         {verificationStatus === 'verifying' && (
           <div className="flex flex-col items-center">
@@ -71,8 +67,7 @@ function EmailVerification() {
             <p className="mt-2">Please try clicking the link in your email again.</p>
           </div>
         )}
-      </div>
-    </div>
+      </>
   );
 }
 
