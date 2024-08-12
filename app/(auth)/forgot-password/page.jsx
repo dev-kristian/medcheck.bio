@@ -7,7 +7,7 @@ import { auth } from '@/firebase/firebaseConfig';
 import { useCustomToast } from '@/hooks/useToast';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
