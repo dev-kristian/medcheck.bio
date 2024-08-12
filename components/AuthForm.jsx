@@ -11,7 +11,7 @@ export default function AuthForm({ isSignUp, onSubmit }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({ email, password, confirmPassword, rememberMe, agreeToTerms });
