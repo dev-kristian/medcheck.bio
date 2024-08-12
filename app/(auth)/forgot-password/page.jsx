@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
 import { useCustomToast } from '@/hooks/useToast';
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
@@ -35,7 +34,7 @@ const ForgotPasswordPage = () => {
   return (
     <div>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Forgot Password 🔒</CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">Forgot Password 🔒</CardTitle>
         <CardDescription>
           Enter your email and we'll send you instructions to reset your password
         </CardDescription>
@@ -43,18 +42,18 @@ const ForgotPasswordPage = () => {
       
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
+          <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             placeholder="Enter your email"
-            className='focus-visible:ring-teal-500'
+            className='auth-input'
           />
           
           <Button
             type="submit"
-            className="w-full bg-teal-500 hover:bg-teal-700"
+            className="w-full bg-teal-500 hover:bg-teal-700 rounded-xl"
             disabled={loading}
           >
             {loading ? 'Sending...' : 'Send Reset Link'}

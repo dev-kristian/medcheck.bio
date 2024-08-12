@@ -39,8 +39,8 @@ export default function VerifyEmail() {
   return (
     <div>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Verify your email</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-bold text-center">Verify your email</CardTitle>
+        <CardDescription className='text-center'>
           Account activation link sent to your email address.
           Please follow the link inside to continue.
         </CardDescription>
@@ -48,7 +48,7 @@ export default function VerifyEmail() {
       <CardContent>
         <Button
           onClick={handleRefresh}
-          className="w-full bg-teal-500 hover:bg-teal-700"
+          className="w-full bg-teal-500 hover:bg-teal-700 rounded-xl"
           disabled={loading}
         >
           {loading ? 'Checking...' : 'I have verified my email'}
@@ -56,7 +56,7 @@ export default function VerifyEmail() {
       </CardContent>
       <CardFooter className="flex justify-center">
         <Link href="/sign-in" className="text-teal-600 hover:text-teal-800">
-          Go back to sign in
+          ← Go back to sign in
         </Link>
       </CardFooter>
     </div>

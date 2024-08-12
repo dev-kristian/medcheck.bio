@@ -4,21 +4,17 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
 import AuthForm from '@/components/AuthForm';
-import { checkOrCreateUserProfile, handleGoogleSignIn } from '@/lib/utils';
-import { useCustomToast } from '@/hooks/useToast';
-import Loader from '@/components/Loader';
+import { checkOrCreateUserProfile } from '@/lib/utils';
 import { getFirebaseErrorMessage } from '@/lib/firebaseErrors';
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 export default function SignUp() {
   const router = useRouter();
-  const { showToast } = useCustomToast();
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleSubmit = async ({ email, password, confirmPassword, agreeToTerms }) => {
     if (!agreeToTerms) {
@@ -48,67 +44,27 @@ export default function SignUp() {
     }
   };
 
-  const onGoogleSignIn = async () => {
-    setGoogleLoading(true);
-    try {
-      const redirectPath = await handleGoogleSignIn();
-      showToast("Google Sign In Successful", "Welcome back!", "success");
-      router.push(redirectPath);
-    } catch (error) {
-      console.error('Error signing in with Google', error);
-      const errorMessage = getFirebaseErrorMessage(error.code);
-      showToast("Google Sign In Failed", errorMessage, "error");
-    } finally {
-      setGoogleLoading(false);
-    }
-  };
-
   return (
     <>
-      <h2 className="mt-6 text-2xl font-bold text-gray-900">Adventure starts here 🚀</h2>
-      <p className="mt-2 text-sm text-gray-600">
-        Make your health management easy and fun!
-      </p>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">Adventure starts here </CardTitle>
+        <CardDescription className="text-center">
+          Make your health management easy and fun!
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent>
       <AuthForm isSignUp={true} onSubmit={handleSubmit} />
-      <div className="mt-6">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">or</span>
-          </div>
-        </div>
+      </CardContent>
 
-        <div className="mt-6 grid grid-cols-1 gap-3">
-          <button
-            onClick={onGoogleSignIn}
-            className="w-full inline-flex align-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-            disabled={googleLoading}
-          >
-            {googleLoading ? (
-              <Loader />
-            ) : (
-              <>
-                <span> Continue with Google &nbsp;</span>
-                <Image
-                  src="icons/google.svg"
-                  width={20}
-                  height={20}
-                  alt="Google logo"
-                />
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
-      <p className="mt-2 text-center text-sm text-gray-600">
+      <CardFooter className="flex justify-center">
+      <CardDescription className="mt-2 text-center text-sm text-gray-600">
         Already have an account?{' '}
         <Link href="/sign-in" className="font-medium text-teal-600 hover:text-teal-500">
           Sign in instead
         </Link>
-      </p>
+      </CardDescription>
+      </CardFooter>
     </>
   );
 }
