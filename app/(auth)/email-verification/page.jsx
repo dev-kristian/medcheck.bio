@@ -25,27 +25,24 @@ function EmailVerification() {
     }
 
     const verifyEmail = async () => {
-        if (verificationStatus !== 'verifying') return;
-      
-        try {
-          await applyActionCode(auth, oobCode);
-          if (isMounted) {
-            setVerificationStatus('success');
-            showToast("Email Verified", "Your email has been successfully verified.", "success");
-            
-            // Add a short delay before redirecting
-            setTimeout(() => {
-              router.replace('/welcome');
-            }, 1500); // 1.5 seconds delay
-          }
-        } catch (error) {
-          console.error('Error verifying email:', error);
-          if (isMounted) {
-            setVerificationStatus('error');
-            showToast("Verification Failed", "Unable to verify your email. Please try again.", "error");
-          }
+      if (verificationStatus !== 'verifying') return;
+
+      try {
+        await applyActionCode(auth, oobCode);
+        if (isMounted) {
+          setVerificationStatus('success');
+          showToast("Email Verified", "Your email has been successfully verified.", "success");
+          // Redirect immediately to welcome page
+          router.replace('/welcome')
         }
-      };
+      } catch (error) {
+        console.error('Error verifying email:', error);
+        if (isMounted) {
+          setVerificationStatus('error');
+          showToast("Verification Failed", "Unable to verify your email. Please try again.", "error");
+        }
+      }
+    };
 
     verifyEmail();
 
