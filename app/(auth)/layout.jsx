@@ -1,10 +1,10 @@
 // (auth)/layout.jsx
 import { Inter } from "next/font/google";
 import Image from 'next/image';
-
+import { WithAuth } from "@/components/WithAuth";
 const inter = Inter({ subsets: ["latin"] });
 
-export default function AuthLayout({ children}) {
+function AuthLayout({ children}) {
   return (
     <div className={`${inter.className} sm:min-h-screen sm:bg-gray-100 flex items-center justify-center`}>
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl sm:shadow-md">
@@ -16,3 +16,4 @@ export default function AuthLayout({ children}) {
     </div>
   );
 }
+export default WithAuth(AuthLayout);

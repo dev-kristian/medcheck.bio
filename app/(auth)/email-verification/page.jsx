@@ -33,7 +33,7 @@ function EmailVerification() {
           setVerificationStatus('success');
           showToast("Email Verified", "Your email has been successfully verified.", "success");
           // Redirect immediately to welcome page
-          router.replace('/welcome')
+          router.push('/welcome');
         }
       } catch (error) {
         console.error('Error verifying email:', error);
