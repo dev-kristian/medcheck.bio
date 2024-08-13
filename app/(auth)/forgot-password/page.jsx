@@ -19,7 +19,7 @@ const ForgotPasswordPage = () => {
 
     try {
       await sendPasswordResetEmail(auth, email, {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/auth-action`,
+        url: `${process.env.NEXT_PRIVATE_APP_URL}/auth-action`,
         handleCodeInApp: true,
       });
       showToast("Reset Link Sent", "Please check your email to reset your password.", "success");

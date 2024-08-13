@@ -53,7 +53,7 @@ export default function SignUp() {
       const userCredential = await createUserWithEmailAndPassword(auth, validatedData.email, validatedData.password);
       await checkOrCreateUserProfile(userCredential.user);
       await sendEmailVerification(userCredential.user, {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/auth-action`,
+        url: `${process.env.NEXT_PRIVATE_APP_URL}/auth-action`,
         handleCodeInApp: true,
       });
       showToast("Sign Up Successful", "Verification email sent. Please check your inbox.", "success");
