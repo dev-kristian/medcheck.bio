@@ -1,16 +1,20 @@
-// (welcome)/layout.js
-
+// (welcome)/layout.jsx
 'use client'
 
 import { WithAuth } from "@/components/WithAuth";
+import { WelcomeProvider } from "../context/WelcomeContext";
 
 function WelcomeLayout({ children }) {
   return (
-    <main className="flex h-screen w-full font-inter">
-      <div className="flex size-full flex-col">
-        {children}
+    <WelcomeProvider>
+    <div className={` min-h-screen bg-gray-100 flex items-center justify-center`}>
+      <div className="max-w-4xl w-full bg-white rounded-3xl m-2 shadow-xl overflow-hidden flex flex-col md:flex-row">
+        <div className="w-full">
+          {children}
+        </div>
       </div>
-    </main>
+    </div>
+    </WelcomeProvider>
   );
 }
 

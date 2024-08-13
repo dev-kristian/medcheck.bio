@@ -158,9 +158,11 @@
     }
 
     .page {
-      @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll h-full no-scrollbar;
+      @apply xl:flex w-full max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar  p-2 md:p-8;
     }
-
+    .home-page {
+      @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll h-full no-scrollbar  p-2 md:p-8;
+    }
     /* Mobile nav */
     .mobilenav-sheet {
       @apply flex h-[calc(100vh-72px)] flex-col justify-between overflow-y-auto;
@@ -237,12 +239,8 @@
   
   /* My Tests Page */
 
-  .my-tests-content {
-    @apply flex w-full flex-1 flex-col gap-4 px-5 sm:px-8 py-4 lg:py-8;
-  }
-
   .my-tests-header {
-    @apply flex flex-col gap-4 mb-4;
+    @apply flex flex-col gap-4 mb-4 ;
   }
 
   .back-link {
@@ -274,11 +272,7 @@
   }
 
   .no-tests-message {
-    @apply flex flex-col items-center justify-center text-center mt-12 bg-white rounded-lg shadow-md p-8;
-  }
-
-  .no-tests-icon-wrapper {
-    @apply rounded-full p-6 mb-6 bg-teal-100;
+    @apply flex flex-col w-1/2 items-center justify-center text-center mt-12 bg-white rounded-lg shadow-md p-8;
   }
 
   .no-tests-title {

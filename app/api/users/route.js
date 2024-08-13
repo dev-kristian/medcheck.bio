@@ -16,7 +16,6 @@ export async function POST(request) {
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
-      // Create new user profile
       const createdAt = new Date();
       await setDoc(userRef, {
         email,
@@ -26,7 +25,6 @@ export async function POST(request) {
       });
       return NextResponse.json({ profileCompleted: false });
     } else {
-      // User exists, return profile completion status
       const userData = userSnap.data();
       return NextResponse.json({ profileCompleted: userData.profileCompleted || false });
     }

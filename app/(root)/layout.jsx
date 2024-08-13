@@ -14,7 +14,7 @@ function RootLayout({ children }) {
           <main className="flex h-screen w-full font-inter">
             <Sidebar/>
             <div className="flex size-full flex-col">
-              <div className="root-layout">
+              <div className="root-layout ">
                 <Image
                   src='/icons/logo.png'
                   width={30}

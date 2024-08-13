@@ -113,6 +113,7 @@ export default function AuthForm({
               type="button"
               className="absolute inset-y-0 right-0 pr-3 flex items-center z-20"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label='show password'
             >
               {showPassword ? (
                 <Eye className="h-5 w-5 text-gray-400" />
@@ -144,6 +145,7 @@ export default function AuthForm({
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex items-center z-20"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label='show password'
               >
                 {showConfirmPassword ? (
                   <Eye className="h-5 w-5 text-gray-400" />

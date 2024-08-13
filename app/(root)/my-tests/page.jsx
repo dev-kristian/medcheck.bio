@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { useTestContext } from '@/app/context/TestContext';
 
-const TESTS_PER_PAGE = 8;
+const TESTS_PER_PAGE = 1;
 
 export default function MyTestsPage() {
   const { tests, loading } = useTestContext();
@@ -35,8 +35,7 @@ export default function MyTestsPage() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <section className='page'>
-      <div className='my-tests-content'>
+    <section className='page '>
         <header className='my-tests-header'>
           <Link href="/" className="back-link">
             <Button variant="ghost" size="sm">
@@ -50,27 +49,27 @@ export default function MyTestsPage() {
             subtext="View and manage your test results"
           />
         </header>
-        
+
         {tests.length === 0 ? (
-          <div className="no-tests-message">
-            <div className="no-tests-icon-wrapper">
-              <Image
-                src="/icons/my-tests.svg"
-                alt="No tests"
-                width={120}
-                height={120}
-                className="text-teal-500"
-              />
+          <div className='flex items-center justify-center'>
+            <div className="no-tests-message ">
+                <Image
+                  src="/icons/my-tests.svg"
+                  alt="No tests"
+                  width={120}
+                  height={120}
+                  className="text-teal-500"
+                />
+              <h2 className="no-tests-title">You haven't added any tests yet</h2>
+              <p className="text-base text-gray-600 mb-6">
+                Add a new test to start gaining valuable insights into your health.
+              </p>
+              <Link href='/my-tests/add-test'>
+                <Button className="add-test-button" size="lg">
+                  <Plus className="mr-2 h-4 w-4" /> Add new analysis
+                </Button>
+              </Link>
             </div>
-            <h2 className="no-tests-title">You haven't added any tests yet</h2>
-            <p className="text-base text-gray-600 mb-6">
-              Add a new test to start gaining valuable insights into your health.
-            </p>
-            <Link href='/my-tests/add-test'>
-              <Button className="add-test-button" size="lg">
-                <Plus className="mr-2 h-4 w-4" /> Add new analysis
-              </Button>
-            </Link>
           </div>
         ) : (
           <>
@@ -156,7 +155,6 @@ export default function MyTestsPage() {
             )}
           </>
         )}
-      </div>
     </section>
   );
 }

@@ -1,23 +1,17 @@
-//(welcome)/welcome/page.jsx
+// app/(welcome)/welcome/page.jsx
 
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import Image from 'next/image';
 
-function Welcome() {
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('');
-  const [medicalHistory, setMedicalHistory] = useState('');
+export default function Welcome() {
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [showContent, setShowContent] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -32,15 +26,15 @@ function Welcome() {
             if (data.profileCompleted) {
               router.push('/');
             } else {
-              setShowForm(true);
+              setShowContent(true);
             }
           } else {
             console.error('Error checking profile completion:', data.error);
-            setShowForm(true);
+            setShowContent(true);
           }
         } catch (error) {
           console.error('Error checking profile completion:', error);
-          setShowForm(true);
+          setShowContent(true);
         }
       }
       setLoading(false);
@@ -49,94 +43,33 @@ function Welcome() {
     checkProfileCompletion();
   }, [user, router]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!user) return;
-
-    try {
-      const response = await fetch('/api/users/welcome', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.uid,
-          age,
-          gender,
-          medicalHistory,
-        }),
-      });
-
-      if (response.ok) {
-        router.push('/');
-      } else {
-        console.error('Failed to update medical details');
-      }
-    } catch (error) {
-      console.error("Error updating user profile", error);
-    }
-  };
-
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return <div className="flex items-center justify-center h-screen text-teal-600">Loading your profile...</div>;
   }
 
-  if (!showForm) {
+  if (!showContent) {
     return null;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Complete Your Medical Profile</CardTitle>
-          <CardDescription className="text-center">Please provide your medical information to help us serve you better.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="age">Age</Label>
-              <Input
-                type="number"
-                id="age"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                required
-                className="w-full"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="gender">Gender</Label>
-              <Select value={gender} onValueChange={setGender} required>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="medicalHistory">Medical History</Label>
-              <Textarea
-                id="medicalHistory"
-                value={medicalHistory}
-                onChange={(e) => setMedicalHistory(e.target.value)}
-                required
-                className="w-full h-32"
-                placeholder="Please provide any relevant medical history or conditions"
-              />
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full" onClick={handleSubmit} >Submit</Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center text-teal-800">Welcome {user?.displayName || "Guest"}</CardTitle>
+        <CardDescription className="text-center text-teal-600">To Your Intelligent Health Companion</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex justify-center">
+          <img src="/images/logo.png" alt="Medcheck AI" className="h-24" />
+        </div>
+        <p className="text-center text-teal-700">We're here to provide personalized health insights. Let's start by getting to know you better.</p>
+        <div className="flex items-center justify-center space-x-2">
+          <Image src='/icons/secure.svg' width={20} height={20} alt="secure logo"/>
+          <p className="text-sm text-gray-500">Your data is confidential and secured following HIPAA and GDPR standards.</p>
+        </div>
+      </CardContent>
+      <CardFooter className='justify-center' >
+        <Button onClick={() => router.push('/welcome/introduction')} className="w-1/2 md:w-1/5 bg-teal-500 hover:bg-teal-600">Begin</Button>
+      </CardFooter>
+    </>
   );
 }
-
-export default Welcome;

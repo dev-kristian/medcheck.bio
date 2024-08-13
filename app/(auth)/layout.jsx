@@ -8,7 +8,7 @@ export default function AuthLayout({ children }) {
   return (
     <div className={`${inter.className}  min-h-screen md:bg-gray-100 flex items-center justify-center p-4`}>
       <div className="max-w-6xl w-full bg-white rounded-3xl md:shadow-xl overflow-hidden flex flex-col md:flex-row">
-        <div className="w-full md:w-1/2 md:p-8 ">
+        <div className="w-full md:w-1/2 md:p-2 ">
           <div className="text-center">
             <Image 
               src="/images/logo.png" 
@@ -24,7 +24,7 @@ export default function AuthLayout({ children }) {
 
         <div className="hidden md:block w-full relative ">
           <Image
-            src="/images/auth-bg2.jpg"
+            src="/images/auth-background.jpg"
             alt="Authentication background"
             fill
             style={{ objectFit: 'cover' }}

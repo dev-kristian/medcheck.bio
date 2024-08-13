@@ -13,7 +13,7 @@ const Home = () => {
   const { tests, loading } = useTestContext();
   
   return (
-    <section className='page'>
+    <section className='home-page'>
       <div className='home-content'>
         <header className='home-header'>
           <HeaderBox
