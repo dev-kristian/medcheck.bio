@@ -16,7 +16,12 @@ export function WithProfileCompletion(Component) {
       async function checkProfileCompletion() {
         if (user) {
           try {
-            const response = await fetch(`/api/users?userId=${user.uid}`);
+            const idToken = await user.getIdToken();
+            const response = await fetch(`/api/users?userId=${user.uid}`, {
+              headers: {
+                'Authorization': `Bearer ${idToken}`
+              }
+            });
             const data = await response.json();
             
             if (response.ok) {

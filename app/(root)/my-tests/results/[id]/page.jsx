@@ -25,7 +25,7 @@ export default function TestResultPage() {
 
   return (
     <section className='page'>
-      <div className='test-result-content'>
+      <header className='my-tests-header'>
           <Link href="/my-tests" className="back-link">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -37,8 +37,9 @@ export default function TestResultPage() {
             testType={result.testType}
             subtext="Detailed analysis of your test results"
           />
-        
-        <div className="test-result-box">
+        </header>
+
+        <div className="bg-white rounded-3xl md:shadow-xl p-2 md:p-6 mt-4">
           <h2>Test Details</h2>
           <p><strong>Test Date:</strong> {result.date}</p>
           <p><strong>Additional Information:</strong> {result.additionalInfo}</p>
@@ -46,7 +47,7 @@ export default function TestResultPage() {
           <h2>Analysis</h2>
           <p>{result.analysis}</p>
         </div>
-      </div>
+
     </section>
   )
 }

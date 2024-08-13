@@ -20,9 +20,13 @@ export function WelcomeProvider({ children }) {
 
   const saveSection = async (sectionNumber) => {
     try {
+      const idToken = await user.getIdToken();
       const response = await fetch('/api/users/welcome', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
         body: JSON.stringify({ ...welcomeState, section: sectionNumber }),
       });
       if (!response.ok) throw new Error('Failed to save section');

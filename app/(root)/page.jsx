@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <section className='home-page'>
       <div className='home-content'>
-        <header className='home-header'>
+        <header className='flex flex-col justify-between gap-8'>
           <HeaderBox
             type='greeting'
             title='Welcome'
@@ -27,11 +27,11 @@ const Home = () => {
         <section className="tests-card mt-16 ">
           <Link href="/my-tests" className="flex items-center justify-between">
             <div className="flex flex-col px-4">
-              <h2 className="tests-title">My Tests</h2>
+              <h2 className="text-20 font-semibold text-gray-900">My Tests</h2>
               {loading ? (
-                <p className="tests-count">Loading...</p>
+                <p className="text-14 text-gray-600">Loading...</p>
               ) : (
-                <p className="tests-count">{tests.length} analyses completed</p>
+                <p className="text-14 text-gray-600">{tests.length} analyses completed</p>
               )}
             </div>
             <div className="rounded-full p-2">

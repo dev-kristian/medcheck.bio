@@ -26,10 +26,12 @@ export default function MedicalHistory() {
     if (!user) return;
 
     try {
+      const idToken = await user.getIdToken();
       const response = await fetch('/api/users/welcome', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           userId: user.uid,

@@ -70,24 +70,22 @@ const AddTestPage = () => {
   }
 
   return (
-    <main className='page'>
-      <article className='add-test-content'>
-        <nav>
-          <Link href="/my-tests">
+    <section className='page'>
+      <header className='my-tests-header'>
+          <Link href="/my-tests" className="back-link"> 
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to My Tests
             </Button>
           </Link>
-        </nav>
-        
         <HeaderBox
           type="addTest"
           title="Add New Test"
           subtext="Select and add a new test to your list"
         />
-        
-        <section className="bg-white rounded-lg shadow-md p-6 space-y-6">
+        </header>
+
+        <section className="bg-white rounded-3xl md:shadow-xl p-2 md:p-6 space-y-6">
           <TestTypeSelector testType={testType} setTestType={setTestType} />
           <DateSelector date={date} setDate={setDate} />
           <ImageUploader images={images} setImages={setImages} />
@@ -96,18 +94,17 @@ const AddTestPage = () => {
             setAdditionalInfo={setAdditionalInfo} 
           />
           
-          <footer className="mt-auto p-4 sm:p-6 bg-white">
+          <footer className="mt-auto p-4 sm:p-6 bg-white flex justify-center items-center">
             <Button 
               onClick={handleProcess} 
-              className="process-button"
+              className="w-full md:w-1/4  bg-teal-500 hover:bg-teal-700 rounded-xl"
               disabled={!testType || !date || images.length === 0}
             >
               Process Test
             </Button>
           </footer>
         </section>
-      </article>
-    </main>
+    </section>
   );
 }
 

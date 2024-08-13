@@ -2,15 +2,17 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/firebase/firebaseConfig';
 import { doc, updateDoc } from 'firebase/firestore';
+import { verifyIdToken } from '@/app/api/middleware/auth';
 
 export async function PUT(request) {
-  const { userId, section, ...data } = await request.json();
-
-  if (!userId) {
-    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
-  }
-
   try {
+    const verifiedUid = await verifyIdToken(request);
+    const { userId, section, ...data } = await request.json();
+
+    if (!userId || verifiedUid !== userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
     const userRef = doc(db, 'users', userId);
     const updateData = {
       [`section${section}`]: data,

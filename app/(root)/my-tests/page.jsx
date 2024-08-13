@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { useTestContext } from '@/app/context/TestContext';
 
-const TESTS_PER_PAGE = 1;
+const TESTS_PER_PAGE = 6;
 
 export default function MyTestsPage() {
   const { tests, loading } = useTestContext();
@@ -76,18 +76,18 @@ export default function MyTestsPage() {
             <div className="table-header">
               <h2 className="tests-history-title">Tests History</h2>
               <div className="table-actions">
-                <Button variant="outline" size="sm" className="filter-button">
+                <Button variant="outline" size="sm" className="w-full rounded-xl">
                   <Filter className="h-4 w-4 mr-2" />
                   Filter
                 </Button>
                 <Link href='/my-tests/add-test'>
-                  <Button className="add-test-button" size="sm">
+                  <Button className="w-full bg-teal-500 hover:bg-teal-700 rounded-xl" size="sm">
                     <Plus className="mr-2 h-4 w-4" /> Add new analysis
                   </Button>
                 </Link>
               </div>
             </div>
-            <div className="tests-table-container no-scrollbar no-scrollbar::-webkit-scrollbar ">
+            <div className="tests-table-container no-scrollbar  ">
               <Table>
                 <TableHeader className='bg-teal-100'>
                   <TableRow >

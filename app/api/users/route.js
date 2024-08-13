@@ -1,17 +1,18 @@
 // app/api/users/route.js
-
 import { NextResponse } from 'next/server';
 import { db } from '@/firebase/firebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { verifyIdToken } from '@/app/api/middleware/auth';
 
 export async function POST(request) {
-  const { uid, email, displayName } = await request.json();
-
-  if (!uid) {
-    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
-  }
-
   try {
+    const verifiedUid = await verifyIdToken(request);
+    const { uid, email, displayName } = await request.json();
+
+    if (!uid || verifiedUid !== uid) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
     const userRef = doc(db, 'users', uid);
     const userSnap = await getDoc(userRef);
 
@@ -21,7 +22,7 @@ export async function POST(request) {
         email,
         displayName,
         createdAt,
-        profileCompleted: false
+        profileCompleted: false,
       });
       return NextResponse.json({ profileCompleted: false });
     } else {
@@ -35,14 +36,15 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get('userId');
-
-  if (!userId) {
-    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
-  }
-
   try {
+    const verifiedUid = await verifyIdToken(request);
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId || verifiedUid !== userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
     const userRef = doc(db, 'users', userId);
     const userSnap = await getDoc(userRef);
 

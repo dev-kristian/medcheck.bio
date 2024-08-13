@@ -106,218 +106,191 @@
 }
 
 @layer utilities {
-    .flex-center {
-      @apply flex items-center justify-center;
-    }
-    .header-2 {
-      @apply text-18 font-semibold text-gray-900;
-    }
-    .text-10 {
-      @apply text-[10px] leading-[14px];
-    }
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+  .header-2 {
+    @apply text-18 font-semibold text-gray-900;
+  }
+  .text-10 {
+    @apply text-[10px] leading-[14px];
+  }
 
-    .text-12 {
-      @apply text-[12px] leading-[16px];
-    }
+  .text-12 {
+    @apply text-[12px] leading-[16px];
+  }
 
-    .text-14 {
-      @apply text-[14px] leading-[20px];
-    }
+  .text-14 {
+    @apply text-[14px] leading-[20px];
+  }
 
-    .text-16 {
-      @apply text-[16px] leading-[24px];
-    }
+  .text-16 {
+    @apply text-[16px] leading-[24px];
+  }
 
-    .text-18 {
-      @apply text-[18px] leading-[22px];
-    }
+  .text-18 {
+    @apply text-[18px] leading-[22px];
+  }
 
-    .text-20 {
-      @apply text-[20px] leading-[24px];
-    }
+  .text-20 {
+    @apply text-[20px] leading-[24px];
+  }
 
-    .text-24 {
-      @apply text-[24px] leading-[30px];
-    }
+  .text-24 {
+    @apply text-[24px] leading-[30px];
+  }
 
-    .text-26 {
-      @apply text-[26px] leading-[32px];
-    }
+  .text-26 {
+    @apply text-[26px] leading-[32px];
+  }
 
-    .text-30 {
-      @apply text-[30px] leading-[38px];
-    }
+  .text-30 {
+    @apply text-[30px] leading-[38px];
+  }
 
-    .text-36 {
-      @apply text-[36px] leading-[44px];
-    }
+  .text-36 {
+    @apply text-[36px] leading-[44px];
+  }
 
-    /* Root Layout */
-    .root-layout {
-      @apply flex h-16 items-center justify-between p-5 shadow-creditCard sm:p-8 md:hidden;
-    }
+  /* Root Layout */
+  .root-layout {
+    @apply flex h-16 items-center justify-between p-5 shadow-creditCard sm:p-8 md:hidden;
+  }
 
-    .page {
-      @apply xl:flex w-full max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar  p-2 md:p-8;
-    }
-    .home-page {
-      @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll h-full no-scrollbar  p-2 md:p-8;
-    }
-    /* Mobile nav */
-    .mobilenav-sheet {
-      @apply flex h-[calc(100vh-72px)] flex-col justify-between overflow-y-auto;
-    }
+  /*General*/
+  .auth-input{
+    @apply appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-teal-500 focus:border-teal-500 focus:z-10 sm:text-sm;
+  }
 
-    .mobilenav-sheet_close {
-      @apply flex gap-3 items-center p-4 rounded-lg w-full max-w-60;
-    }
-    
-    /* Home */
-    .home-content {
-      @apply  w-full flex-col px-5 sm:px-8 py-6 lg:py-14 ;
-    }
-    .home-header {
-      @apply flex flex-col justify-between gap-8;
-    }
-    .header-box {
-      @apply flex flex-col gap-1;
-    }
-    .header-box-title {
-      @apply text-24 lg:text-30 font-semibold text-gray-900;
-    }
-    .header-box-subtext {
-      @apply text-14 lg:text-16 font-normal text-gray-600;
-    }
-    .tests-card {
-      @apply bg-white rounded-lg shadow-creditCard cursor-pointer transition-all duration-300 hover:shadow-lg;
-    }
-    .tests-title {
-      @apply text-20 font-semibold text-gray-900 ;
-    }
-    .tests-count {
-      @apply text-14 text-gray-600;
-    }
+  .page {
+    @apply flex w-full max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar p-2 md:p-8;
+  }
+  .header-box {
+    @apply flex flex-col gap-1;
+  }
+  .header-box-title {
+    @apply text-24 lg:text-30 font-semibold text-gray-900;
+  }
+  .header-box-subtext {
+    @apply text-14 lg:text-16 font-normal text-gray-600;
+  }
 
-   /* Sidebar */
-    .sidebar {
-      @apply sticky left-0 top-0 flex h-screen w-fit flex-col  justify-between border-r border-gray-200 bg-white pt-8 text-white max-md:hidden sm:p-4 xl:p-6 2xl:w-[355px];
-    }
-    .sidebar-logo {
-      @apply 2xl:text-26 font-ibm-plex-serif text-[26px] font-bold text-teal-500 max-xl:hidden;
-    }
-    .sidebar-link {
-      @apply flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-lg justify-center xl:justify-start;
-    }
-    .sidebar-label {
-      @apply text-16 font-semibold text-black-2 max-xl:hidden;
-    }
-    /* Right sidebar */
-    .right-sidebar {
-      @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l border-gray-200 xl:flex w-[364px] xl:overflow-y-scroll !important;
-    }
-    .profile-banner {
-      @apply h-[120px] w-full bg-gradient-mesh bg-cover bg-no-repeat;
-    }
-    .profile {
-      @apply relative flex px-6 max-xl:justify-center;
-    }
-    .profile-img {
-      @apply flex-center absolute -top-8 size-24 rounded-full bg-gray-100 border-8 border-white p-2 shadow-profile;
-    }
-    .profile-details {
-      @apply flex flex-col pt-24;
-    }
-    .profile-name {
-      @apply text-24 font-semibold text-gray-900;
-    }
-    .profile-email {
-      @apply text-16 font-normal text-gray-600;
-    }
-    .subscription {
-      @apply flex flex-col justify-between gap-8 px-6 py-8;
-    }
+  /* Mobile nav */
+  .mobilenav-sheet {
+    @apply flex h-[calc(100vh-72px)] flex-col justify-between overflow-y-auto;
+  }
+  .mobilenav-sheet_close {
+    @apply flex gap-3 items-center p-4 rounded-lg w-full max-w-60;
+  }
+  
+  /* Home */
+  .home-page {
+    @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll h-full no-scrollbar;
+  }
+  .home-content {
+    @apply  w-full flex-col px-2 bg-gray-100 h-full sm:px-8 py-6 lg:py-8 ;
+  }
+  .tests-card {
+    @apply bg-white rounded-lg shadow-creditCard cursor-pointer transition-all duration-300 hover:shadow-lg;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    @apply sticky left-0 top-0 flex h-screen w-fit flex-col  justify-between border-r border-gray-200 bg-white pt-8 text-white max-md:hidden sm:p-4 xl:p-6 2xl:w-[355px];
+  }
+  .sidebar-logo {
+    @apply 2xl:text-26 font-ibm-plex-serif text-[26px] font-bold text-teal-500 max-xl:hidden;
+  }
+  .sidebar-link {
+    @apply flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-lg justify-center xl:justify-start;
+  }
+  .sidebar-label {
+    @apply text-16 font-semibold text-black-2 max-xl:hidden;
+  }
+
+  /* Right sidebar */
+  .right-sidebar {
+    @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l border-gray-200 xl:flex w-[364px] xl:overflow-y-scroll !important;
+  }
+  .profile-banner {
+    @apply h-[120px] w-full bg-gradient-mesh bg-cover bg-no-repeat;
+  }
+  .profile {
+    @apply relative flex px-6 max-xl:justify-center;
+  }
+  .profile-img {
+    @apply flex-center absolute -top-8 size-24 rounded-full bg-gray-100 border-8 border-white p-2 shadow-profile;
+  }
+  .profile-details {
+    @apply flex flex-col pt-24;
+  }
+  .profile-name {
+    @apply text-24 font-semibold text-gray-900;
+  }
+  .profile-email {
+    @apply text-16 font-normal text-gray-600;
+  }
+  .subscription {
+    @apply flex flex-col justify-between gap-8 px-6 py-8;
+  }
   
   /* My Tests Page */
-
   .my-tests-header {
     @apply flex flex-col gap-4 mb-4 ;
   }
-
   .back-link {
     @apply self-start;
   }
-
   .table-header {
     @apply flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4;
   }
-
   .tests-history-title {
     @apply text-2xl font-semibold text-gray-900;
   }
-
   .table-actions {
     @apply flex items-center gap-4;
   }
 
-  .filter-button {
-    @apply text-gray-600 border-gray-300 hover:bg-gray-50;
-  }
-
   .tests-table-container {
-    @apply overflow-x-auto rounded-xl;
+    @apply overflow-x-auto rounded-3xl;
   }
-
-  .add-test-button {
-    @apply bg-medical-gradient text-white transition-all duration-300 hover:shadow-lg;
-  }
-
   .no-tests-message {
     @apply flex flex-col w-1/2 items-center justify-center text-center mt-12 bg-white rounded-lg shadow-md p-8;
   }
-
   .no-tests-title {
     @apply text-2xl font-semibold text-gray-900 mb-2;
   }
-
   .pagination-container {
     @apply mt-auto pt-2 flex justify-center border-t border-gray-200;
   }
-
   .pagination-link {
     @apply text-gray-500 hover:text-teal-500 transition-colors duration-300;
   }
-
   .pagination-nav-button {
     @apply text-gray-700 hover:text-teal-300 transition-colors duration-300;
   }
 
   /* Add Test Page */
-  
   .add-test-content {
-    @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-7 lg:py-12 xl:max-h-screen xl:overflow-y-scroll;
+    @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-6 py-7 lg:py-0 xl:max-h-screen xl:overflow-y-scroll;
   }
-
   .custom-calendar {
     font-family: 'Inter', sans-serif;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: box-shadow 0.3s ease-in-out;
   }
-  
   .custom-calendar:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
-  
   .custom-calendar button {
     outline: none;
     transition: all 0.2s ease-in-out;
   }
-  
   .custom-calendar button:focus {
     ring: 2px;
     ring-offset: 2px;
     ring: teal -500px;
   }
-  
   .custom-calendar .grid-cols-7 > *,
   .custom-calendar .grid-cols-3 > *,
   .custom-calendar .grid-cols-4 > * {
@@ -326,20 +299,16 @@
     align-items: center;
     justify-content: center;
   }
-  
   .custom-calendar .text-gray-300,
   .custom-calendar .text-gray-400 {
     opacity: 0.6;
   }
-  
   .custom-calendar .border-2 {
     border-style: dashed;
   }
-  
   .custom-calendar button {
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
   }
-  
   @keyframes pulse {
     0% {
       box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.7);
@@ -351,77 +320,29 @@
       box-shadow: 0 0 0 0 rgba(0, 128, 128, 0);
     }
   }
-  
   .custom-calendar .border-2.border-teal-500 {
     animation: pulse 2s infinite;
   }
-
   .file-upload-label {
     @apply flex items-center justify-center w-full p-4 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-100 hover:border-teal-500;
   }
-
   .image-preview-container {
     @apply relative mt-4 w-full mx-auto;
   }
-
   .image-preview {
     @apply w-60 h-60 object-cover rounded-lg shadow-md;
   }
-
   .remove-file-button {
     @apply absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100 transition-colors duration-300;
   }
-
   .additional-info-textarea {
     @apply w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200 ease-in-out;
   }
-
   .process-button {
     @apply w-full bg-medical-gradient text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out;
   }
 
-  /*RESULTS*/
-  
-  .test-result-content {
-    @apply flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-4 lg:py-8;
-  }
-  
-  .test-result-header {
-    @apply flex flex-col gap-4 mb-4;
-  }
-  
-  .test-result-box {
-    @apply bg-white rounded-lg shadow-md p-6 mt-4;
-  }
-
-  /*MEDICAL DETAILS*/
-  .medical-details-card {
-    @apply max-w-2xl mx-auto bg-white shadow-md rounded-lg overflow-hidden;
-  }
-
-  .medical-details-header {
-    @apply bg-teal-500 text-white p-6;
-  }
-
-  .medical-details-form {
-    @apply p-6 space-y-6;
-  }
-
-  .medical-details-input {
-    @apply w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent;
-  }
-
-  .medical-details-select {
-    @apply w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent;
-  }
-
-  .medical-details-textarea {
-    @apply w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent h-32 resize-none;
-  }
-
-  .medical-details-submit {
-    @apply w-full bg-teal-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-teal-600 transition duration-300;
-  }
+  /*Loader*/
   .loader {
     border: 2px solid #f3f3f3;
     border-top: 2px solid #3498db;
@@ -430,7 +351,6 @@
     height: 16px;
     animation: spin 2s linear infinite;
   }
-  
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -440,8 +360,5 @@
     }
   }
 
-  .auth-input{
-    @apply appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-teal-500 focus:border-teal-500 focus:z-10 sm:text-sm;
-  }
-  
+
 }

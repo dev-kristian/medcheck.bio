@@ -25,6 +25,7 @@ export default function GeneralInformation() {
     if (!user) return;
 
     try {
+      const idToken = await user.getIdToken();
       const data = {
         userId: user.uid,
         section: 2,
@@ -42,6 +43,7 @@ export default function GeneralInformation() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
         },
         body: JSON.stringify(data),
       });
