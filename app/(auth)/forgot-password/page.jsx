@@ -34,8 +34,8 @@ const ForgotPasswordPage = () => {
   return (
     <div>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">Forgot Password 🔒</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-bold text-center">Forgot Password</CardTitle>
+        <CardDescription className='text-center'>
           Enter your email and we'll send you instructions to reset your password
         </CardDescription>
       </CardHeader>

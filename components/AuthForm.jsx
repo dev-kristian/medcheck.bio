@@ -9,8 +9,16 @@ import { handleGoogleSignIn } from '@/lib/utils';
 import { useCustomToast } from '@/hooks/useToast';
 import { getFirebaseErrorMessage } from '@/lib/firebaseErrors';
 import { useRouter } from 'next/navigation';
+import PasswordStrengthIndicator from './PasswordStrengthIndicator';
 
-export default function AuthForm({ isSignUp, onSubmit }) {
+export default function AuthForm({ 
+  isSignUp, 
+  onSubmit, 
+  onPasswordChange,
+  onConfirmPasswordChange,
+  onAgreeToTermsChange,
+  isSubmitDisabled
+}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,6 +29,30 @@ export default function AuthForm({ isSignUp, onSubmit }) {
   const [googleLoading, setGoogleLoading] = useState(false);
   const { showToast } = useCustomToast();
   const router = useRouter();
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    if (onPasswordChange) {
+      onPasswordChange(newPassword);
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    const newConfirmPassword = e.target.value;
+    setConfirmPassword(newConfirmPassword);
+    if (onConfirmPasswordChange) {
+      onConfirmPasswordChange(newConfirmPassword);
+    }
+  };
+
+  const handleAgreeToTermsChange = (e) => {
+    const newAgreeToTerms = e.target.checked;
+    setAgreeToTerms(newAgreeToTerms);
+    if (onAgreeToTermsChange) {
+      onAgreeToTermsChange(newAgreeToTerms);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -61,7 +93,7 @@ export default function AuthForm({ isSignUp, onSubmit }) {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div>
+          <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
             Password
           </label>
@@ -75,7 +107,7 @@ export default function AuthForm({ isSignUp, onSubmit }) {
               className="auth-input"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
             />
             <button
               type="button"
@@ -89,6 +121,7 @@ export default function AuthForm({ isSignUp, onSubmit }) {
               )}
             </button>
           </div>
+          {isSignUp && onPasswordChange && <PasswordStrengthIndicator password={password} />}
         </div>
         {isSignUp && (
           <div>
@@ -105,7 +138,7 @@ export default function AuthForm({ isSignUp, onSubmit }) {
                 className="auth-input"
                 placeholder="Confirm Password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={handleConfirmPasswordChange}
               />
               <button
                 type="button"
@@ -155,7 +188,7 @@ export default function AuthForm({ isSignUp, onSubmit }) {
             type="checkbox"
             className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded accent-teal-500"
             checked={agreeToTerms}
-            onChange={(e) => setAgreeToTerms(e.target.checked)}
+            onChange={handleAgreeToTermsChange}
           />
           <label htmlFor="agree-terms" className="ml-2 block text-sm text-gray-900">
             I agree to{' '}
@@ -174,42 +207,42 @@ export default function AuthForm({ isSignUp, onSubmit }) {
         <Button
           type="submit"
           className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+          disabled={isSubmitDisabled}
         >
           {isSignUp ? 'Sign Up' : 'Login'}
         </Button>
       </div>
 
       <div className="relative mt-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">or</span>
-          </div>
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300"></div>
         </div>
-
-        <div className="mt-6 grid grid-cols-1 gap-3">
-          <Button
-            onClick={onGoogleSignIn}
-            className="w-full inline-flex align-center justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-            disabled={googleLoading}
-          >
-            {googleLoading ? (
-              <Loader />
-            ) : (
-              <>
-                <span> Continue with Google &nbsp;</span>
-                <Image
-                  src="icons/google.svg"
-                  width={20}
-                  height={20}
-                  alt="Google logo"
-                />
-              </>
-            )}
-          </Button>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white text-gray-500">or</span>
+        </div>
       </div>
-      
+
+      <div className="mt-6 grid grid-cols-1 gap-3">
+        <Button
+          onClick={onGoogleSignIn}
+          className="w-full inline-flex align-center justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+          disabled={googleLoading}
+        >
+          {googleLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <span> Continue with Google &nbsp;</span>
+              <Image
+                src="icons/google.svg"
+                width={20}
+                height={20}
+                alt="Google logo"
+              />
+            </>
+          )}
+        </Button>
+      </div>
     </form>
   );
 }

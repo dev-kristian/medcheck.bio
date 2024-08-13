@@ -1,15 +1,28 @@
-'use client';
+'use client'
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { applyActionCode, confirmPasswordReset } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
-import { useCustomToast } from '@/hooks/useToast';
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import Loader from '@/components/Loader';
 import { Eye, EyeOff } from 'lucide-react';
+import { z } from 'zod';
+import { useCustomToast } from '@/hooks/useToast';
+import PasswordStrengthIndicator from '@/components/PasswordStrengthIndicator';
+
+// Password validation schema
+const passwordSchema = z.object({
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/, 
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
 function AuthAction() {
   const [loading, setLoading] = useState(true);
@@ -20,38 +33,48 @@ function AuthAction() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [mode, setMode] = useState('');
   const [oobCode, setOobCode] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const verificationInitiated = useRef(false);
   const { showToast } = useCustomToast();
 
   useEffect(() => {
     const mode = searchParams.get('mode');
     const oobCode = searchParams.get('oobCode');
 
-    if (mode && oobCode) {
+    if (mode && oobCode && !verificationInitiated.current) {
       setMode(mode);
       setOobCode(oobCode);
+      verificationInitiated.current = true;
       if (mode === 'verifyEmail') {
         handleEmailVerification(oobCode);
       } else {
         setLoading(false);
       }
-    } else {
-      showToast("Invalid Link", "The link is invalid or has expired.", "error");
-      router.push('/sign-in');
+    } else if (!mode || !oobCode) {
+      setVerificationStatus('invalid');
+      setLoading(false);
     }
-  }, [searchParams, router, showToast]);
+  }, [searchParams, router]);
+
+  useEffect(() => {
+    try {
+      passwordSchema.parse({ password, confirmPassword });
+      setIsFormValid(true);
+    } catch (error) {
+      setIsFormValid(false);
+    }
+  }, [password, confirmPassword]);
 
   const handleEmailVerification = async (oobCode) => {
     try {
       await applyActionCode(auth, oobCode);
       setVerificationStatus('success');
-      showToast("Email Verified", "Your email has been successfully verified.", "success");
-      setTimeout(() => router.push('/sign-in'), 3000); // Redirect after 3 seconds
+      setTimeout(() => router.push('/sign-in'), 3000);
     } catch (error) {
       console.error('Error verifying email:', error);
       setVerificationStatus('error');
-      showToast("Verification Failed", "Unable to verify your email. Please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -59,18 +82,22 @@ function AuthAction() {
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      showToast("Password Mismatch", "Passwords do not match.", "error");
-      return;
-    }
-
     try {
+      passwordSchema.parse({ password, confirmPassword });
       await confirmPasswordReset(auth, oobCode, password);
-      showToast("Password Reset", "Your password has been successfully reset.", "success");
-      router.push('/sign-in');
+      setVerificationStatus('passwordResetSuccess');
+      showToast("Password Reset Successful", "Your password has been successfully reset.", "success");
+      setTimeout(() => router.push('/sign-in'), 3000);
     } catch (error) {
       console.error('Error resetting password:', error);
-      showToast("Error", "Failed to reset password. Please try again.", "error");
+      if (error instanceof z.ZodError) {
+        error.errors.forEach(err => {
+          showToast("Validation Error", err.message, "error");
+        });
+      } else {
+        setVerificationStatus('passwordResetError');
+        showToast("Password Reset Failed", "An error occurred while resetting your password. Please try again.", "error");
+      }
     }
   };
 
@@ -96,15 +123,17 @@ function AuthAction() {
               ? "Your email has been successfully verified. Redirecting to sign-in page..." 
               : verificationStatus === 'error'
               ? "Unable to verify your email. Please try again or contact support."
+              : verificationStatus === 'invalid'
+              ? "The link is invalid or has expired."
               : "Verifying your email..."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {verificationStatus === 'error' && (
+          {verificationStatus === 'error' || verificationStatus === 'invalid' ? (
             <Button onClick={() => router.push('/sign-in')} className="w-full bg-teal-500 hover:bg-teal-700 rounded-xl">
               Go to Sign In
             </Button>
-          )}
+          ) : null}
         </CardContent>
       </div>
     );
@@ -140,6 +169,7 @@ function AuthAction() {
                   {showPassword ? <Eye className="h-5 w-5 text-gray-400" /> : <EyeOff className="h-5 w-5 text-gray-400" />}
                 </button>
               </div>
+              <PasswordStrengthIndicator password={password} />
             </div>
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
@@ -161,7 +191,7 @@ function AuthAction() {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full bg-teal-500 hover:bg-teal-700 text-white rounded-xl">
+            <Button type="submit" className="w-full bg-teal-500 hover:bg-teal-700 text-white rounded-xl" disabled={!isFormValid}>
               Set New Password
             </Button>
           </form>
