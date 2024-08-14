@@ -7,7 +7,7 @@ import { verifyIdToken } from '@/app/api/middleware/auth';
 export async function PUT(request) {
   try {
     const verifiedUid = await verifyIdToken(request);
-    const { userId, section, ...data } = await request.json();
+    const { userId, section, displayName, ...data } = await request.json();
 
     if (!userId || verifiedUid !== userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
@@ -18,6 +18,10 @@ export async function PUT(request) {
       [`section${section}`]: data,
       lastCompletedSection: section,
     };
+
+    if (displayName) {
+      updateData.displayName = displayName;
+    }
 
     if (section === 3) {
       updateData.profileCompleted = true;

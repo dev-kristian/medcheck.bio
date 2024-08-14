@@ -51,7 +51,7 @@ export default function SignIn() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-      <AuthForm isSignUp={false} onSubmit={handleSubmit} />
+      <AuthForm isSignUp={false} onSubmit={handleSubmit} loading={loading}/>
       </CardContent>
 
       <CardFooter className="flex justify-center">

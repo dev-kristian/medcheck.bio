@@ -2,11 +2,12 @@
 
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button"
 import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 
 export default function Introduction() {
   const [displayName, setDisplayName] = useState('');
@@ -14,25 +15,37 @@ export default function Introduction() {
   const router = useRouter();
   const { user } = useAuth();
 
+  useEffect(() => {
+    if (user && user.displayName) {
+      setDisplayName(user.displayName);
+    }
+  }, [user]);
+
   const handleSubmit = async () => {
     if (!user) return;
-
+  
     try {
       const idToken = await user.getIdToken();
+      const data = {
+        userId: user.uid,
+        section: 1,
+        isAdult,
+      };
+  
+      // Only include displayName if it's different from the user's current displayName
+      if (displayName !== user.displayName) {
+        data.displayName = displayName;
+      }
+  
       const response = await fetch('/api/users/welcome', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
-        body: JSON.stringify({
-          userId: user.uid,
-          section: 1,
-          displayName,
-          isAdult,
-        }),
+        body: JSON.stringify(data),
       });
-
+  
       if (response.ok) {
         router.push('/welcome/general_information');
       } else {
@@ -51,8 +64,8 @@ export default function Introduction() {
       </CardHeader>
       <CardContent className="space-y-2">
         <p className="text-sm text-gray-400">Your comfort is our priority. Feel free to use a name you're comfortable with.</p>
-        <input
-          placeholder="Your preferred name"
+        <Input
+          placeholder={user?.displayName || "Your preferred name"}
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           className="auth-input"

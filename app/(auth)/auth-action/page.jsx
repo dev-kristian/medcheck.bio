@@ -82,6 +82,7 @@ function AuthAction() {
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       passwordSchema.parse({ password, confirmPassword });
       await confirmPasswordReset(auth, oobCode, password);
@@ -98,8 +99,10 @@ function AuthAction() {
         setVerificationStatus('passwordResetError');
         showToast("Password Reset Failed", "An error occurred while resetting your password. Please try again.", "error");
       }
-    }
-  };
+    } finally {
+    setLoading(false);
+  }
+};
 
   const togglePasswordVisibility = (field) => {
     if (field === 'password') {
@@ -130,9 +133,11 @@ function AuthAction() {
         </CardHeader>
         <CardContent>
           {verificationStatus === 'error' || verificationStatus === 'invalid' ? (
-            <Button onClick={() => router.push('/sign-in')} className="w-full bg-teal-500 hover:bg-teal-700 rounded-xl">
-              Go to Sign In
-            </Button>
+            <div className="mt-4 text-center">
+              <a href="/sign-in" className="text-sm text-teal-500 hover:text-teal-600">
+                ← Back to login
+              </a>
+          </div>
           ) : null}
         </CardContent>
       </div>
@@ -191,8 +196,18 @@ function AuthAction() {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full bg-teal-500 hover:bg-teal-700 text-white rounded-xl" disabled={!isFormValid}>
-              Set New Password
+            <Button 
+              type="submit" 
+              className="w-full bg-teal-500 hover:bg-teal-700 text-white rounded-xl" 
+              disabled={!isFormValid || loading}
+            >
+              {loading ? (
+                <>
+                  Setting Password &nbsp; <Loader />
+                </>
+              ) : (
+                'Set New Password'
+              )}
             </Button>
           </form>
           <div className="mt-4 text-center">

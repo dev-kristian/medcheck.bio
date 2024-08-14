@@ -17,7 +17,8 @@ export default function AuthForm({
   onPasswordChange,
   onConfirmPasswordChange,
   onAgreeToTermsChange,
-  isSubmitDisabled
+  isSubmitDisabled,
+  loading
 }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -205,13 +206,17 @@ export default function AuthForm({
         </div>
       )}
 
-      <div>
+<div>
         <Button
           type="submit"
           className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-          disabled={isSubmitDisabled}
+          disabled={isSubmitDisabled || loading}
         >
-          {isSignUp ? 'Sign Up' : 'Login'}
+          {loading ? (
+            <Loader />
+          ) : (
+            isSignUp ? 'Sign Up' : 'Login'
+          )}
         </Button>
       </div>
 

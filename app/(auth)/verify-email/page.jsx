@@ -1,21 +1,19 @@
-// app/(auth)/verify-email/page.jsx
-
 'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
 import { useCustomToast } from '@/hooks/useToast';
-import { getAuth, reload } from 'firebase/auth';
+import { getAuth, reload, sendEmailVerification } from 'firebase/auth';
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import Loader from '@/components/Loader';
 
 export default function VerifyEmail() {
-  const { user } = useAuth();
   const router = useRouter();
   const { showToast } = useCustomToast();
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const handleRefresh = async () => {
     setLoading(true);
@@ -36,6 +34,23 @@ export default function VerifyEmail() {
     }
   };
 
+  const handleResendVerificationEmail = async () => {
+    setResendLoading(true);
+    try {
+      const auth = getAuth();
+      await sendEmailVerification(auth.currentUser, {
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/auth-action`,
+        handleCodeInApp: true,
+      });
+      showToast("Email Sent", "Verification email has been resent. Please check your inbox.", "success");
+    } catch (error) {
+      console.error('Error resending verification email:', error);
+      showToast("Error", "Failed to resend verification email.", "error");
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   return (
     <div>
       <CardHeader>
@@ -45,13 +60,32 @@ export default function VerifyEmail() {
           Please follow the link inside to continue.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <Button
           onClick={handleRefresh}
           className="w-full bg-teal-500 hover:bg-teal-700 rounded-xl"
           disabled={loading}
         >
-          {loading ? 'Checking...' : 'I have verified my email'}
+          {loading ? (
+            <>
+              Checking &nbsp; <Loader />
+            </>
+          ) : (
+            'I have verified my email'
+          )}
+        </Button>
+        <Button
+          onClick={handleResendVerificationEmail}
+          className="w-full bg-gray-500 hover:bg-gray-700 rounded-xl"
+          disabled={resendLoading}
+        >
+          {resendLoading ? (
+            <>
+              Sending &nbsp; <Loader />
+            </>
+          ) : (
+            'Resend Verification Email'
+          )}
         </Button>
       </CardContent>
       <CardFooter className="flex justify-center">
