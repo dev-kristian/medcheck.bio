@@ -50,7 +50,7 @@ export default function MyTestsPage() {
           />
         </header>
 
-        {tests.length === 0 ? (
+        {tests.length === 0 ? ( 
           <div className='flex items-center justify-center'>
             <div className="no-tests-message ">
                 <Image
@@ -65,7 +65,7 @@ export default function MyTestsPage() {
                 Add a new test to start gaining valuable insights into your health.
               </p>
               <Link href='/my-tests/add-test'>
-                <Button className="add-test-button" size="lg">
+                <Button className="w-full bg-teal-500 hover:bg-teal-700 rounded-xl" size="lg">
                   <Plus className="mr-2 h-4 w-4" /> Add new analysis
                 </Button>
               </Link>
@@ -89,12 +89,12 @@ export default function MyTestsPage() {
             </div>
             <div className="tests-table-container no-scrollbar  ">
               <Table>
-                <TableHeader className='bg-teal-100'>
+                <TableHeader className='bg-teal-50 '>
                   <TableRow >
-                    <TableHead>ID</TableHead>
-                    <TableHead>Test Type</TableHead>
-                    <TableHead>Time</TableHead>
-                    <TableHead className="hidden sm:table-cell">Info</TableHead>
+                    <TableHead className='text-gray.900'>ID</TableHead>
+                    <TableHead className='text-gray.900'>Test Type</TableHead>
+                    <TableHead className='text-gray.900'>Time</TableHead>
+                    <TableHead className="hidden sm:table-cell text-gray.900">Info</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
