@@ -1,10 +1,9 @@
-//components/WithAuth.js
-
 'use client';
 
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import Loader from '@/components/Loader'; // Import the Loader component
 
 export function WithAuth(Component) {
   return function AuthenticatedComponent(props) {
@@ -22,7 +21,7 @@ export function WithAuth(Component) {
     }, [user, loading, router]);
 
     if (loading) {
-      return <div>Loading...</div>;
+      return <Loader />; // Use the Loader component
     }
 
     if (!user || !user.emailVerified) {

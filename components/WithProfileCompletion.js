@@ -1,10 +1,9 @@
-// src/components/WithProfileCompletion.js
-
 'use client'
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import Loader from '@/components/Loader'; 
 
 export function WithProfileCompletion(Component) {
   return function ProfileCompletionComponent(props) {
@@ -44,7 +43,7 @@ export function WithProfileCompletion(Component) {
     }, [user, loading, router]);
 
     if (loading || profileCompleted === null) {
-      return <div>Loading...</div>;
+      return <Loader />; 
     }
 
     if (!profileCompleted) {
