@@ -163,7 +163,7 @@
   }
 
   .page {
-    @apply flex w-full max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar p-0 md:p-8 ;
+    @apply flex w-full max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar  md:p-8 ;
   }
   .header-box {
     @apply flex flex-col gap-1;

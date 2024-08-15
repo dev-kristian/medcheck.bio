@@ -1,12 +1,10 @@
-// app/(welcome)/welcome/medical_history/page.jsx
-
 'use client'
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from "@/components/ui/button"
-import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import Loader from '@/components/Loader';
 
 export default function MedicalHistory() {

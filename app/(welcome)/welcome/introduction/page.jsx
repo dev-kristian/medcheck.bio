@@ -1,12 +1,10 @@
-// app/(welcome)/welcome/introduction/page.jsx
-
 'use client'
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from "@/components/ui/button"
-import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import Loader from '@/components/Loader';
 
 export default function Introduction() {
@@ -29,8 +27,6 @@ export default function Introduction() {
     try {
       const idToken = await user.getIdToken();
       const data = {
-        userId: user.uid,
-        section: 1,
         isAdult,
       };
   
@@ -44,7 +40,11 @@ export default function Introduction() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          userId: user.uid,
+          section: 1,
+          ...data,
+        }),
       });
   
       if (response.ok) {
@@ -61,7 +61,7 @@ export default function Introduction() {
 
   return (
     <>
-      <CardHeader >
+      <CardHeader>
         <CardTitle className="text-2xl font-bold text-teal-800">Let's Get Acquainted</CardTitle>
         <CardDescription className="text-teal-600">How would you like us to address you?</CardDescription>
       </CardHeader>
@@ -90,19 +90,20 @@ export default function Introduction() {
       <CardFooter className="justify-between">
         <Button onClick={() => router.push('/welcome')} className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-xl">Back</Button>
         <Button 
-          onClick={handleSubmit} 
-          disabled={!displayName || !isAdult || loading} 
-          className="bg-teal-500 hover:bg-teal-700 rounded-xl"
-        >
-          {loading ? (
-            <>
-              Saving &nbsp; <Loader />
-            </>
-          ) : (
-            'Continue'
-          )}
-        </Button>
-      </CardFooter>
-    </>
-  );
-}
+            onClick={handleSubmit} 
+            disabled={!displayName || !isAdult || loading} 
+            className="bg-teal-500 hover:bg-teal-700 rounded-xl"
+          >
+            {loading ? (
+              <>
+                Saving &nbsp; <Loader />
+              </>
+            ) : (
+              'Continue'
+            )}
+          </Button>
+        </CardFooter>
+      </>
+    );
+  }
+

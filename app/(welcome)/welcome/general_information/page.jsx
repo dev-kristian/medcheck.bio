@@ -1,15 +1,13 @@
-// app/(welcome)/welcome/general_information/page.jsx
-
 'use client'
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import Loader from '@/components/Loader';
 
 export default function GeneralInformation() {
@@ -30,8 +28,6 @@ export default function GeneralInformation() {
     try {
       const idToken = await user.getIdToken();
       const data = {
-        userId: user.uid,
-        section: 2,
         age,
         gender,
         height,
@@ -48,7 +44,11 @@ export default function GeneralInformation() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          userId: user.uid,
+          section: 2,
+          ...data,
+        }),
       });
 
       if (response.ok) {
@@ -84,94 +84,95 @@ export default function GeneralInformation() {
           <div className="space-y-2">
             <Label htmlFor="gender" className="text-teal-700">Gender</Label>
             <Select value={gender} onValueChange={setGender} required>
-              <SelectTrigger className="w-full border-teal-300 focus:ring-white rounded-xl">
-                <SelectValue placeholder="Select gender" />
-              </SelectTrigger>
-              <SelectContent className='rounded-xl'>
-                <SelectItem className='rounded-xl' value="male">Male</SelectItem>
-                <SelectItem className='rounded-xl' value="female">Female</SelectItem>
-                <SelectItem className='rounded-xl' value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-            {gender === 'female' && (
-              <div className="space-y-2 mt-4">
-                <Label htmlFor="menstrualCycle" className="text-teal-700">Regularity of Menstrual Cycle</Label>
-                <Select value={menstrualCycle} onValueChange={setMenstrualCycle} required>
-                  <SelectTrigger className="w-full border-teal-300 focus:ring-white rounded-xl">
-                    <SelectValue placeholder="Select regularity" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="regular">Regular</SelectItem>
-                    <SelectItem value="irregular">Irregular</SelectItem>
-                    <SelectItem value="not_applicable">Not Applicable</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-        );
-      case 3:
-        return (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="height" className="text-teal-700">Height (cm)</Label>
-              <input
-                type="number"
-                id="height"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-                required
-                className="auth-input"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="weight" className="text-teal-700">Weight (kg)</Label>
-              <input
-                type="number"
-                id="weight"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                required
-                className="auth-input"
-              />
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
+            <SelectTrigger className="w-full border-teal-300 focus:ring-white rounded-xl">
+                 <SelectValue placeholder="Select gender" />
+               </SelectTrigger>
+               <SelectContent className='rounded-xl'>
+                 <SelectItem className='rounded-xl' value="male">Male</SelectItem>
+                 <SelectItem className='rounded-xl' value="female">Female</SelectItem>
+                 <SelectItem className='rounded-xl' value="other">Other</SelectItem>
+               </SelectContent>
+             </Select>
+             {gender === 'female' && (
+               <div className="space-y-2 mt-4">
+                 <Label htmlFor="menstrualCycle" className="text-teal-700">Regularity of Menstrual Cycle</Label>
+                 <Select value={menstrualCycle} onValueChange={setMenstrualCycle} required>
+                   <SelectTrigger className="w-full border-teal-300 focus:ring-white rounded-xl">
+                     <SelectValue placeholder="Select regularity" />
+                   </SelectTrigger>
+                   <SelectContent>
+                     <SelectItem value="regular">Regular</SelectItem>
+                     <SelectItem value="irregular">Irregular</SelectItem>
+                     <SelectItem value="not_applicable">Not Applicable</SelectItem>
+                   </SelectContent>
+                 </Select>
+               </div>
+             )}
+           </div>
+         );
+       case 3:
+         return (
+           <div className="space-y-4">
+             <div className="space-y-2">
+               <Label htmlFor="height" className="text-teal-700">Height (cm)</Label>
+               <input
+                 type="number"
+                 id="height"
+                 value={height}
+                 onChange={(e) => setHeight(e.target.value)}
+                 required
+                 className="auth-input"
+               />
+             </div>
+             <div className="space-y-2">
+               <Label htmlFor="weight" className="text-teal-700">Weight (kg)</Label>
+               <input
+                 type="number"
+                 id="weight"
+                 value={weight}
+                 onChange={(e) => setWeight(e.target.value)}
+                 required
+                 className="auth-input"
+               />
+             </div>
+           </div>
+         );
+       default:
+         return null;
+     }
+   };
 
-  return (
-    <>
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center text-teal-800">General Information</CardTitle>
-        <CardDescription className="text-center text-teal-600">Help us understand your physical characteristics</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {renderStep()}
-      </CardContent>
-      <CardFooter className="justify-between">
-        <Button 
-          onClick={() => step > 1 ? setStep(step - 1) : router.push('/welcome/introduction')} 
-          className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-xl"
-        >
-          Back
-        </Button>
-        <Button 
-          onClick={() => step < 3 ? setStep(step + 1) : handleSubmit()} 
-          disabled={loading}
-          className="bg-teal-500 hover:bg-teal-600 rounded-xl"
-        >
-          {step < 3 ? 'Next' : loading ? (
-            <>
-              Saving &nbsp; <Loader />
-            </>
-          ) : (
-            'Continue'
-          )}
-        </Button>
-      </CardFooter>
-    </>
-  );
-}
+   return (
+     <>
+       <CardHeader>
+         <CardTitle className="text-2xl font-bold text-center text-teal-800">General Information</CardTitle>
+         <CardDescription className="text-center text-teal-600">Help us understand your physical characteristics</CardDescription>
+       </CardHeader>
+       <CardContent>
+         {renderStep()}
+       </CardContent>
+       <CardFooter className="justify-between">
+         <Button 
+           onClick={() => step > 1 ? setStep(step - 1) : router.push('/welcome/introduction')} 
+           className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-xl"
+         >
+           Back
+         </Button>
+         <Button 
+           onClick={() => step < 3 ? setStep(step + 1) : handleSubmit()} 
+           disabled={loading}
+           className="bg-teal-500 hover:bg-teal-600 rounded-xl"
+         >
+           {step < 3 ? 'Next' : loading ? (
+             <>
+               Saving &nbsp; <Loader />
+             </>
+           ) : (
+             'Continue'
+           )}
+         </Button>
+       </CardFooter>
+     </>
+   );
+ }
+

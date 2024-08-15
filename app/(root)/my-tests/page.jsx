@@ -35,7 +35,7 @@ export default function MyTestsPage() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <section className='page '>
+    <section className='page px-2'>
         <header className='my-tests-header'>
           <Link href="/" className="back-link">
             <Button variant="ghost" size="sm">
@@ -93,8 +93,7 @@ export default function MyTestsPage() {
                   <TableRow >
                     <TableHead className='text-gray.900'>ID</TableHead>
                     <TableHead className='text-gray.900'>Test Type</TableHead>
-                    <TableHead className='text-gray.900'>Time</TableHead>
-                    <TableHead className="hidden sm:table-cell text-gray.900">Info</TableHead>
+                    <TableHead className="hidden sm:table-cell text-gray.900">Clinical Significance</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -107,13 +106,19 @@ export default function MyTestsPage() {
                       <TableCell>{test.id}</TableCell>
                       <TableCell>
                         <div className="flex items-center">
-                          <FileText className="h-4 w-4 mr-2 text-teal-500" />
-                          {test.testType}
+                          {Object.keys(test).filter(key => key !== 'id').join(', ')}
                         </div>
                       </TableCell>
-                      <TableCell>{test.date}</TableCell>
                       <TableCell className="hidden sm:table-cell">
-                        {test.additionalInfo.substring(0, 50)}...
+                        {Object.values(test).map((testTypeData, idx) => (
+                          Array.isArray(testTypeData) && testTypeData.map((data, dataIndex) => (
+                            data.clinical_significance && data.clinical_significance.map((cs, csIndex) => (
+                              <div key={`${idx}-${dataIndex}-${csIndex}`}>
+                                {cs.name}
+                              </div>
+                            ))
+                          ))
+                        ))}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -137,7 +142,7 @@ export default function MyTestsPage() {
                           href="#" 
                           onClick={() => paginate(number + 1)}
                           className={`pagination-link ${currentPage === number + 1 ? 'bg-teal-50 border-teal-500 text-teal-600' : 'hover:text-teal-500'}`}
-                        >
+                          >
                           {number + 1}
                         </PaginationLink>
                       </PaginationItem>

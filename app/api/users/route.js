@@ -1,4 +1,3 @@
-// app/api/users/route.js
 import { NextResponse } from 'next/server';
 import { db } from '@/firebase/firebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -23,6 +22,7 @@ export async function POST(request) {
         displayName,
         createdAt,
         profileCompleted: false,
+        lastCompletedSection: 0,
       });
       return NextResponse.json({ profileCompleted: false });
     } else {

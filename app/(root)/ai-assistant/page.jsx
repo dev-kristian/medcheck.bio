@@ -3,7 +3,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import HeaderBox from "@/components/HeaderBox";
 import { ArrowLeft, Send } from 'lucide-react';
@@ -12,7 +11,6 @@ const AiHealthChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const scrollAreaRef = useRef(null);
-  const router = useRouter();
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -42,12 +40,12 @@ const AiHealthChatPage = () => {
         <Link href="/" className="back-link">
           <Button variant="ghost" size="sm">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
+            Back to Home
           </Button>
         </Link>
         <HeaderBox
           type="aiChat"
-          title="AI Health Assistant"
+          title="AI Assistant"
         />
       </header>
 

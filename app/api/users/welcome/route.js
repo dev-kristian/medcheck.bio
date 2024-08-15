@@ -1,7 +1,6 @@
-// app/api/users/welcome/route.js
 import { NextResponse } from 'next/server';
 import { db } from '@/firebase/firebaseConfig';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, collection, updateDoc, setDoc, getDoc } from 'firebase/firestore';
 import { verifyIdToken } from '@/app/api/middleware/auth';
 
 export async function PUT(request) {
@@ -14,8 +13,13 @@ export async function PUT(request) {
     }
 
     const userRef = doc(db, 'users', userId);
+    const profileDataRef = doc(collection(userRef, 'profileData'), 'profile');
+
+    // Update the profileData document with the new data
+    await setDoc(profileDataRef, data, { merge: true });
+
+    // Update the user document with the last completed section and displayName if provided
     const updateData = {
-      [`section${section}`]: data,
       lastCompletedSection: section,
     };
 

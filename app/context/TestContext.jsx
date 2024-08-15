@@ -2,6 +2,9 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase/firebaseConfig';
+import { useAuth } from '@/hooks/useAuth';
 
 const TestContext = createContext();
 
@@ -10,42 +13,38 @@ export const useTestContext = () => useContext(TestContext);
 export const TestProvider = ({ children }) => {
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchTests = () => {
-      const allTests = Object.keys(localStorage)
-        .filter(key => key.startsWith('testResult_'))
-        .map(key => {
-          const test = JSON.parse(localStorage.getItem(key));
-          return { ...test, id: key.replace('testResult_', '') };
-        });
-      setTests(allTests);
-      setLoading(false);
+    const fetchTests = async () => {
+      if (user) {
+        const testsRef = collection(db, 'users', user.uid, 'biomarkers_report');
+        const snapshot = await getDocs(testsRef);
+        const allTests = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setTests(allTests);
+        setLoading(false);
+      }
     };
 
     fetchTests();
-  }, []);
+  }, [user]);
 
-  const addTest = (id, newTest) => {
-    const storageKey = `testResult_${id}`;
-    localStorage.setItem(storageKey, JSON.stringify(newTest));
-    setTests(prevTests => [...prevTests, newTest]);
-  };
-
-  const updateTest = (id, updatedTest) => {
-    localStorage.setItem(`testResult_${id}`, JSON.stringify(updatedTest));
-    setTests(prevTests => prevTests.map(test => 
-      test.id === id ? { ...updatedTest, id } : test
-    ));
-  };
-
-  const deleteTest = (id) => {
-    localStorage.removeItem(`testResult_${id}`);
-    setTests(prevTests => prevTests.filter(test => test.id !== id));
+  const addTest = async (newTest) => {
+    const testsRef = collection(db, 'users', user.uid, 'biomarkers_report');
+    const docRef = await addDoc(testsRef, {
+      ...newTest,
+      createdAt: new Date()
+    });
+    const testWithId = { ...newTest, id: docRef.id };
+    setTests(prevTests => [...prevTests, testWithId]);
+    return testWithId;
   };
 
   return (
-    <TestContext.Provider value={{ tests, loading, addTest, updateTest, deleteTest }}>
+    <TestContext.Provider value={{ tests, loading, addTest }}>
       {children}
     </TestContext.Provider>
   );

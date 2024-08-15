@@ -23,8 +23,19 @@ export default function TestResultPage() {
     return <div>Test not found</div>
   }
 
+  const renderBiomarkers = (biomarkers) => {
+    return biomarkers.map((biomarker, index) => (
+      <div key={index} className="biomarker">
+        <p><strong>Name:</strong> {biomarker.name}</p>
+        <p><strong>Long Name:</strong> {biomarker.long_name}</p>
+        <p><strong>Value:</strong> {biomarker.value} {biomarker.unit}</p>
+        <p><strong>Reference Range:</strong> {biomarker.reference_range}</p>
+      </div>
+    ));
+  };
+
   return (
-    <section className='page'>
+    <section className='page px-2'>
       <header className='my-tests-header'>
           <Link href="/my-tests" className="back-link">
             <Button variant="ghost" size="sm">
@@ -34,7 +45,7 @@ export default function TestResultPage() {
           </Link>
           <HeaderBox
             type="testResult"
-            testType={result.testType}
+            testType={Object.keys(result).filter(key => key !== 'id' && key !== 'date' && key !== 'createdAt').join(', ')}
             subtext="Detailed analysis of your test results"
           />
         </header>
@@ -45,9 +56,15 @@ export default function TestResultPage() {
           <p><strong>Additional Information:</strong> {result.additionalInfo}</p>
           
           <h2>Analysis</h2>
-          <p>{result.analysis}</p>
+          {Object.entries(result).map(([testType, testTypeData], index) => (
+            Array.isArray(testTypeData) && testTypeData.map((data, dataIndex) => (
+              <div key={`${index}-${dataIndex}`} className="test-type-section">
+                <h3>{testType}</h3>
+                {data.biomarkers && renderBiomarkers(data.biomarkers)}
+              </div>
+            ))
+          ))}
         </div>
-
     </section>
   )
 }

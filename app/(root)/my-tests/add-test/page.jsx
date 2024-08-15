@@ -10,37 +10,36 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from 'lucide-react';
 import HeaderBox from "@/components/HeaderBox";
 import { useTestContext } from '@/app/context/TestContext';
-import TestTypeSelector from '@/components/TestTypeSelector';
-import DateSelector from '@/components/DateSelector';
 import ImageUploader from '@/components/ImageUploader';
 import AdditionalInfoInput from '@/components/AdditionalInfoInput';
+import { useAuth } from '@/hooks/useAuth';
 
 const AddTestPage = () => {
   const router = useRouter()
-  const [date, setDate] = useState()
   const [images, setImages] = useState([])
   const [additionalInfo, setAdditionalInfo] = useState('')
-  const [testType, setTestType] = useState('')
   const { addTest } = useTestContext();
+  const { user } = useAuth();
 
   const handleProcess = async () => {
-    if (!testType || !date || images.length === 0) {
-      alert('Please fill in all required fields (test type, date, and at least one image)');
+    if (images.length === 0) {
+      alert('Please fill in all required fields (date, and at least one image)');
       return;
     }
   
     try {
       const payload = {
-        testType,
-        date: format(date, "PPP"),
+        userId: user.uid,
         images: images.map(img => img.base64),
         additionalInfo: additionalInfo.trim(),
       };
   
+      const idToken = await user.getIdToken();
       const response = await fetch('/api/process-test', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
         },
         body: JSON.stringify(payload),
       });
@@ -50,27 +49,22 @@ const AddTestPage = () => {
       }
   
       const data = await response.json();
-      const resultId = Date.now().toString();
       
       const newTest = {
-        id: resultId,
-        testType,
-        date: format(date, "PPP"),
         additionalInfo,
         analysis: data.analysis,
       };
   
-      // Use the same resultId for both the storage key and the test object
-      addTest(resultId, newTest);
-      router.push(`/my-tests/results/${resultId}`);
+      const addedTest = await addTest(newTest);
+      router.push(`/my-tests/results/${addedTest.id}`);
   
     } catch (error) {
       console.error('Error processing test:', error);
     }
-  }
+  };
 
   return (
-    <section className='page'>
+    <section className='page px-2'>
       <header className='my-tests-header'>
           <Link href="/my-tests" className="back-link"> 
             <Button variant="ghost" size="sm">
@@ -86,8 +80,6 @@ const AddTestPage = () => {
         </header>
 
         <section className="bg-white rounded-3xl md:shadow-xl p-2 md:p-6 space-y-6">
-          <TestTypeSelector testType={testType} setTestType={setTestType} />
-          <DateSelector date={date} setDate={setDate} />
           <ImageUploader images={images} setImages={setImages} />
           <AdditionalInfoInput 
             additionalInfo={additionalInfo} 
@@ -98,7 +90,7 @@ const AddTestPage = () => {
             <Button 
               onClick={handleProcess} 
               className="w-full md:w-1/4  bg-teal-500 hover:bg-teal-700 rounded-xl"
-              disabled={!testType || !date || images.length === 0}
+              disabled={images.length === 0}
             >
               Process Test
             </Button>

@@ -1,49 +1,54 @@
 // /app/api/process-test/route.js
 
 import { NextResponse } from 'next/server';
-import OpenAI from "openai";
+import { verifyIdToken } from '../middleware/auth';
+import { extractAndInterpretBiomarkers } from './biomarker-extraction';
+import admin from 'firebase-admin';
 
-const openai = new OpenAI({
-  apiKey: process.env.NEXT_PRIVATE_OPENAI_API_KEY,
-});
+// Initialize Firestore
+const firestore = admin.firestore();
 
-export async function POST(req) {
+export async function POST(request) {
   try {
-    const { testType, date, images, additionalInfo } = await req.json();
+    const verifiedUid = await verifyIdToken(request);
+    const { userId, images } = await request.json();
 
-    const messages = [
-      { role: "system", content: "You are a helpful assistant that analyzes medical test information and images." },
-      { 
-        role: "user", 
-        content: [
-          {
-            type: "text",
-            text: `Analyze the following test information:
-            Test Type: ${testType}
-            Test Date: ${date}
-            ${additionalInfo ? `Additional Information: ${additionalInfo}` : ''}
-            
-            Please provide a brief analysis of this test based on the information and the attached image(s).`
-          },
-          ...images.map(image => ({
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${image}`,
-              detail: "high"
-            }
-          }))
-        ]
-      }
-    ];
+    if (!userId || verifiedUid !== userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
 
-    const completion = await openai.chat.completions.create({
-      messages: messages,
-      model: "gpt-4o-mini",
-    });
+    // Extract and interpret biomarkers from the images
+    const groupedResults = await extractAndInterpretBiomarkers(images);
 
-    const analysis = completion.choices[0].message.content;
+    // Prepare the data to be saved in Firestore
+    const biomarkerData = {};
 
-    return NextResponse.json({ analysis });
+    for (const [testType, reports] of Object.entries(groupedResults)) {
+      biomarkerData[testType] = reports.map(report => {
+        // Convert test_date to Firestore Timestamp if it's not null
+        if (report.test_date) {
+          const date = new Date(report.test_date);
+          if (!isNaN(date.getTime())) {
+            report.test_date = admin.firestore.Timestamp.fromDate(date);
+          } else {
+            // Set to current time if the date is invalid
+            report.test_date = admin.firestore.Timestamp.fromDate(new Date());
+          }
+        } else {
+          // Set to current time if the date is null
+          report.test_date = admin.firestore.Timestamp.fromDate(new Date());
+        }
+        return report;
+      });
+    }
+
+    // Save the results to Firestore
+    const userDocRef = firestore.collection('users').doc(userId);
+    const biomarkersReportRef = userDocRef.collection('biomarkers_report').doc();
+
+    await biomarkersReportRef.set(biomarkerData);
+
+    return NextResponse.json({ message: 'Biomarker reports processed and saved successfully' });
   } catch (error) {
     console.error('Error processing test:', error);
     return NextResponse.json({ message: 'Error processing test' }, { status: 500 });
