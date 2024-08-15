@@ -6,12 +6,20 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTestContext } from '@/app/context/TestContext';
 import RightSidebar from "@/components/RightSidebar";
 import Link from 'next/link';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import DoughnutChart from "@/components/DoughnutChart";
+import { Plus } from "lucide-react";
 
 const Home = () => {
   const { user } = useAuth();
   const { tests, loading } = useTestContext();
-  
+  const router = useRouter();
+
+  const handleAddTestClick = () => {
+    router.push('/my-tests/add-test');
+  };
+
   return (
     <section className='home-page'>
       <div className='home-content'>
@@ -24,32 +32,34 @@ const Home = () => {
           />
         </header>
 
-        <section className="tests-card mt-16 ">
-          <Link href="/my-tests" className="flex items-center justify-between">
-            <div className="flex flex-col px-4">
-              <h2 className="text-20 font-semibold text-gray-900">My Tests</h2>
-              {loading ? (
-                <p className="text-14 text-gray-600">Loading...</p>
-              ) : (
-                <p className="text-14 text-gray-600">{tests.length} analyses completed</p>
-              )}
+        <section className="tests-card mt-8 md:mt-16 flex justify-start items-center">
+          <div className="w-32 h-32 p-2">
+            <DoughnutChart tests={tests}/>
+          </div>
+          <div>
+            <Link href="/my-tests" className="flex items-center justify-between">
+              <div className="flex flex-col px-4">
+                <h2 className="text-26 font-semibold text-gray-900">My Tests</h2>
+                {loading ? (
+                  <p className="text-14 text-gray-600">Loading...</p>
+                ) : (
+                  <p className="text-14 text-gray-600">{tests.length} analyses completed</p>
+                )}
+              </div>
+            </Link>
+            <div className="flex">
+              <Button 
+                onClick={handleAddTestClick} 
+                className="m-2 h-8 bg-teal-500 hover:bg-teal-600 rounded-xl"
+              >
+                <Plus className="mr-2 h-4 w-4" /> Add New Test
+              </Button>
             </div>
-            <div className="rounded-full p-2">
-              <Image
-                src="/icons/my-tests.svg"
-                alt="My Tests"
-                width={48}
-                height={48}
-                className="mx-2"
-              />
-            </div>
-          </Link>
+          </div>
         </section>
       </div>
 
-      <RightSidebar 
-        user={user} 
-      />
+      <RightSidebar user={user} />
     </section>
   );
 }

@@ -7,12 +7,14 @@ import { WithAuth } from '@/components/WithAuth';
 import { WithProfileCompletion } from '@/components/WithProfileCompletion';
 import { TestProvider } from '@/app/context/TestContext';
 import Image from "next/image";
+import { useAuth } from '@/hooks/useAuth';
 
 function RootLayout({ children }) {
+  const {user}= useAuth();
   return (
         <TestProvider>
           <main className="flex h-screen w-full font-inter">
-            <Sidebar/>
+            <Sidebar user={user}/>
             <div className="flex size-full flex-col">
               <div className="root-layout ">
                 <Image
@@ -22,7 +24,7 @@ function RootLayout({ children }) {
                   alt='logo'
                 />
                 <div>
-                  <MobileNav/>
+                  <MobileNav user={user}/>
                 </div>
               </div>
               {children}

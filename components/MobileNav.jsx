@@ -12,9 +12,23 @@ import {
   SheetDescription, 
 } from "@/components/ui/sheet";
 import { sidebarLinks } from '@/constants';
+import UserFooter from './UserFooter';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase/firebaseConfig';
+import { useRouter } from 'next/navigation';
 
-const MobileNav = () => {
+const MobileNav = ({ user }) => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      router.push('/sign-in');
+    } catch (error) {
+      console.error('Error signing out', error);
+    }
+  };
 
   return (
     <section className='w-full max-w-[264px]'>
@@ -28,12 +42,12 @@ const MobileNav = () => {
             className='cursor-pointer'
           />
         </SheetTrigger>
-        <SheetContent side='left' className='border-none bg-white'>
+        <SheetContent side='left' className='border-none bg-white px-0'>
           <SheetTitle className='sr-only'>Navigation Menu</SheetTitle>
           <SheetDescription className='sr-only'>
             Use the links below to navigate through the different sections of the website.
           </SheetDescription>
-          <Link href="/" className='cursor-pointer flex items-center gap-1 px-4'>
+          <Link href="/" className='cursor-pointer flex items-center gap-2 px-2'>
             <Image
               src='/icons/logo.png'
               width={34}
@@ -42,9 +56,9 @@ const MobileNav = () => {
             />
             <h1 className='text-26 font-ibm-plex-serif-font-bold text-teal-500'> Medcheck</h1>
           </Link>
-          <div className='mobilenav-sheet'>
+          <div className='mobilenav-sheet flex flex-col justify-between px-2'>
             <SheetClose asChild>
-              <nav className='flex h-full flex-col gap-6 pt-16 text-white'>
+              <nav className='flex flex-col gap-4 pt-8 text-white'>
                 {sidebarLinks.map((item) => {
                   const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`);
                   return (
@@ -70,11 +84,10 @@ const MobileNav = () => {
                     </SheetClose>
                   )
                 })}
-                USER
               </nav>
             </SheetClose>
-            FOOTER
           </div>
+          <UserFooter user={user} handleSignOut={handleSignOut} />
         </SheetContent>
       </Sheet>
     </section>

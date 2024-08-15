@@ -7,8 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button"
 import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+import Loader from '@/components/Loader';
 
 export default function MedicalHistory() {
   const [conditions, setConditions] = useState({
@@ -17,13 +16,18 @@ export default function MedicalHistory() {
     hypertension: false,
     cancer: false,
     asthma: false,
-    // Add more conditions as needed
   });
   const router = useRouter();
   const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckboxChange = (condition) => {
+    setConditions(prev => ({ ...prev, [condition]: !prev[condition] }));
+  };
 
   const handleSubmit = async () => {
     if (!user) return;
+    setLoading(true);
 
     try {
       const idToken = await user.getIdToken();
@@ -47,6 +51,8 @@ export default function MedicalHistory() {
       }
     } catch (error) {
       console.error("Error updating user profile", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,14 +66,17 @@ export default function MedicalHistory() {
         <div className="space-y-4">
           {Object.entries(conditions).map(([condition, value]) => (
             <div className="flex items-center space-x-2" key={condition}>
-              <Checkbox
+              <input
                 id={condition}
+                name="condition"
                 checked={value}
-                onCheckedChange={(checked) => setConditions(prev => ({ ...prev, [condition]: checked }))}
+                type="checkbox"
+                className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 accent-teal-500"
+                onChange={() => handleCheckboxChange(condition)}
               />
-              <Label htmlFor={condition} className="text-teal-700">
+              <label htmlFor={condition} className="ml-2 block text-sm text-gray-900">
                 {condition.charAt(0).toUpperCase() + condition.slice(1).replace(/([A-Z])/g, ' $1')}
-              </Label>
+              </label>
             </div>
           ))}
         </div>
@@ -75,15 +84,22 @@ export default function MedicalHistory() {
       <CardFooter className="justify-between">
         <Button 
           onClick={() => router.push('/welcome/general_information')} 
-          className="bg-gray-300 text-gray-700 hover:bg-gray-400"
+          className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-xl"
         >
           Back
         </Button>
         <Button 
           onClick={handleSubmit} 
-          className="bg-teal-500 hover:bg-teal-600"
+          disabled={loading}
+          className="bg-teal-500 hover:bg-teal-600 rounded-xl"
         >
-          Complete Profile
+          {loading ? (
+            <>
+              Completing &nbsp; <Loader />
+            </>
+          ) : (
+            'Complete Profile'
+          )}
         </Button>
       </CardFooter>
     </>

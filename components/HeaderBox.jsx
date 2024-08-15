@@ -15,11 +15,11 @@ const HeaderBox = ({ type = 'title', user, title, subtext, testType }) => {
             Analysis Results for <span className="text-medicalGradient">{testType}</span>
           </>
         )}
-        {(type === 'myTests' || type === 'addTest' || type === 'title') && (
+        {(type === 'myTests' || type === 'addTest' || type === 'title' || type === 'aiChat') && (
           <>{title}</>
         )}
       </h1>
-      <p className="header-box-subtext">{subtext}</p>
+      {subtext && <p className="header-box-subtext">{subtext}</p>}
     </div>
   );
 }

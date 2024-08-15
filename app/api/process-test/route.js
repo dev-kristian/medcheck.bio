@@ -29,7 +29,7 @@ export async function POST(req) {
             type: "image_url",
             image_url: {
               url: `data:image/jpeg;base64,${image}`,
-              detail: "low"
+              detail: "high"
             }
           }))
         ]

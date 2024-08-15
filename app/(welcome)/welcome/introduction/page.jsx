@@ -7,13 +7,14 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button"
 import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import Loader from '@/components/Loader';
 
 export default function Introduction() {
   const [displayName, setDisplayName] = useState('');
   const [isAdult, setIsAdult] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user && user.displayName) {
@@ -23,6 +24,7 @@ export default function Introduction() {
 
   const handleSubmit = async () => {
     if (!user) return;
+    setLoading(true);
   
     try {
       const idToken = await user.getIdToken();
@@ -32,7 +34,6 @@ export default function Introduction() {
         isAdult,
       };
   
-      // Only include displayName if it's different from the user's current displayName
       if (displayName !== user.displayName) {
         data.displayName = displayName;
       }
@@ -53,6 +54,8 @@ export default function Introduction() {
       }
     } catch (error) {
       console.error("Error updating user profile", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,7 +67,7 @@ export default function Introduction() {
       </CardHeader>
       <CardContent className="space-y-2">
         <p className="text-sm text-gray-400">Your comfort is our priority. Feel free to use a name you're comfortable with.</p>
-        <Input
+        <input
           placeholder={user?.displayName || "Your preferred name"}
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
@@ -85,8 +88,20 @@ export default function Introduction() {
         </div>
       </CardContent>
       <CardFooter className="justify-between">
-        <Button onClick={() => router.push('/welcome')} className="bg-gray-300 text-gray-700 hover:bg-gray-400">Back</Button>
-        <Button onClick={handleSubmit} disabled={!displayName || !isAdult} className="bg-teal-500 hover:bg-teal-600">Continue</Button>
+        <Button onClick={() => router.push('/welcome')} className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-xl">Back</Button>
+        <Button 
+          onClick={handleSubmit} 
+          disabled={!displayName || !isAdult || loading} 
+          className="bg-teal-500 hover:bg-teal-700 rounded-xl"
+        >
+          {loading ? (
+            <>
+              Saving &nbsp; <Loader />
+            </>
+          ) : (
+            'Continue'
+          )}
+        </Button>
       </CardFooter>
     </>
   );

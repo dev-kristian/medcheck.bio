@@ -73,7 +73,7 @@ export default function Welcome() {
         </div>
       </CardContent>
       <CardFooter className='justify-center' >
-        <Button onClick={() => router.push('/welcome/introduction')} className="w-1/2 md:w-1/5 bg-teal-500 hover:bg-teal-600">Begin</Button>
+        <Button  onClick={() => router.push('/welcome/introduction')} className="w-1/2 md:w-1/5 bg-teal-500 hover:bg-teal-700 rounded-xl">Begin</Button>
       </CardFooter>
     </>
   );

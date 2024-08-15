@@ -5,6 +5,11 @@ export const sidebarLinks = [
         label: 'Home',
     },
     {
+        imgUrl:'/icons/ai-assistant.svg',
+        route:'/ai-assistant',
+        label: 'AI Assistant',
+    },
+    {
         imgUrl:'/icons/notes.svg',
         route:'/my-tests',
         label: 'My Tests',

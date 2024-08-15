@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button"
 import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import Loader from '@/components/Loader';
 
 export default function GeneralInformation() {
   const [step, setStep] = useState(1);
@@ -20,9 +21,11 @@ export default function GeneralInformation() {
   const [weight, setWeight] = useState('');
   const router = useRouter();
   const { user } = useAuth();
-
+  const [loading, setLoading] = useState(false);
+  
   const handleSubmit = async () => {
     if (!user) return;
+    setLoading(true);
 
     try {
       const idToken = await user.getIdToken();
@@ -55,6 +58,8 @@ export default function GeneralInformation() {
       }
     } catch (error) {
       console.error("Error updating user profile", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,13 +69,13 @@ export default function GeneralInformation() {
         return (
           <div className="space-y-2">
             <Label htmlFor="age" className="text-teal-700">Age</Label>
-            <Input
+            <input
               type="number"
               id="age"
               value={age}
               onChange={(e) => setAge(e.target.value)}
               required
-              className="w-full border-teal-300 focus:ring-teal-500"
+              className="auth-input"
             />
           </div>
         );
@@ -79,21 +84,20 @@ export default function GeneralInformation() {
           <div className="space-y-2">
             <Label htmlFor="gender" className="text-teal-700">Gender</Label>
             <Select value={gender} onValueChange={setGender} required>
-              <SelectTrigger className="w-full border-teal-300 focus:ring-teal-500">
+              <SelectTrigger className="w-full border-teal-300 focus:ring-white rounded-xl">
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-                <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+              <SelectContent className='rounded-xl'>
+                <SelectItem className='rounded-xl' value="male">Male</SelectItem>
+                <SelectItem className='rounded-xl' value="female">Female</SelectItem>
+                <SelectItem className='rounded-xl' value="other">Other</SelectItem>
               </SelectContent>
             </Select>
             {gender === 'female' && (
               <div className="space-y-2 mt-4">
                 <Label htmlFor="menstrualCycle" className="text-teal-700">Regularity of Menstrual Cycle</Label>
                 <Select value={menstrualCycle} onValueChange={setMenstrualCycle} required>
-                  <SelectTrigger className="w-full border-teal-300 focus:ring-teal-500">
+                  <SelectTrigger className="w-full border-teal-300 focus:ring-white rounded-xl">
                     <SelectValue placeholder="Select regularity" />
                   </SelectTrigger>
                   <SelectContent>
@@ -111,24 +115,24 @@ export default function GeneralInformation() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="height" className="text-teal-700">Height (cm)</Label>
-              <Input
+              <input
                 type="number"
                 id="height"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
                 required
-                className="w-full border-teal-300 focus:ring-teal-500"
+                className="auth-input"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="weight" className="text-teal-700">Weight (kg)</Label>
-              <Input
+              <input
                 type="number"
                 id="weight"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
                 required
-                className="w-full border-teal-300 focus:ring-teal-500"
+                className="auth-input"
               />
             </div>
           </div>
@@ -150,15 +154,22 @@ export default function GeneralInformation() {
       <CardFooter className="justify-between">
         <Button 
           onClick={() => step > 1 ? setStep(step - 1) : router.push('/welcome/introduction')} 
-          className="bg-gray-300 text-gray-700 hover:bg-gray-400"
+          className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-xl"
         >
           Back
         </Button>
         <Button 
           onClick={() => step < 3 ? setStep(step + 1) : handleSubmit()} 
-          className="bg-teal-500 hover:bg-teal-600"
+          disabled={loading}
+          className="bg-teal-500 hover:bg-teal-600 rounded-xl"
         >
-          {step < 3 ? 'Next' : 'Continue'}
+          {step < 3 ? 'Next' : loading ? (
+            <>
+              Saving &nbsp; <Loader />
+            </>
+          ) : (
+            'Continue'
+          )}
         </Button>
       </CardFooter>
     </>

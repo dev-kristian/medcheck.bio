@@ -18,9 +18,9 @@ const RightSidebar = ({ user }) => {
               <Image
                 src={profileImageUrl}
                 alt={`${user.displayName}'s profile`}
-                width={80} // Adjust the size as needed
+                width={80}
                 height={80}
-                className='rounded-full' // Makes the image circular
+                className='rounded-full'
               />
             ) : (
               <span className='text-5xl font-bold text-teal-500'>
