@@ -8,6 +8,19 @@ import admin from 'firebase-admin';
 // Initialize Firestore
 const firestore = admin.firestore();
 
+// Function to fetch user profile data
+async function fetchUserProfileData(userId) {
+  const userDocRef = firestore.collection('users').doc(userId);
+  const profileDataRef = userDocRef.collection('profileData').doc('profile');
+  const profileDoc = await profileDataRef.get();
+
+  if (!profileDoc.exists) {
+    throw new Error('Profile data not found');
+  }
+
+  return profileDoc.data();
+}
+
 export async function POST(request) {
   try {
     const verifiedUid = await verifyIdToken(request);
@@ -17,8 +30,11 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
+    // Fetch user profile data
+    const profileData = await fetchUserProfileData(userId);
+
     // Extract and interpret biomarkers from the images
-    const groupedResults = await extractAndInterpretBiomarkers(images);
+    const groupedResults = await extractAndInterpretBiomarkers(images, profileData);
 
     // Prepare the data to be saved in Firestore
     const biomarkerData = {};

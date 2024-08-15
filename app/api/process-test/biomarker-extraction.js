@@ -92,7 +92,7 @@ const BiomarkerReport = z.object({
   specialty_consultations: z.array(SpecialtyConsultation).describe("A list of specialty consultations for the report. Each consultation should identify the type of medical specialist that the user should consult, along with a detailed explanation of why consulting the specialist is important."),
 });
 
-async function extractAndInterpretBiomarkers(images) {
+async function extractAndInterpretBiomarkers(images, profileData) {
   const results = [];
 
   for (const base64Image of images) {
@@ -103,10 +103,10 @@ async function extractAndInterpretBiomarkers(images) {
         content: [
           {
             type: "text",
-            text: `Extract all biomarkers from the following medical test image. Include the name, long name, value, unit (if available), and reference range (if available) for each biomarker. 
-            Then provide a detailed interpretation for each biomarker as one of the following categories: extremely low, very low, low, normal, high, very high, extremely high. 
-            Additionally, provide detailed clinical significance, general recommendations, dietary recommendations, and specialty consultations for the entire report. 
-            Ensure that each section is comprehensive and provides in-depth information.`
+            text: `Extract all biomarkers from the following medical test image. Include the name, long name, value, unit (if available), and reference range (if available) for each biomarker.
+            Then provide a detailed interpretation for each biomarker as one of the following categories: extremely low, very low, low, normal, high, very high, extremely high.
+            Additionally, provide detailed clinical significance, general recommendations, dietary recommendations, and specialty consultations for the entire report.
+            Ensure that each section is comprehensive and provides in-depth information. User profile data: Age: ${profileData.age}, Gender: ${profileData.gender}, Height: ${profileData.height}, Weight: ${profileData.weight}, Medical History: ${JSON.stringify(profileData.medicalHistory)}`
           },
           {
             type: "image_url",
@@ -118,10 +118,10 @@ async function extractAndInterpretBiomarkers(images) {
         ]
       }
     ];
-
+    console.log(messages[1].content[0].text);
     try {
       const completion = await openai.beta.chat.completions.parse({
-        model: "gpt-4o-mini",
+        model: "gpt-4o-2024-08-06",
         messages: messages,
         response_format: zodResponseFormat(BiomarkerReport, "biomarker_report"),
         temperature: 0.5,
@@ -134,7 +134,6 @@ async function extractAndInterpretBiomarkers(images) {
         console.log('Model refused to process the request:', biomarkerReport.refusal);
       }
     } catch (e) {
-      // Handle edge cases
       if (e.constructor.name === "LengthFinishReasonError") {
         console.log("Too many tokens: ", e.message);
       } else {
@@ -143,7 +142,6 @@ async function extractAndInterpretBiomarkers(images) {
     }
   }
 
-  // Group results by test type
   const groupedResults = results.reduce((acc, report) => {
     if (!acc[report.test_type]) {
       acc[report.test_type] = [];
@@ -156,3 +154,4 @@ async function extractAndInterpretBiomarkers(images) {
 }
 
 module.exports = { extractAndInterpretBiomarkers };
+
