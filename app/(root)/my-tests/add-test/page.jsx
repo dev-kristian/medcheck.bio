@@ -1,5 +1,3 @@
-// /my-tests/add-test/page.jsx
-
 "use client"
 
 import React, { useState } from 'react'
@@ -13,11 +11,13 @@ import { useTestContext } from '@/app/context/TestContext';
 import ImageUploader from '@/components/ImageUploader';
 import AdditionalInfoInput from '@/components/AdditionalInfoInput';
 import { useAuth } from '@/hooks/useAuth';
+import Loader from '@/components/Loader'; // Import the Loader component
 
 const AddTestPage = () => {
   const router = useRouter()
   const [images, setImages] = useState([])
   const [additionalInfo, setAdditionalInfo] = useState('')
+  const [loading, setLoading] = useState(false); // Add loading state
   const { addTest } = useTestContext();
   const { user } = useAuth();
 
@@ -26,6 +26,8 @@ const AddTestPage = () => {
       alert('Please fill in all required fields (date, and at least one image)');
       return;
     }
+  
+    setLoading(true); // Set loading to true when the process starts
   
     try {
       const payload = {
@@ -60,6 +62,8 @@ const AddTestPage = () => {
   
     } catch (error) {
       console.error('Error processing test:', error);
+    } finally {
+      setLoading(false); // Set loading to false when the process ends
     }
   };
 
@@ -89,10 +93,10 @@ const AddTestPage = () => {
           <footer className="mt-auto p-4 sm:p-6 bg-white flex justify-center items-center">
             <Button 
               onClick={handleProcess} 
-              className="w-full md:w-1/4  bg-teal-500 hover:bg-teal-700 rounded-xl"
-              disabled={images.length === 0}
+              className="w-full md:w-1/4 bg-teal-500 hover:bg-teal-700 rounded-xl"
+              disabled={images.length === 0 || loading} // Disable button when loading
             >
-              Process Test
+              {loading ? <Loader /> : 'Process Test'} {/* Show loader when loading */}
             </Button>
           </footer>
         </section>

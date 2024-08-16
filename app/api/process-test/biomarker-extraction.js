@@ -16,13 +16,14 @@ const Biomarker = z.object({
   value: z.string().describe("The measured value of the biomarker, e.g., '120'. This should include the numerical value obtained from the test."),
   unit: z.string().optional().describe("The unit of measurement for the biomarker, e.g., 'mg/dL'. This should specify the units in which the biomarker value is expressed."),
   reference_range: z.string().optional().describe("The reference range for the biomarker, e.g., '100-129 mg/dL'. This should indicate the normal range of values for the biomarker, providing context for the measured value."),
-  info: z.string().describe("The description of what the biomarker is for, e.g., 'Hemoglobin is a protein in red blood cells that carries oxygen.")
+  info: z.string().describe("The description of what the biomarker is for, e.g., 'Hemoglobin is a protein in red blood cells that carries oxygen."),
+  trend: z.enum(['increasing', 'decreasing', 'stable', 'fluctuating', 'unknown']).optional().describe("The trend of this biomarker compared to previous measurements, if available in the user profile data."),
 });
 
 // Define the schema for biomarker interpretation
-const BiomarkerInterpretation = z.object({
+ const BiomarkerInterpretation = z.object({
   name: z.string().describe("The short name of the biomarker, e.g., 'LDL'. This should match the name used in the biomarker extraction."),
-  interpretation: z.enum([
+  state: z.enum([
     "extremely low",
     "very low",
     "low",
@@ -31,34 +32,47 @@ const BiomarkerInterpretation = z.object({
     "very high",
     "extremely high"
   ]).describe("The interpretation of the biomarker value based on the reference range. This should categorize the value into one of the specified levels, providing a clear assessment of whether the value is within normal limits or indicates a potential health concern."),
+  state_description: z.string().describe("A professional interpretation of the biomarker state. For example, if the state of WBC is 'high', the description might be 'Elevated white blood cell count may indicate an ongoing infection or inflammatory process.' This should provide context and potential implications of the biomarker state."),
+  personalized_context: z.string().describe("Detailed interpretation in the context of the user's profile data."),
 });
+
 
 // Define the schema for clinical significance
 const ClinicalSignificance = z.object({
   name: z.string().describe("The name of the condition related to the biomarker, e.g., 'Hypercholesterolemia'. This should identify the medical condition that is associated with the biomarker."),
   reason: z.string().describe("The reason why this condition is significant, e.g., 'Elevated LDL levels are associated with an increased risk of cardiovascular disease. High levels of LDL cholesterol can lead to the buildup of plaque in the arteries, a condition known as atherosclerosis. This can reduce or block blood flow, increasing the risk of heart attacks, strokes, and other cardiovascular diseases. Managing LDL levels through lifestyle changes and medication can significantly reduce these risks.'"),
+  severity: z.enum(['low', 'moderate', 'high', 'critical']).describe("The severity of the clinical significance."),
+  risk_factors: z.array(z.string()).describe("Risk factors from the user's profile that may contribute to this condition."),
+  preventive_measures: z.array(z.string()).describe("Preventive measures tailored to the user's profile."),
 });
 
 // Define the schema for general recommendations
 const GeneralRecommendation = z.object({
   name: z.string().describe("The name of the general recommendation, e.g., 'Increase physical activity'. This should suggest a specific action that the user can take to improve their health."),
   reason: z.string().describe("The reason for this recommendation, e.g., 'Regular exercise can help lower LDL levels. Engaging in physical activities such as walking, jogging, cycling, or swimming for at least 150 minutes a week can improve cardiovascular health. Exercise helps increase the levels of high-density lipoprotein (HDL), the 'good' cholesterol, and decreases triglycerides. This combination can lead to a healthier lipid profile and reduced risk of cardiovascular diseases.'"),
+  priority: z.enum(['low', 'medium', 'high']).describe("The priority of this recommendation."),
+  difficulty: z.enum(['easy', 'moderate', 'challenging']).describe("The difficulty level of implementing this recommendation."),
+  timeframe: z.string().describe("The expected timeframe to see results, e.g., '2-3 weeks'."),
 });
 
 // Define the schema for dietary recommendations
 const DietaryRecommendation = z.object({
-  name: z.string().describe("The name of the dietary recommendation, e.g., 'Reduce saturated fat intake'. This should suggest a specific dietary change that the user can make to improve their health."),
-  reason: z.string().describe("The reason for this recommendation, e.g., 'Saturated fats can increase LDL levels. Foods high in saturated fats, such as red meat, butter, and full-fat dairy products, can raise the level of LDL cholesterol in the blood. Replacing these with healthier options like lean meats, low-fat dairy, and plant-based oils can help lower LDL levels. Additionally, incorporating more fruits, vegetables, whole grains, and nuts into the diet can further support cardiovascular health.'"),
+  name: z.string().describe("The name of the dietary recommendation."),
+  reason: z.string().describe("The reason for this recommendation."),
   foods: z.array(z.object({
     type: z.enum(["recommended", "to avoid"]).describe("Indicates whether the food is recommended or should be avoided."),
-    name: z.string().describe("The name of the food item, e.g., 'Salmon', 'Butter'."),
-  })).describe("A list of specific foods that are recommended or should be avoided based on the dietary recommendation."),
+    name: z.string().describe("The name of the food item."),
+  })).describe("A list of 5 to 10 specific foods that are recommended or should be avoided."),
+  nutrient_focus: z.array(z.string()).describe("Key nutrients to focus on based on biomarker results."),
+  lifestyle_adjustments: z.string().describe("Suggested lifestyle adjustments to support dietary changes."),
+  hydration_recommendation: z.string().describe("Personalized hydration recommendation based on user profile and biomarkers.")
 });
 
 // Define the schema for specialty consultations
 const SpecialtyConsultation = z.object({
-  name: z.string().describe("The name of the specialist, e.g., 'Cardiologist'. This should identify the type of medical specialist that the user should consult."),
-  reason: z.string().describe("The detailed reason for recommending this specialist, e.g., 'A cardiologist can provide specialized care for managing high cholesterol levels. They can offer advanced diagnostic tests, personalized treatment plans, and ongoing monitoring to manage and reduce cardiovascular risks. Cardiologists can also prescribe medications such as statins, which are effective in lowering LDL cholesterol levels, and provide guidance on lifestyle modifications to support heart health.'"),
+  name: z.string().describe("The name of the specialist."),
+  reason: z.string().describe("The detailed reason for recommending this specialist."),
+  urgency: z.enum(['routine', 'soon', 'urgent']).describe("The urgency of the consultation."),
 });
 
 // Define the schema for test type
@@ -72,8 +86,18 @@ const TestType = z.enum([
   "Blood Glucose Test",
   "Electrolyte Panel",
   "Hormone Panel",
-  "Vitamin and Mineral Panel"
-]).describe("The type of medical test, e.g., 'Complete Blood Count'. This should categorize the test into one of the predefined types.");
+  "Vitamin and Mineral Panel",
+  "Metabolic Panel",
+  "Inflammatory Markers Panel",
+  "Cardiovascular Risk Panel",
+  "Autoimmune Panel",
+  "Allergy Panel",
+  "Nutritional Deficiency Panel",
+  "Heavy Metal Toxicity Screen",
+  "Gut Microbiome Analysis",
+  "Genomic Screening Panel",
+  "Cancer Marker Panel"
+]).describe("The type of medical test.");
 
 // Define the schema for test date
 const TestDate = z.union([
@@ -155,4 +179,3 @@ async function extractAndInterpretBiomarkers(images, profileData) {
 }
 
 module.exports = { extractAndInterpretBiomarkers };
-
