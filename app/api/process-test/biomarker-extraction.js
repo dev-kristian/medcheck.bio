@@ -16,6 +16,7 @@ const Biomarker = z.object({
   value: z.string().describe("The measured value of the biomarker, e.g., '120'. This should include the numerical value obtained from the test."),
   unit: z.string().optional().describe("The unit of measurement for the biomarker, e.g., 'mg/dL'. This should specify the units in which the biomarker value is expressed."),
   reference_range: z.string().optional().describe("The reference range for the biomarker, e.g., '100-129 mg/dL'. This should indicate the normal range of values for the biomarker, providing context for the measured value."),
+  info: z.string().describe("The description of what the biomarker is for, e.g., 'Hemoglobin is a protein in red blood cells that carries oxygen.")
 });
 
 // Define the schema for biomarker interpretation
@@ -121,7 +122,7 @@ async function extractAndInterpretBiomarkers(images, profileData) {
     console.log(messages[1].content[0].text);
     try {
       const completion = await openai.beta.chat.completions.parse({
-        model: "gpt-4o-2024-08-06",
+        model: "gpt-4o-mini",
         messages: messages,
         response_format: zodResponseFormat(BiomarkerReport, "biomarker_report"),
         temperature: 0.5,

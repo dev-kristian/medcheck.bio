@@ -1,9 +1,6 @@
-// app/contexts/TestContext.jsx
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebaseConfig';
 import { useAuth } from '@/hooks/useAuth';
 
 const TestContext = createContext();
@@ -18,29 +15,45 @@ export const TestProvider = ({ children }) => {
   useEffect(() => {
     const fetchTests = async () => {
       if (user) {
-        const testsRef = collection(db, 'users', user.uid, 'biomarkers_report');
-        const snapshot = await getDocs(testsRef);
-        const allTests = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setTests(allTests);
-        setLoading(false);
+        try {
+          const idToken = await user.getIdToken();
+          const response = await fetch('/api/users/tests', {
+            headers: {
+              'Authorization': `Bearer ${idToken}`,
+              'X-User-ID': user.uid
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch tests');
+          }
+
+          const data = await response.json();
+          setTests(data.tests.map(test => ({
+            ...test,
+            ...Object.fromEntries(
+              Object.entries(test).map(([key, value]) => [
+                key,
+                Array.isArray(value) ? value.map(item => ({
+                  ...item,
+                  test_date: item.test_date ? new Date(item.test_date).toISOString() : null
+                })) : value
+              ])
+            )
+          })));
+        } catch (error) {
+          console.error('Error fetching tests:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
     fetchTests();
   }, [user]);
 
-  const addTest = async (newTest) => {
-    const testsRef = collection(db, 'users', user.uid, 'biomarkers_report');
-    const docRef = await addDoc(testsRef, {
-      ...newTest,
-      createdAt: new Date()
-    });
-    const testWithId = { ...newTest, id: docRef.id };
-    setTests(prevTests => [...prevTests, testWithId]);
-    return testWithId;
+  const addTest = (newTest) => {
+    setTests(prevTests => [...prevTests, newTest]);
   };
 
   return (

@@ -51,12 +51,12 @@ const AddTestPage = () => {
       const data = await response.json();
       
       const newTest = {
-        additionalInfo,
-        analysis: data.analysis,
+        id: data.data.id,
+        ...data.data,
       };
   
-      const addedTest = await addTest(newTest);
-      router.push(`/my-tests/results/${addedTest.id}`);
+      addTest(newTest);
+      router.push(`/my-tests/results/${newTest.id}`);
   
     } catch (error) {
       console.error('Error processing test:', error);
