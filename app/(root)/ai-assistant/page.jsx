@@ -29,7 +29,7 @@ const AiHealthChatPage = () => {
     // TODO: Implement actual AI response logic
     // For now, we'll just simulate a response
     setTimeout(() => {
-      const aiResponse = { type: 'ai', content: "I'm an AI assistant. How can I help you with your health today?" };
+      const aiResponse = { type: 'ai', content: "This Feature is not yet available! Thank you for you patience!" };
       setMessages((prevMessages) => [...prevMessages, aiResponse]);
     }, 1000);
   };

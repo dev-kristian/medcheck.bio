@@ -11,13 +11,13 @@ import { useTestContext } from '@/app/context/TestContext';
 import ImageUploader from '@/components/ImageUploader';
 import AdditionalInfoInput from '@/components/AdditionalInfoInput';
 import { useAuth } from '@/hooks/useAuth';
-import Loader from '@/components/Loader'; // Import the Loader component
+import Loader from '@/components/Loader';
 
 const AddTestPage = () => {
   const router = useRouter()
   const [images, setImages] = useState([])
   const [additionalInfo, setAdditionalInfo] = useState('')
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const { addTest } = useTestContext();
   const { user } = useAuth();
 
@@ -27,7 +27,7 @@ const AddTestPage = () => {
       return;
     }
   
-    setLoading(true); // Set loading to true when the process starts
+    setLoading(true);
   
     try {
       const payload = {
@@ -63,7 +63,7 @@ const AddTestPage = () => {
     } catch (error) {
       console.error('Error processing test:', error);
     } finally {
-      setLoading(false); // Set loading to false when the process ends
+      setLoading(false);
     }
   };
 
@@ -94,9 +94,9 @@ const AddTestPage = () => {
             <Button 
               onClick={handleProcess} 
               className="w-full md:w-1/4 bg-teal-500 hover:bg-teal-700 rounded-xl"
-              disabled={images.length === 0 || loading} // Disable button when loading
+              disabled={images.length === 0 || loading}
             >
-              {loading ? <Loader /> : 'Process Test'} {/* Show loader when loading */}
+              {loading ? <Loader /> : 'Process Test'}
             </Button>
           </footer>
         </section>

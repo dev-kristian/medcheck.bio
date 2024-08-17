@@ -11,7 +11,6 @@ export function WelcomeProvider({ children }) {
     age: '',
     gender: '',
     medicalHistory: '',
-    // Add more fields as needed
   });
 
   const updateWelcomeState = (updates) => {
