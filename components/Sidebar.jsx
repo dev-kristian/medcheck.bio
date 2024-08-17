@@ -25,7 +25,7 @@ const Sidebar = ({user}) => {
   return (
     <section className='sidebar flex flex-col justify-between '>
       <div>
-        <nav className='flex flex-col gap-4 px-2 h-[calc(100vh-90px)] overflow-y-auto'>
+        <nav className='flex flex-col gap-4 px-2  overflow-y-auto'>
           <Link href="/" className='mb-8 cursor-pointer flex items-center gap-2 mr-4'>
               <Image
                   src='/icons/logo.png'
