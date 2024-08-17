@@ -163,7 +163,7 @@
   }
 
   .page {
-    @apply flex w-full max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar  md:p-8 ;
+    @apply flex w-full max-xl:max-h-screen flex-col overflow-y-scroll max-sm:h-[calc(100vh-120px)] no-scrollbar  md:p-8 ;
   }
   .header-box {
     @apply flex flex-col gap-1;
@@ -185,7 +185,7 @@
   
   /* Home */
   .home-page {
-    @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll no-scrollbar ;
+    @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll max-sm:h-[calc(100vh-120px)] no-scrollbar ;
   }
   .home-content {
     @apply  w-full flex-col px-2 bg-gray-100 sm:px-8  lg:py-8 ;
