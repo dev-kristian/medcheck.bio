@@ -1,4 +1,4 @@
-/* styles/globals.css */
+/*styles/globals.css*/
 
 @tailwind base;
 @tailwind components;
@@ -31,7 +31,6 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --topbar-height: 60px; /* Define topbar height */
   }
 
   .dark {
@@ -81,7 +80,6 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-
 .glassmorphism {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(4px);
@@ -159,23 +157,20 @@
     @apply flex items-center justify-between p-2 shadow-creditCard md:p-8 md:hidden;
   }
 
-  /* General */
-  .auth-input {
-    @apply appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-teal-500 focus:border-teal-500      focus:z-10 sm:text-sm;
+  /*General*/
+  .auth-input{
+    @apply appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-teal-500 focus:border-teal-500 focus:z-10 sm:text-sm;
   }
 
   .page {
-    @apply flex w-full max-xl:max-h-screen flex-col overflow-y-scroll no-scrollbar md:p-8;
+    @apply flex w-full max-xl:max-h-screen flex-col overflow-y-scroll h-screen no-scrollbar  md:p-8 ;
   }
-
   .header-box {
     @apply flex flex-col gap-1;
   }
-
   .header-box-title {
     @apply text-24 lg:text-30 font-semibold text-gray-900;
   }
-
   .header-box-subtext {
     @apply text-14 lg:text-16 font-normal text-gray-600;
   }
@@ -184,37 +179,31 @@
   .mobilenav-sheet {
     @apply flex h-[calc(100vh-120px)] flex-col justify-between overflow-y-auto;
   }
-
   .mobilenav-sheet_close {
     @apply flex gap-2 items-center p-2 rounded-lg w-full max-w-60;
   }
   
   /* Home */
   .home-page {
-    @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll no-scrollbar;
+    @apply xl:flex w-full max-xl:max-h-screen overflow-y-scroll h-screen no-scrollbar ;
   }
-
   .home-content {
-    @apply w-full flex-col px-2 bg-gray-100 sm:px-8 lg:py-8;
+    @apply  w-full flex-col px-2 bg-gray-100 sm:px-8  lg:py-8 ;
   }
-
   .tests-card {
     @apply bg-white rounded-3xl shadow-creditCard cursor-pointer transition-all duration-300 hover:shadow-lg;
   }
 
   /* Sidebar */
   .sidebar {
-    @apply h-screen w-fit border-r border-gray-200 bg-white text-white max-md:hidden py-4 2xl:w-[355px];
+    @apply  h-screen w-fit  border-r border-gray-200 bg-white  text-white max-md:hidden py-4 2xl:w-[355px];
   }
-
   .sidebar-logo {
     @apply 2xl:text-26 font-ibm-plex-serif text-[26px] font-bold text-teal-500 max-md:hidden;
   }
-
   .sidebar-link {
     @apply flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-lg justify-center xl:justify-start;
   }
-
   .sidebar-label {
     @apply text-16 font-semibold text-black-2 max-md:hidden;
   }
@@ -223,106 +212,84 @@
   .right-sidebar {
     @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l border-gray-200 xl:flex w-[364px] xl:overflow-y-scroll !important;
   }
-
   .profile-banner {
     @apply h-[120px] w-full bg-gradient-mesh bg-cover bg-no-repeat;
   }
-
   .profile {
     @apply relative flex px-6 max-xl:justify-center;
   }
-
   .profile-img {
     @apply flex-center absolute -top-8 size-24 rounded-full bg-gray-100 border-8 border-white p-2 shadow-profile;
   }
-
   .profile-details {
     @apply flex flex-col pt-24;
   }
-
   .profile-name {
     @apply text-24 font-semibold text-gray-900;
   }
-
   .profile-email {
     @apply text-16 font-normal text-gray-600;
   }
-
   .subscription {
     @apply flex flex-col justify-between gap-8 px-6 py-8;
   }
-
-  /* My Tests Page */
-  .my-tests-header {
-    @apply flex flex-col gap-4 mb-4;
-  }
-
-  .back-link {
-    @apply self-start;
-  }
-
-  .table-header {
-    @apply flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4;
-  }
-
-  .tests-history-title {
-    @apply text-2xl font-semibold text-gray-900;
-  }
-
-  .table-actions {
-    @apply flex items-center gap-4;
-  }
-
-  .tests-table-container {
-    @apply overflow-x-auto rounded-3xl;
-  }
-
-  .no-tests-message {
-    @apply flex flex-col md:w-1/2 items-center justify-center text-center mt-12 bg-white md:rounded-3xl md:shadow-lg p-8;
-  }
-
-  .no-tests-title {
-    @apply text-2xl font-semibold text-gray-900 mb-2;
-  }
-
-  .pagination-container {
-    @apply mt-auto pt-2 flex justify-center border-t border-gray-200;
-  }
-
-  .pagination-link {
-    @apply text-gray-500 hover:text-teal-500 transition-colors duration-300 px-3 py-1 rounded-md;
-  }
-
-  .pagination-nav-button {
-    @apply text-gray-700 hover:text-teal-500 transition-colors duration-300 px-3 py-1 rounded-md;
-  }
+  
+/* My Tests Page */
+.my-tests-header {
+  @apply flex flex-col gap-4 mb-4;
+}
+.back-link {
+  @apply self-start;
+}
+.table-header {
+  @apply flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4;
+}
+.tests-history-title {
+  @apply text-2xl font-semibold text-gray-900;
+}
+.table-actions {
+  @apply flex items-center gap-4;
+}
+.tests-table-container {
+  @apply overflow-x-auto rounded-3xl;
+}
+.no-tests-message {
+  @apply flex flex-col md:w-1/2 items-center justify-center text-center mt-12 bg-white md:rounded-3xl md:shadow-lg p-8;
+}
+.no-tests-title {
+  @apply text-2xl font-semibold text-gray-900 mb-2;
+}
+.pagination-container {
+  @apply mt-auto pt-2 flex justify-center border-t border-gray-200;
+}
+.pagination-link {
+  @apply text-gray-500 hover:text-teal-500 transition-colors duration-300 px-3 py-1 rounded-md;
+}
+.pagination-nav-button {
+  @apply text-gray-700 hover:text-teal-500 transition-colors duration-300 px-3 py-1 rounded-md;
+}
 
   /* Add Test Page */
   .add-test-content {
     @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-6 py-7 lg:py-0 xl:max-h-screen xl:overflow-y-scroll;
   }
-
   .custom-calendar {
     font-family: 'Inter', sans-serif;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: box-shadow 0.3s ease-in-out;
   }
-
   .custom-calendar:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
-
   .custom-calendar button {
     outline: none;
     transition: all 0.2s ease-in-out;
   }
-
   .custom-calendar button:focus {
     ring: 2px;
     ring-offset: 2px;
     ring: teal -500px;
   }
-
   .custom-calendar .grid-cols-7 > *,
   .custom-calendar .grid-cols-3 > *,
   .custom-calendar .grid-cols-4 > * {
@@ -331,20 +298,16 @@
     align-items: center;
     justify-content: center;
   }
-
   .custom-calendar .text-gray-300,
   .custom-calendar .text-gray-400 {
     opacity: 0.6;
   }
-
   .custom-calendar .border-2 {
     border-style: dashed;
   }
-
   .custom-calendar button {
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
   }
-
   @keyframes pulse {
     0% {
       box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.7);
@@ -356,36 +319,29 @@
       box-shadow: 0 0 0 0 rgba(0, 128, 128, 0);
     }
   }
-
   .custom-calendar .border-2.border-teal-500 {
     animation: pulse 2s infinite;
   }
-
   .file-upload-label {
     @apply flex items-center justify-center w-full p-4 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-100 hover:border-teal-500;
   }
-
   .image-preview-container {
     @apply relative mt-4 w-full mx-auto;
   }
-
   .image-preview {
     @apply w-60 h-60 object-cover rounded-lg shadow-md;
   }
-
   .remove-file-button {
     @apply absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100 transition-colors duration-300;
   }
-
   .additional-info-textarea {
     @apply w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200 ease-in-out;
   }
-
   .process-button {
     @apply w-full bg-medical-gradient text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out;
   }
 
-  /* Loader */
+  /*Loader*/
   .loader {
     border: 2px solid #f3f3f3;
     border-top: 2px solid #3498db;
@@ -394,7 +350,6 @@
     height: 16px;
     animation: spin 2s linear infinite;
   }
-
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -404,22 +359,13 @@
     }
   }
 
-  /* Chat */
+  /*Chat*/
   .scrollArea {
     overflow-y: scroll;
     scrollbar-width: none; /* Firefox */
   }
-
+  
   .scrollArea::-webkit-scrollbar {
     display: none; /* Safari and Chrome */
   }
 }
-
-/* Media Queries for Mobile Devices */
-@media (max-width: 768px) {
-  .page, .home-page {
-    padding-top: var(--topbar-height); /* Deduct topbar height */
-  }
-}
-
-

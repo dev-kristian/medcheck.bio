@@ -31,7 +31,7 @@ const MobileNav = ({ user }) => {
   };
 
   return (
-    <section className='w-full max-w-[264px] h-[var(--topbar-height)]'>
+    <section className='w-full max-w-[264px] '>
       <Sheet>
         <SheetTrigger>
           <Image
