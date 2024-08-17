@@ -30,7 +30,7 @@ const AiHealthChatPage = () => {
   }
 
   const ConversationsList = React.memo(() => (
-    <div className="h-full overflow-y-auto p-2 bg-gray-50 rounded-l-3xl">
+    <div className="h-full overflow-y-auto p-2 bg-white rounded-l-3xl">
       <Button 
         onClick={handleNewConversation}
         className="w-full bg-teal-500 hover:bg-teal-600 text-white mb-4 lg:mt-2"
@@ -41,10 +41,10 @@ const AiHealthChatPage = () => {
       {conversations.map((conv) => (
         <div 
           key={conv.id} 
-          className={`p-2 mb-2 cursor-pointer rounded-lg transition-colors ${
+          className={`p-2 mb-2 cursor-pointer rounded-lg  transition-colors ${
             conv.id === conversationId 
               ? 'bg-teal-100 border-teal-300' 
-              : 'bg-white hover:bg-gray-50'
+              : 'bg-gray-50 hover:bg-gray-100'
           }`}
           onClick={() => {
             handleSelectConversation(conv.id);
@@ -115,7 +115,7 @@ const AiHealthChatPage = () => {
   ];
 
   return (
-    <section className='flex w-full max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar md:p-6'>
+    <section className='flex w-full bg-gray-100 max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar md:p-6'>
       <header className='px-2'>
         <Link href="/" className="back-link">
           <Button variant="ghost" size="sm">

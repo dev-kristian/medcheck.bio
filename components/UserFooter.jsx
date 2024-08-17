@@ -26,7 +26,7 @@ const UserFooter = ({ user, handleSignOut }) => {
         </div>
         <button
           onClick={handleSignOut}
-          className="ml-2 p-2 text-sm text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200"
+          className="ml-2 p-2 text-sm text-red-500 hover:bg-red-100 rounded-full transition-colors duration-200 focus:ring-white"
           title="Sign Out"
         >
           <LogOut className="w-5 h-5" />

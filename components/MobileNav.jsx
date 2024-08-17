@@ -39,7 +39,7 @@ const MobileNav = ({ user }) => {
             height={30}
             width={30}
             alt='menu'
-            className='cursor-pointer'
+            className='cursor-pointer focus:ring-white'
           />
         </SheetTrigger>
         <SheetContent side='left' className='border-none bg-white px-0 '>
