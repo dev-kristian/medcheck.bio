@@ -32,7 +32,7 @@ const MobileNav = ({ user }) => {
 
   return (
     <section className='w-full max-w-[264px] '>
-      <Sheet className='h-[calc(100vh-90px)]'>
+      <Sheet>
         <SheetTrigger>
           <Image
             src="/icons/hamburger.svg"

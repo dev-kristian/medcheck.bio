@@ -15,7 +15,7 @@ function RootLayout({ children }) {
   return (
         <TestProvider>
           <ConversationsProvider>
-          <main className="flex h-screen w-full font-inter">
+          <main className="flex  w-full font-inter h-[calc(100vh-90px)]">
             <Sidebar user={user}/>
             <div className="flex size-full flex-col">
               <div className="root-layout ">
