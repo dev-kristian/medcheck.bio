@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { db } from '@/firebase/firebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { verifyIdToken } from '@/app/api/middleware/auth';
-
+export const maxDuration = 60; 
+export const dynamic = 'force-dynamic';
 export async function POST(request) {
   try {
     const verifiedUid = await verifyIdToken(request);

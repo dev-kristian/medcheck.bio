@@ -16,8 +16,10 @@ async function fetchUserProfileData(userId) {
 
   return profileDoc.data();
 }
+
 export const maxDuration = 60; 
 export const dynamic = 'force-dynamic';
+
 export async function POST(request) {
   try {
     const verifiedUid = await verifyIdToken(request);

@@ -7,6 +7,8 @@ import admin from 'firebase-admin';
 // Initialize Firestore
 const firestore = admin.firestore();
 
+export const maxDuration = 60; 
+export const dynamic = 'force-dynamic';
 export async function GET(request) {
   try {
     const verifiedUid = await verifyIdToken(request);
