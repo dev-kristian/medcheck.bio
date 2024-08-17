@@ -1,64 +1,22 @@
 'use client'
 
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from 'lucide-react'
-import HeaderBox from "@/components/HeaderBox"
-import { useTestContext } from '@/app/context/TestContext'
-import { formatDate } from '@/lib/utils'
-import BiomarkersTab from '@/components/resultsPage/BiomarkersTab'
-import AnalysisTab from '@/components/resultsPage/AnalysisTab'
-import RecommendationsTab from '@/components/resultsPage/RecommendationsTab'
-import { motion } from 'framer-motion'
-
-const ModernTabs = ({ tabs }) => {
-  const [activeTab, setActiveTab] = useState(0);
-
-  return (
-    <div className="w-full  mx-auto">
-      <div className="relative mb-8">
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
-          {tabs.map((tab, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveTab(index)}
-              className={`relative flex-1 py-2 text-sm font-medium transition-colors duration-300 ${
-                activeTab === index ? 'text-white' : 'text-gray-700 hover:text-gray-900'
-              }`}
-            >
-              {activeTab === index && (
-                <motion.div
-                  layoutId="activetab"
-                  className="absolute inset-0 bg-teal-500 rounded-2xl"
-                  initial={false}
-                  transition={{ type: "spring", stiffness: 200, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">{tab.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="mt-4">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {tabs[activeTab].content}
-        </motion.div>
-      </div>
-    </div>
-  );
-};
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from 'lucide-react';
+import HeaderBox from "@/components/HeaderBox";
+import { useTestContext } from '@/app/context/TestContext';
+import { formatDate } from '@/lib/utils';
+import BiomarkersTab from '@/components/resultsPage/BiomarkersTab';
+import AnalysisTab from '@/components/resultsPage/AnalysisTab';
+import RecommendationsTab from '@/components/resultsPage/RecommendationsTab';
+import ModernTabs from '@/components/ModernTabs';
 
 export default function TestResultPage() {
-  const { id } = useParams()
-  const { tests, loading } = useTestContext()
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const { id } = useParams();
+  const { tests, loading } = useTestContext();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen">
@@ -66,35 +24,35 @@ export default function TestResultPage() {
     </div>;
   }
 
-  const result = tests.find(test => test.id === id)
+  const result = tests.find(test => test.id === id);
 
   if (!result) {
-    return <div>Test not found</div>
+    return <div>Test not found</div>;
   }
 
   // Flatten the test data structure
-  const testEntries = []
+  const testEntries = [];
   Object.entries(result).forEach(([testType, testTypeData]) => {
     if (Array.isArray(testTypeData)) {
       testTypeData.forEach(data => {
-        testEntries.push({ testType, data })
-      })
+        testEntries.push({ testType, data });
+      });
     }
-  })
+  });
 
   const handleNext = () => {
     if (currentIndex < testEntries.length - 1) {
-      setCurrentIndex(currentIndex + 1)
+      setCurrentIndex(currentIndex + 1);
     }
-  }
+  };
 
   const handleBack = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1)
+      setCurrentIndex(currentIndex - 1);
     }
-  }
+  };
 
-  const { testType, data } = testEntries[currentIndex]
+  const { testType, data } = testEntries[currentIndex];
 
   const tabsContent = [
     {
@@ -151,5 +109,5 @@ export default function TestResultPage() {
         <ModernTabs tabs={tabsContent} />
       </div>
     </section>
-  )
+  );
 }
