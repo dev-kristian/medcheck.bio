@@ -5,7 +5,7 @@ import { LogOut } from 'lucide-react';
 const UserFooter = ({ user, handleSignOut }) => {
   return (
     <footer>
-      <div className="flex items-center pt-2 border-t border-gray-300 px-2 md:px-4">
+      <div className="flex items-center p-2 border-t border-gray-300 px-2 md:px-4">
         <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
           {user && user.photoURL ? (
             <Image
