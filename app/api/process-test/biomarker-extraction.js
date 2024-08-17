@@ -1,4 +1,5 @@
-// test-biomarker-extraction.js
+//app/api/process-test/test-biomarker-extraction.js
+
 const fs = require('fs');
 const OpenAI = require('openai');
 const { z } = require('zod');
@@ -118,9 +119,7 @@ const BiomarkerReport = z.object({
 });
 
 async function extractAndInterpretBiomarkers(images, profileData) {
-  const results = [];
-
-  for (const base64Image of images) {
+  const results = await Promise.all(images.map(async (base64Image) => {
     const messages = [
       { role: "system", content: "You are an AI assistant that extracts biomarker information from medical test images and provides detailed interpretations for each biomarker." },
       { 
@@ -143,20 +142,21 @@ async function extractAndInterpretBiomarkers(images, profileData) {
         ]
       }
     ];
-    console.log(messages[1].content[0].text);
+
     try {
       const completion = await openai.beta.chat.completions.parse({
-        model: "gpt-4o-2024-08-06",
+        model: "gpt-4o-mini",
         messages: messages,
         response_format: zodResponseFormat(BiomarkerReport, "biomarker_report"),
-        temperature: 0.5,
+        temperature: 0.2,
       });
 
       const biomarkerReport = completion.choices[0].message;
       if (biomarkerReport.parsed) {
-        results.push(biomarkerReport.parsed);
+        return biomarkerReport.parsed;
       } else if (biomarkerReport.refusal) {
         console.log('Model refused to process the request:', biomarkerReport.refusal);
+        return null;
       }
     } catch (e) {
       if (e.constructor.name === "LengthFinishReasonError") {
@@ -164,14 +164,17 @@ async function extractAndInterpretBiomarkers(images, profileData) {
       } else {
         console.log("An error occurred: ", e.message);
       }
+      return null;
     }
-  }
+  }));
 
   const groupedResults = results.reduce((acc, report) => {
-    if (!acc[report.test_type]) {
-      acc[report.test_type] = [];
+    if (report) {
+      if (!acc[report.test_type]) {
+        acc[report.test_type] = [];
+      }
+      acc[report.test_type].push(report);
     }
-    acc[report.test_type].push(report);
     return acc;
   }, {});
 
