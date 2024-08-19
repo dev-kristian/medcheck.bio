@@ -42,11 +42,13 @@ const MobileNav = ({ user }) => {
             className='cursor-pointer focus:ring-white'
           />
         </SheetTrigger>
-        <SheetContent side='left' className='border-none bg-white px-0 '>
+        <SheetContent side='left' className='border-none bg-white px-0 flex flex-col justify-between'>
           <SheetTitle className='sr-only'>Navigation Menu</SheetTitle>
           <SheetDescription className='sr-only'>
             Use the links below to navigate through the different sections of the website.
           </SheetDescription>
+
+          <div className='mobilenav-sheet flex flex-col justify-between px-2 '>
           <Link href="/" className='cursor-pointer flex items-center gap-2 px-2'>
             <Image
               src='/icons/logo.png'
@@ -56,7 +58,6 @@ const MobileNav = ({ user }) => {
             />
             <h1 className='text-26 font-ibm-plex-serif-font-bold text-teal-500'> Medcheck</h1>
           </Link>
-          <div className='mobilenav-sheet flex flex-col justify-between px-2 '>
             <SheetClose asChild>
               <nav className='flex flex-col gap-4 pt-8 text-white'>
                 {sidebarLinks.map((item) => {

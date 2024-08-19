@@ -33,8 +33,8 @@ const Assistant = () => {
   ];
 
   return (
-    <section className='flex w-full lg:bg-gray-100 max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar md:p-6'>
-      <header className='px-2'>
+    <section className='flex w-full  max-xl:max-h-screen flex-col overflow-y-scroll h-full no-scrollbar md:p-6'>
+      <header className='px-2 pb-2'>
         <Link href="/" className="back-link">
           <Button variant="ghost" size="sm">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -43,7 +43,7 @@ const Assistant = () => {
         </Link>
       </header>
 
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-90px)] rounded-3xl lg:shadow-xl ">
+      <div className="flex flex-col lg:flex-row  rounded-3xl lg:shadow-xl ">
         <div className="hidden lg:block lg:w-1/4 border-r border-gray-100">
           <ConversationsList setActiveTab={setActiveTab} />
         </div>

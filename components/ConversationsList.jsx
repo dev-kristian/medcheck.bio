@@ -34,7 +34,7 @@ const ConversationsList = ({ setActiveTab }) => {
   };
 
   return (
-    <div className="h-full overflow-y-auto p-2 bg-white rounded-l-3xl relative">
+    <div className="h-full overflow-y-auto p-2 bg-gray-200 rounded-l-3xl shadow-xl relative">
       <Button 
         onClick={handleNewConversation}
         className="w-full bg-teal-500 hover:bg-teal-600 text-white mb-4 lg:mt-2 rounded-xl"

@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import DoughnutChart from "@/components/DoughnutChart";
-import { Plus, Bot, MessageCircle } from "lucide-react";
+import { Plus, MessageCircle } from "lucide-react";
 
 const Home = () => {
   const { user } = useAuth();
@@ -42,11 +42,10 @@ const Home = () => {
         </header>
 
         <div className="mt-8 md:mt-16 flex flex-col lg:flex-row justify-between items-center gap-8">
-          
           <Link href="/assistant" className="tests-card-link w-full lg:w-1/2">
             <section className="tests-card flex flex-col md:flex-row justify-start items-center cursor-pointer border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 bg-white relative">
-              <div className="w-full md:w-40 h-40 flex items-center justify-center">
-                <Bot className="h-20 w-20 text-gray-900" />
+              <div className="w-full md:w-80 h-40 flex items-center justify-center max-md:mb-4">
+                <img src='./images/bot.svg' alt="Bot" className="w-80 h-40" />
               </div>
               <div className="flex flex-col items-start pb-12 md:mb-0 md:ml-4 w-full">
                 <h2 className="text-2xl font-semibold text-gray-900">Your Personal AI Assistant</h2>
@@ -82,8 +81,6 @@ const Home = () => {
         </div>
         <div className="h-5"></div>
       </div>
-
-      <RightSidebar user={user} />
     </section>
   );
 }

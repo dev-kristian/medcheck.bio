@@ -179,7 +179,7 @@
 
   /* Mobile nav */
   .mobilenav-sheet {
-    @apply flex h-[calc(100vh-120px)] flex-col justify-between overflow-y-auto;
+    @apply flex flex-col ;
   }
   .mobilenav-sheet_close {
     @apply flex gap-2 items-center p-2 rounded-lg w-full max-w-60;
@@ -197,45 +197,16 @@
   }
 
   /* Sidebar */
-  .sidebar {
-    @apply  h-screen w-fit  border-r border-gray-200 bg-white  text-white max-md:hidden py-4 2xl:w-[355px];
-  }
   .sidebar-logo {
     @apply 2xl:text-26 font-ibm-plex-serif text-[26px] font-bold text-teal-500 max-md:hidden;
   }
   .sidebar-link {
-    @apply flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-lg justify-center xl:justify-start;
+    @apply flex gap-3 items-center py-1 md:p-3  rounded-xl justify-start;
   }
   .sidebar-label {
     @apply text-16 font-semibold text-black-2 max-md:hidden;
   }
 
-  /* Right sidebar */
-  .right-sidebar {
-    @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l border-gray-200 xl:flex w-[364px] xl:overflow-y-scroll !important;
-  }
-  .profile-banner {
-    @apply h-[120px] w-full bg-gradient-mesh bg-cover bg-no-repeat;
-  }
-  .profile {
-    @apply relative flex px-6 max-xl:justify-center;
-  }
-  .profile-img {
-    @apply flex-center absolute -top-8 size-24 rounded-full bg-gray-100 border-8 border-white p-2 shadow-profile;
-  }
-  .profile-details {
-    @apply flex flex-col pt-24;
-  }
-  .profile-name {
-    @apply text-24 font-semibold text-gray-900;
-  }
-  .profile-email {
-    @apply text-16 font-normal text-gray-600;
-  }
-  .subscription {
-    @apply flex flex-col justify-between gap-8 px-6 py-8;
-  }
-  
 /* My Tests Page */
 .my-tests-header {
   @apply flex flex-col gap-4 mb-4;
