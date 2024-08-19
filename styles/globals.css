@@ -187,7 +187,7 @@
   
   /* Home */
   .home-page {
-    @apply flex w-full max-xl:max-h-screen overflow-y-scroll h-screen no-scrollbar ;
+    @apply flex w-full  overflow-y-scroll no-scrollbar ;
   }
   .home-content {
     @apply  w-full flex-col px-2 bg-gray-100 sm:px-8  lg:py-8 ;

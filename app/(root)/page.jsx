@@ -30,8 +30,8 @@ const Home = () => {
   }
 
   return (
-    <section className='home-page'>
-      <div className='home-content'>
+    <section className='home-page h-[calc(100vh-50px)] md:h-screen'>
+      <div className='home-content  '>
         <header className='flex flex-col justify-between gap-8'>
           <HeaderBox
             type='greeting'
@@ -77,9 +77,7 @@ const Home = () => {
               </div>
             </section>
           </Link>
-
         </div>
-        <div className="h-5"></div>
       </div>
     </section>
   );
