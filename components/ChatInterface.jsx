@@ -51,7 +51,7 @@ const ChatInterface = () => {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-100px)] lg:h-[calc(100vh-100px)] lg:bg-gray-50 rounded-r-3xl pt-2 lg:shadow-xl">
+    <div className="flex flex-col h-[calc(100vh-230px)] lg:h-[calc(100vh-100px)] lg:bg-gray-50 rounded-r-3xl pt-2 lg:shadow-xl">
       <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-0 lg:px-4 py-2 no-scrollbar">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
