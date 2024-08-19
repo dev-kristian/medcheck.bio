@@ -42,7 +42,7 @@ const BiomarkerDisplay = ({ biomarker, interpretation }) => {
   const { name, long_name, value, unit, reference_range, info } = biomarker;
 
   return (
-    <div className={`bg-white px-2 py-1 rounded-lg shadow-sm mb-3 flex flex-col md:flex-row justify-between items-start md:items-center border-l-4 ${getBorderColor(interpretation)}`}>
+    <div className={`bg-white px-2 py-1 rounded-lg shadow-lg mb-3 flex flex-col md:flex-row justify-between items-start md:items-center border-l-4 ${getBorderColor(interpretation)}`}>
       <div className="flex-grow mb-3 md:mb-0">
         <div className="font-medium text-lg">{name}</div>
         <div className="text-sm text-gray-500">{long_name}</div>

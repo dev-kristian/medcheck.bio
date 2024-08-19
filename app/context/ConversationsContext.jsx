@@ -8,6 +8,7 @@ export const ConversationsProvider = ({ children }) => {
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isTyping, setIsTyping] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -48,6 +49,7 @@ export const ConversationsProvider = ({ children }) => {
   const handleSendMessage = useCallback(async (inputMessage) => {
     const newMessage = { role: 'user', content: inputMessage };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setIsTyping(true);
 
     try {
       const idToken = await user.getIdToken();
@@ -72,6 +74,7 @@ export const ConversationsProvider = ({ children }) => {
       const aiResponse = { role: 'assistant', content: data.content };
 
       setMessages((prevMessages) => [...prevMessages, aiResponse]);
+      setIsTyping(false);
 
       if (!conversationId && data.conversationId) {
         setConversationId(data.conversationId);
@@ -90,6 +93,7 @@ export const ConversationsProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error fetching AI response:", error);
+      setIsTyping(false);
     }
   }, [user, conversationId]);
 
@@ -106,16 +110,47 @@ export const ConversationsProvider = ({ children }) => {
     setMessages([]);
   }, []);
 
+  const handleDeleteConversation = useCallback(async (id) => {
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch(`/api/chat/delete-conversation?uid=${user.uid}&conversationId=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete conversation');
+      }
+
+      setConversations((prevConversations) => 
+        prevConversations.filter((conv) => conv.id !== id)
+      );
+
+      if (conversationId === id) {
+        setConversationId(null);
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error("Error deleting conversation:", error);
+    }
+  }, [user, conversationId]);
+
   return (
-    <ConversationsContext.Provider value={{
-      conversations,
-      conversationId,
-      messages,
-      loading,
-      handleSendMessage,
-      handleSelectConversation,
-      handleNewConversation,
-    }}>
+    <ConversationsContext.Provider
+      value={{
+        conversations,
+        conversationId,
+        messages,
+        loading,
+        isTyping,
+        handleSendMessage,
+        handleSelectConversation,
+        handleNewConversation,
+        handleDeleteConversation, 
+      }}
+    >
       {children}
     </ConversationsContext.Provider>
   );

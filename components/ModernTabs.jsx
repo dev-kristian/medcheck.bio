@@ -11,7 +11,7 @@ const ModernTabs = ({ tabs, activeTab: controlledActiveTab, setActiveTab: contro
   return (
     <div className="w-full mx-auto">
       <div className="relative py-2 md:py-4">
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-2xl">
+        <div className="flex space-x-1 bg-gray-200 p-1 rounded-2xl">
           {tabs.map((tab, index) => (
             <button
               key={index}

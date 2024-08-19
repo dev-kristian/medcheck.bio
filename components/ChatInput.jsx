@@ -19,7 +19,7 @@ const ChatInput = ({ onSendMessage }) => {
   }, [inputMessage, onSendMessage]);
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2 px-2 ">
+    <form onSubmit={handleSubmit} className="flex items-center gap-2">
       <input
         type="text"
         placeholder="Type your message..."

@@ -8,6 +8,32 @@ const openai = new OpenAI({
   apiKey: process.env.NEXT_PRIVATE_OPENAI_API_KEY,
 });
 
+async function fetchUserProfileData(uid) {
+  const userProfileRef = doc(db, 'users', uid, 'profileData', 'profile');
+  const userProfileSnap = await getDoc(userProfileRef);
+  
+  if (userProfileSnap.exists()) {
+    return userProfileSnap.data();
+  } else {
+    return null;
+  }
+}
+
+async function fetchBiomarkersReports(uid) {
+  const biomarkersReportsRef = collection(db, 'users', uid, 'biomarkers_report');
+  const biomarkersReportsSnap = await getDocs(biomarkersReportsRef);
+  
+  const reports = [];
+  biomarkersReportsSnap.forEach((doc) => {
+    reports.push({
+      id: doc.id,
+      ...doc.data()
+    });
+  });
+  
+  return reports;
+}
+
 export async function POST(request) {
   try {
     const verifiedUid = await verifyIdToken(request);
@@ -30,29 +56,83 @@ export async function POST(request) {
         previousMessages = chatDoc.data().messages || [];
       }
     } else {
-      // Create a new conversation document with Unix timestamp
       chatDocRef = await addDoc(chatCollectionRef, {
         messages: [],
         active: true,
-        createdAt: Math.floor(Date.now() / 1000) // Unix timestamp in seconds
+        createdAt: Math.floor(Date.now() / 1000)
       });
     }
 
-    // Prepare messages for OpenAI API
     const apiMessages = [
-      { role: "system", content: "You are a helpful assistant." },
+      { role: "system", content: "You are a helpful assistant. You can access user profile data and biomarkers reports if needed." },
       ...previousMessages,
       { role: "user", content: message }
+    ];
+
+    const tools = [
+      {
+        type: "function",
+        function: {
+          name: "get_user_profile",
+          description: "Get the user's profile data including age, gender, height, weight, and medical history",
+          parameters: {
+            type: "object",
+            properties: {},
+            required: []
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "get_biomarkers_reports",
+          description: "Get the user's biomarkers reports from lab test analyses",
+          parameters: {
+            type: "object",
+            properties: {},
+            required: []
+          }
+        }
+      }
     ];
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: apiMessages,
+      tools: tools,
+      tool_choice: "auto",
     });
 
-    const aiResponse = completion.choices[0].message.content;
+    let aiResponse = completion.choices[0].message.content;
 
-    // Update Firestore with new messages
+    if (completion.choices[0].message.tool_calls) {
+      const toolCalls = completion.choices[0].message.tool_calls;
+      for (const toolCall of toolCalls) {
+        if (toolCall.function.name === "get_user_profile") {
+          const userProfileData = await fetchUserProfileData(uid);
+          apiMessages.push({
+            role: "function",
+            name: "get_user_profile",
+            content: JSON.stringify(userProfileData)
+          });
+        } else if (toolCall.function.name === "get_biomarkers_reports") {
+          const biomarkersReports = await fetchBiomarkersReports(uid);
+          apiMessages.push({
+            role: "function",
+            name: "get_biomarkers_reports",
+            content: JSON.stringify(biomarkersReports)
+          });
+        }
+      }
+
+      const followUpCompletion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: apiMessages,
+      });
+
+      aiResponse = followUpCompletion.choices[0].message.content;
+    }
+
     await updateDoc(chatDocRef, {
       messages: arrayUnion(
         { role: 'user', content: message },
