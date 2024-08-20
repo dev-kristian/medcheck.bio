@@ -37,5 +37,4 @@ function RootLayout({ children }) {
   );
 }
 
-// Wrap the entire layout with WithAuth
 export default WithAuth(WithProfileCompletion(RootLayout));
