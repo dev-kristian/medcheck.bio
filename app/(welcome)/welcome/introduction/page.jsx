@@ -60,10 +60,18 @@ export default function Introduction() {
   };
 
   return (
-    <>
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-teal-800">Let's Get Acquainted</CardTitle>
-        <CardDescription className="text-teal-600">How would you like us to address you?</CardDescription>
+    <div className='md:p-6'>
+      <CardHeader className="relative">
+        <button 
+          onClick={() => router.push('/welcome')} 
+          className="absolute left-4 top-4 transform -translate-y-1/2 text-teal-600 hover:text-teal-800"
+        >
+          ← Back
+        </button>
+        <div className="text-center pt-4">
+          <CardTitle className="text-2xl font-bold text-teal-800">Let's Get Acquainted</CardTitle>
+          <CardDescription className="text-teal-600">How would you like us to address you?</CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="space-y-2">
         <p className="text-sm text-gray-400">Your comfort is our priority. Feel free to use a name you're comfortable with.</p>
@@ -87,23 +95,23 @@ export default function Introduction() {
           </label>
         </div>
       </CardContent>
-      <CardFooter className="justify-between">
-        <Button onClick={() => router.push('/welcome')} className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-xl">Back</Button>
+      <CardFooter className="justify-end">
         <Button 
-            onClick={handleSubmit} 
-            disabled={!displayName || !isAdult || loading} 
-            className="bg-teal-500 hover:bg-teal-700 rounded-xl"
-          >
-            {loading ? (
-              <>
-                Saving &nbsp; <Loader />
-              </>
-            ) : (
-              'Continue'
-            )}
-          </Button>
-        </CardFooter>
-      </>
-    );
-  }
-
+          onClick={handleSubmit} 
+          disabled={!displayName || !isAdult || loading} 
+          className="bg-teal-500 hover:bg-teal-700 rounded-xl"
+        >
+          {loading ? (
+            <>
+              Saving &nbsp; <Loader />
+            </>
+          ) : (
+            <>
+            Continue &nbsp; →
+          </>
+          )}
+        </Button>
+      </CardFooter>
+    </div>
+  );
+}

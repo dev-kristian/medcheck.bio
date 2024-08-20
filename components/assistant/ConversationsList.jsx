@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { useConversations } from '@/app/context/ConversationsContext';
-import ConfirmationModal from '@/components/ConfirmationModal';
+import ConfirmationModal from '@/components/assistant/ConfirmationModal';
 
 const ConversationsList = ({ setActiveTab }) => {
   const { conversations, conversationId, handleSelectConversation, handleNewConversation, handleDeleteConversation } = useConversations();

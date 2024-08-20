@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import { useConversations } from '@/app/context/ConversationsContext';
 import ModernTabs from '@/components/ModernTabs';
-import ConversationsList from '@/components/ConversationsList';
-import ChatInterface from '@/components/ChatInterface';
+import ConversationsList from '@/components/assistant/ConversationsList';
+import ChatInterface from '@/components/assistant/ChatInterface';
 
 const Assistant = () => {
   const { loading } = useConversations();

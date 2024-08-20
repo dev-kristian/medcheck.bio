@@ -4,7 +4,6 @@
 import HeaderBox from "@/components/HeaderBox";
 import { useAuth } from "@/hooks/useAuth";
 import { useTestContext } from '@/app/context/TestContext';
-import RightSidebar from "@/components/RightSidebar";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";

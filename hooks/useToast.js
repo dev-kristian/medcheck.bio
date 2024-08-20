@@ -79,6 +79,7 @@ export function useCustomToast() {
             return newToasts;
           });
         },
+        
       }
     );
 

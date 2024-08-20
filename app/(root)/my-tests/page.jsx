@@ -63,7 +63,7 @@ export default function MyTestsPage() {
 
       {tests.length === 0 ? ( 
         <div className='flex items-center justify-center mt-12'>
-          <div className="no-tests-message text-center">
+          <div className="no-tests-message text-center rounded-3xl">
             <Image
               src="/icons/my-tests.svg"
               alt="No tests"

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useConversations } from '@/app/context/ConversationsContext';
-import ChatInput from '@/components/ChatInput';
+import ChatInput from '@/components/assistant/ChatInput';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
