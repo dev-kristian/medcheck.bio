@@ -1,3 +1,4 @@
+// app/(welcome)/welcome/introduction/page.jsx
 'use client'
 
 import { useState, useEffect } from 'react';

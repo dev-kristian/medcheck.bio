@@ -31,6 +31,7 @@ const weightSchemaMetric = z.preprocess((val) => (val === '' ? undefined : parse
 const weightSchemaImperial = z.preprocess((val) => (val === '' ? undefined : parseInt(val, 10)), z.number().min(44, 'Weight must be at least 44 lb').max(661, 'Weight must be less than 661 lb'));
 
 export default function GeneralInformation() {
+  
   const [step, setStep] = useState(1);
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');

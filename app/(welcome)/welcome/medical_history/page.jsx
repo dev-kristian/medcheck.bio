@@ -1,96 +1,234 @@
+// app/(welcome)/welcome/medical_history/page.jsx
 'use client'
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import Loader from '@/components/Loader';
+import StepForm from '@/components/StepForm';
+import { useCustomToast } from '@/hooks/useToast';
+
+const steps = [
+  {
+    title: 'Allergies',
+    description: 'Do you have any allergies? Select all that apply or specify any others.',
+    fields: [
+      { name: 'pollen', label: 'Pollen' },
+      { name: 'dust', label: 'Dust Mites' },
+      { name: 'peanuts', label: 'Peanuts' },
+      { name: 'treeNuts', label: 'Tree Nuts' },
+      { name: 'shellfish', label: 'Shellfish' },
+      { name: 'lactose', label: 'Lactose' },
+    ],
+  },
+  {
+    title: 'Medications',
+    description: 'Are you currently taking any medications? Select all that apply or add any others.',
+    fields: [
+      { name: 'lisinopril', label: 'Lisinopril' },
+      { name: 'metformin', label: 'Metformin' },
+      { name: 'levothyroxine', label: 'Levothyroxine' },
+      { name: 'amlodipine', label: 'Amlodipine' },
+      { name: 'omeprazole', label: 'Omeprazole' },
+      { name: 'atorvastatin', label: 'Atorvastatin' },
+    ],
+  },
+  {
+    title: 'Medical Conditions',
+    description: 'Do you have any ongoing medical conditions? Select all that apply or specify any others.',
+    fields: [
+      { name: 'diabetes', label: 'Diabetes' },
+      { name: 'hypertension', label: 'Hypertension' },
+      { name: 'asthma', label: 'Asthma' },
+      { name: 'heartDisease', label: 'Heart Disease' },
+      { name: 'arthritis', label: 'Arthritis' },
+      { name: 'depression', label: 'Depression' },
+    ],
+  },
+  {
+    title: 'Surgeries',
+    description: 'Have you had any surgeries in the past? Select all that apply or add any others.',
+    fields: [
+      { name: 'appendectomy', label: 'Appendectomy' },
+      { name: 'tonsillectomy', label: 'Tonsillectomy' },
+      { name: 'caesarean', label: 'Caesarean Section' },
+      { name: 'kneeReplacement', label: 'Knee Replacement' },
+      { name: 'hipReplacement', label: 'Hip Replacement' },
+      { name: 'gallbladderRemoval', label: 'Gallbladder Removal' },
+    ],
+  },
+  {
+    title: 'Family History',
+    description: 'Do any of these conditions run in your family? Select all that apply or specify any others.',
+    fields: [
+      { name: 'cancer', label: 'Cancer' },
+      { name: 'heartDisease', label: 'Heart Disease' },
+      { name: 'diabetes', label: 'Diabetes' },
+      { name: 'highBloodPressure', label: 'High Blood Pressure' },
+      { name: 'stroke', label: 'Stroke' },
+      { name: 'mentalIllness', label: 'Mental Illness' },
+    ],
+  },
+];
 
 export default function MedicalHistory() {
-  const [conditions, setConditions] = useState({
-    diabetes: false,
-    heartDisease: false,
-    hypertension: false,
-    cancer: false,
-    asthma: false,
+  const { showToast } = useCustomToast();
+  const [step, setStep] = useState(0);
+  const [showFields, setShowFields] = useState(false);
+  const [formData, setFormData] = useState({
+    allergies: {},
+    medications: {},
+    medicalConditions: {},
+  });
+  const [customInputs, setCustomInputs] = useState({
+    allergies: '',
+    medications: '',
+    medicalConditions: '',
   });
   const router = useRouter();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  const handleCheckboxChange = (condition) => {
-    setConditions(prev => ({ ...prev, [condition]: !prev[condition] }));
+  useEffect(() => {
+    const initialFormData = steps.reduce((acc, step, index) => {
+      acc[Object.keys(formData)[index]] = step.fields.reduce((fieldAcc, field) => {
+        fieldAcc[field.name] = false;
+        return fieldAcc;
+      }, {});
+      return acc;
+    }, {});
+    setFormData(initialFormData);
+  }, []);
+
+  const handleCheckboxChange = (name) => {
+    const currentStepKey = Object.keys(formData)[step];
+    setFormData(prev => ({
+      ...prev,
+      [currentStepKey]: {
+        ...prev[currentStepKey],
+        [name]: !prev[currentStepKey][name]
+      }
+    }));
+  };
+
+  const handleCustomInputChange = (value) => {
+    const currentStepKey = Object.keys(customInputs)[step];
+    setCustomInputs(prev => ({ ...prev, [currentStepKey]: value }));
+  };
+
+  const handleYesNo = (response) => {
+    setShowFields(response);
   };
 
   const handleSubmit = async () => {
-    if (!user) return;
+    if (!user) {
+      showToast('Authentication Error', 'Please log in to submit your medical history', 'error');
+      return;
+    }
     setLoading(true);
-
+  
     try {
       const idToken = await user.getIdToken();
+      const data = {
+        userId: user.uid,
+        ...Object.entries(formData).reduce((acc, [key, value]) => {
+          const selectedItems = Object.entries(value)
+            .filter(([_, selected]) => selected)
+            .reduce((itemAcc, [itemKey, itemValue]) => ({ ...itemAcc, [itemKey]: itemValue }), {});
+          
+          if (Object.keys(selectedItems).length > 0 || customInputs[key]) {
+            acc[key] = { ...selectedItems };
+            if (customInputs[key]) {
+              acc[key].custom = customInputs[key];
+            }
+          } else {
+            acc[key] = false;
+          }
+          
+          return acc;
+        }, {}),
+      };
+  
       const response = await fetch('/api/users/welcome/medical_history', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
-        body: JSON.stringify({
-          userId: user.uid,
-          medicalHistory: conditions,
-        }),
+        body: JSON.stringify(data),
       });
-
+  
       if (response.ok) {
+        showToast('Success', 'Medical history updated successfully', 'success');
         router.push('/');
       } else {
-        console.error('Failed to update medical history');
+        const errorData = await response.json();
+        showToast('Update Failed', `Failed to update medical history: ${errorData.error}`, 'error');
       }
     } catch (error) {
-      console.error("Error updating user profile", error);
+      showToast('Error', 'An error occurred while updating your profile', 'error');
     } finally {
       setLoading(false);
     }
   };
+  
+  const handleNext = () => {
+    if (showFields && !Object.values(formData[Object.keys(formData)[step]]).some(Boolean) && !customInputs[Object.keys(customInputs)[step]]) {
+      showToast('Input Required', 'Please select at least one option or provide a custom input', 'warning');
+      return;
+    }
+    setStep(step + 1);
+    setShowFields(false);
+  };
+
+  const handleBack = () => {
+    if (step > 0) {
+      setStep(step - 1);
+      setShowFields(false);
+    } else {
+      router.push('/welcome/general_information');
+    }
+  };
+
+  const currentStep = steps[step];
+  const currentStepKey = Object.keys(formData)[step];
 
   return (
-    <>
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center text-teal-800">Medical History</CardTitle>
-        <CardDescription className="text-center text-teal-600">Please indicate any chronic or past health conditions</CardDescription>
+    <div className='md:p-6'>
+      <CardHeader className="relative">
+        <button 
+          onClick={() => router.push('/welcome')} 
+          className="absolute left-4 top-4 transform -translate-y-1/2 text-teal-600 hover:text-teal-800"
+        >
+          ← Back
+        </button>
+        <div className="text-center pt-6">
+          <CardTitle className="text-2xl font-bold text-teal-800">Medical History</CardTitle>
+          <CardDescription className="text-teal-600">Please provide your medical history</CardDescription>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {Object.entries(conditions).map(([condition, value]) => (
-            <div className="flex items-center space-x-2" key={condition}>
-              <input
-                id={condition}
-                name="condition"
-                checked={value}
-                type="checkbox"
-                className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 accent-teal-500"
-                onChange={() => handleCheckboxChange(condition)}
-              />
-              <label htmlFor={condition} className="ml-2 block text-sm text-gray-900">
-                {condition.charAt(0).toUpperCase() + condition.slice(1).replace(/([A-Z])/g, ' $1')}
-              </label>
-            </div>
-          ))}
-        </div>
+        <StepForm 
+          title={currentStep.title}
+          description={currentStep.description}
+          fields={currentStep.fields}
+          values={formData[currentStepKey]}
+          handleChange={handleCheckboxChange}
+          showFields={showFields}
+          handleYesNo={handleYesNo}
+          customInput={customInputs[currentStepKey]}
+          handleCustomInputChange={handleCustomInputChange}
+        />
       </CardContent>
-      <CardFooter className="justify-between">
+      <CardFooter className="justify-end">
         <Button 
-          onClick={() => router.push('/welcome/general_information')} 
-          className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-xl"
-        >
-          Back
-        </Button>
-        <Button 
-          onClick={handleSubmit} 
+          onClick={step < steps.length - 1 ? handleNext : handleSubmit} 
           disabled={loading}
           className="bg-teal-500 hover:bg-teal-600 rounded-xl"
         >
-          {loading ? (
+          {step < steps.length - 1 ? 'Next →' : loading ? (
             <>
               Completing &nbsp; <Loader />
             </>
@@ -99,6 +237,6 @@ export default function MedicalHistory() {
           )}
         </Button>
       </CardFooter>
-    </>
+    </div>
   );
 }
