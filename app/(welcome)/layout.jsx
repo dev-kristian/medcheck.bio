@@ -2,19 +2,20 @@
 'use client'
 
 import { WithAuth } from "@/components/WithAuth";
-import { WelcomeProvider } from "../context/WelcomeContext";
+import { Stepper } from "@/components/Stepper";
 
 function WelcomeLayout({ children }) {
   return (
-    <WelcomeProvider>
-      <div className="min-h-screen md:bg-gray-100 flex flex-col items-center">
-        <div className="w-full max-w-4xl bg-white rounded-3xl mt-4 md:mt-20 px-2 md:shadow-xl overflow-hidden">
+    <div className="min-h-screen md:bg-gray-100 flex flex-col items-center">
+      <div className="w-full max-w-4xl bg-white rounded-3xl mt-4 md:mt-20 overflow-hidden">
+        <Stepper />
+        <div className="px-2 md:shadow-xl">
           <div className="w-full">
             {children}
           </div>
         </div>
       </div>
-    </WelcomeProvider>
+    </div>
   );
 }
 

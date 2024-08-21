@@ -210,7 +210,7 @@ export default function GeneralInformation() {
       <CardHeader className="relative">
         <button 
           onClick={() => step > 1 ? setStep(step - 1) : router.push('/welcome/introduction')} 
-          className="absolute left-4 top-4 transform -translate-y-1/2 text-teal-600 hover:text-teal-800"
+          className="absolute left-4 top-6 transform -translate-y-1/2 text-teal-600 hover:text-teal-800"
         >
           ← Back
         </button>
@@ -234,7 +234,7 @@ export default function GeneralInformation() {
             </>
           ) : (
             <>
-            Continue &nbsp; →
+            Continue to Medical History&nbsp; →
           </>
           )}
         </Button>

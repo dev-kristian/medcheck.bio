@@ -9,7 +9,6 @@ import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 
 import Loader from '@/components/Loader';
 import StepForm from '@/components/StepForm';
 import { useCustomToast } from '@/hooks/useToast';
-
 const steps = [
   {
     title: 'Allergies',
@@ -81,11 +80,15 @@ export default function MedicalHistory() {
     allergies: {},
     medications: {},
     medicalConditions: {},
+    surgeries:{},
+    familyHistory:{},
   });
   const [customInputs, setCustomInputs] = useState({
     allergies: '',
     medications: '',
     medicalConditions: '',
+    surgeries:'',
+    familyHistory:'',
   });
   const router = useRouter();
   const { user } = useAuth();
@@ -161,8 +164,7 @@ export default function MedicalHistory() {
       });
   
       if (response.ok) {
-        showToast('Success', 'Medical history updated successfully', 'success');
-        router.push('/');
+        router.push('/welcome/lifestyle');
       } else {
         const errorData = await response.json();
         showToast('Update Failed', `Failed to update medical history: ${errorData.error}`, 'error');
@@ -173,14 +175,18 @@ export default function MedicalHistory() {
       setLoading(false);
     }
   };
-  
+
   const handleNext = () => {
-    if (showFields && !Object.values(formData[Object.keys(formData)[step]]).some(Boolean) && !customInputs[Object.keys(customInputs)[step]]) {
-      showToast('Input Required', 'Please select at least one option or provide a custom input', 'warning');
-      return;
+    if (step < steps.length - 1) {
+      if (showFields && !Object.values(formData[Object.keys(formData)[step]]).some(Boolean) && !customInputs[Object.keys(customInputs)[step]]) {
+        showToast('Input Required', 'Please select at least one option or provide a custom input', 'warning');
+        return;
+      }
+      setStep(step + 1);
+      setShowFields(false);
+    } else {
+      handleSubmit();
     }
-    setStep(step + 1);
-    setShowFields(false);
   };
 
   const handleBack = () => {
@@ -199,8 +205,8 @@ export default function MedicalHistory() {
     <div className='md:p-6'>
       <CardHeader className="relative">
         <button 
-          onClick={() => router.push('/welcome')} 
-          className="absolute left-4 top-4 transform -translate-y-1/2 text-teal-600 hover:text-teal-800"
+          onClick={handleBack} 
+          className="absolute left-4 top-6 transform -translate-y-1/2 text-teal-600 hover:text-teal-800"
         >
           ← Back
         </button>
@@ -224,16 +230,18 @@ export default function MedicalHistory() {
       </CardContent>
       <CardFooter className="justify-end">
         <Button 
-          onClick={step < steps.length - 1 ? handleNext : handleSubmit} 
+          onClick={handleNext} 
           disabled={loading}
           className="bg-teal-500 hover:bg-teal-600 rounded-xl"
         >
           {step < steps.length - 1 ? 'Next →' : loading ? (
             <>
-              Completing &nbsp; <Loader />
+              Saving &nbsp; <Loader />
             </>
           ) : (
-            'Complete Profile'
+            <>
+            Continue to Lifestyle&nbsp; →
+            </>
           )}
         </Button>
       </CardFooter>

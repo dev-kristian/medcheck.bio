@@ -59,7 +59,7 @@ export default function Introduction() {
       <CardHeader className="relative">
         <button 
           onClick={() => router.push('/welcome')} 
-          className="absolute left-4 top-4 transform -translate-y-1/2 text-teal-600 hover:text-teal-800"
+          className="absolute left-4 top-6 transform -translate-y-1/2 text-teal-600 hover:text-teal-800"
         >
           ← Back
         </button>
@@ -102,7 +102,7 @@ export default function Introduction() {
             </>
           ) : (
             <>
-            Continue &nbsp; →
+            Continue to General Info &nbsp; →
           </>
           )}
         </Button>
