@@ -29,7 +29,7 @@ export default function MedicalHistory() {
 
     try {
       const idToken = await user.getIdToken();
-      const response = await fetch('/api/users/welcome', {
+      const response = await fetch('/api/users/welcome/medical_history', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +37,6 @@ export default function MedicalHistory() {
         },
         body: JSON.stringify({
           userId: user.uid,
-          section: 3,
           medicalHistory: conditions,
         }),
       });

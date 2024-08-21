@@ -23,30 +23,24 @@ export default function Introduction() {
   const handleSubmit = async () => {
     if (!user) return;
     setLoading(true);
-  
+
     try {
       const idToken = await user.getIdToken();
       const data = {
+        userId: user.uid,
+        displayName,
         isAdult,
       };
-  
-      if (displayName !== user.displayName) {
-        data.displayName = displayName;
-      }
-  
-      const response = await fetch('/api/users/welcome', {
+
+      const response = await fetch('/api/users/welcome/introduction', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
-        body: JSON.stringify({
-          userId: user.uid,
-          section: 1,
-          ...data,
-        }),
+        body: JSON.stringify(data),
       });
-  
+
       if (response.ok) {
         router.push('/welcome/general_information');
       } else {

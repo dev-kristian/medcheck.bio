@@ -11,6 +11,7 @@ import { useCustomToast } from '@/hooks/useToast';
 import AgeGenderForm from '@/components/general_information/AgeGenderForm';
 import HeightWeightForm from '@/components/general_information/HeightWeightForm';
 import ModernTabs from '@/components/ModernTabs';
+import { convertCmToFtIn, convertFtInToCm, convertKgToLb, convertLbToKg } from '@/lib/utils';
 
 const ageSchema = z.preprocess((val) => (val === '' ? undefined : parseInt(val, 10)), z.number().min(18, 'Age must be at least 18').max(120, 'Age must be less than 120'));
 const genderSchema = z.enum(['male', 'female', 'other'], {
@@ -28,20 +29,6 @@ const heightSchemaImperial = z.object({
 
 const weightSchemaMetric = z.preprocess((val) => (val === '' ? undefined : parseInt(val, 10)), z.number().min(20, 'Weight must be at least 20 kg').max(300, 'Weight must be less than 300 kg'));
 const weightSchemaImperial = z.preprocess((val) => (val === '' ? undefined : parseInt(val, 10)), z.number().min(44, 'Weight must be at least 44 lb').max(661, 'Weight must be less than 661 lb'));
-
-const convertCmToFtIn = (cm) => {
-  const totalInches = cm / 2.54;
-  const ft = Math.floor(totalInches / 12);
-  const inches = Math.round(totalInches % 12);
-  return { ft, in: inches };
-};
-
-const convertFtInToCm = (ft, inches) => {
-  return Math.round((ft * 12 + inches) * 2.54);
-};
-
-const convertKgToLb = (kg) => Math.round(kg * 2.20462);
-const convertLbToKg = (lb) => Math.round(lb / 2.20462);
 
 export default function GeneralInformation() {
   const [step, setStep] = useState(1);
@@ -103,7 +90,7 @@ export default function GeneralInformation() {
       const idToken = await user.getIdToken();
       let heightData, weightData;
   
-      if (activeTab === 0) { // Metric
+      if (activeTab === 0) {
         const heightValidation = heightSchemaMetric.safeParse(height);
         const weightValidation = weightSchemaMetric.safeParse(weight.kg);
   
@@ -115,7 +102,7 @@ export default function GeneralInformation() {
   
         heightData = { cm: parseInt(height.cm) };
         weightData = { kg: parseInt(weight.kg) };
-      } else { // Imperial
+      } else {
         const heightValidation = heightSchemaImperial.safeParse(height);
         const weightValidation = weightSchemaImperial.safeParse(weight.lb);
   
@@ -130,23 +117,20 @@ export default function GeneralInformation() {
       }
   
       const data = {
+        userId: user.uid,
         age: parseInt(age),
         gender,
         height: heightData,
         weight: weightData,
       };
   
-      const response = await fetch('/api/users/welcome', {
+      const response = await fetch('/api/users/welcome/general_information', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
-        body: JSON.stringify({
-          userId: user.uid,
-          section: 2,
-          ...data,
-        }),
+        body: JSON.stringify(data),
       });
   
       if (response.ok) {
@@ -254,7 +238,7 @@ export default function GeneralInformation() {
           )}
         </Button>
       </CardFooter>
-    </div >
+    </div>
   );
 }
 
