@@ -12,57 +12,62 @@ import { useCustomToast } from '@/hooks/useToast';
 const steps = [
   {
     title: 'Daily Sleep Pattern',
-    description: 'How would you describe your daily sleep pattern?',
+    description: 'On average, how many hours do you sleep per night?',
     fields: [
       { name: 'lessThan5', label: 'Less than 5 hours' },
       { name: '5to6', label: '5-6 hours' },
       { name: '6to7', label: '6-7 hours' },
       { name: '7to8', label: '7-8 hours' },
       { name: 'moreThan8', label: 'More than 8 hours' },
+      { name: 'irregular', label: 'Irregular sleep pattern' },
     ],
   },
   {
-    title: 'Dietary Intake',
-    description: 'How would you describe your dietary intake?',
+    title: 'Dietary Habits',
+    description: 'Which of the following best describes your eating habits?',
     fields: [
       { name: 'vegetarian', label: 'Vegetarian' },
       { name: 'vegan', label: 'Vegan' },
       { name: 'pescatarian', label: 'Pescatarian' },
+      { name: 'flexitarian', label: 'Flexitarian' },
       { name: 'omnivore', label: 'Omnivore' },
-      { name: 'other', label: 'Other' },
+      { name: 'keto', label: 'Ketogenic' },
     ],
   },
   {
     title: 'Physical Activity',
-    description: 'How often do you engage in physical activity?',
+    description: 'How often do you engage in moderate to vigorous physical activity?',
     fields: [
       { name: 'never', label: 'Never' },
-      { name: 'rarely', label: 'Rarely' },
-      { name: 'sometimes', label: 'Sometimes' },
-      { name: 'often', label: 'Often' },
-      { name: 'always', label: 'Always' },
+      { name: 'rarely', label: 'Rarely (Once a month or less)' },
+      { name: 'occasionally', label: 'Occasionally (2-3 times a month)' },
+      { name: 'weekly', label: 'Weekly (1-2 times a week)' },
+      { name: 'frequently', label: 'Frequently (3-5 times a week)' },
+      { name: 'daily', label: 'Daily or almost daily' },
     ],
   },
   {
     title: 'Smoking Habits',
-    description: 'Do you smoke?',
+    description: 'Which of the following best describes your smoking habits?',
     fields: [
-      { name: 'never', label: 'Never' },
-      { name: 'occasionally', label: 'Occasionally' },
-      { name: 'regularly', label: 'Regularly' },
-      { name: 'quit', label: 'Quit' },
-      { name: 'other', label: 'Other' },
+      { name: 'never', label: 'Never smoked' },
+      { name: 'former', label: 'Former smoker' },
+      { name: 'occasional', label: 'Occasional smoker' },
+      { name: 'light', label: 'Light smoker (1-9 cigarettes/day)' },
+      { name: 'moderate', label: 'Moderate smoker (10-19 cigarettes/day)' },
+      { name: 'heavy', label: 'Heavy smoker (20+ cigarettes/day)' },
     ],
   },
   {
     title: 'Alcohol Consumption',
-    description: 'How often do you consume alcohol?',
+    description: 'How would you describe your alcohol consumption?',
     fields: [
-      { name: 'never', label: 'Never' },
-      { name: 'occasionally', label: 'Occasionally'},
-      { name: 'regularly', label: 'Regularly' },
-      { name: 'frequently', label: 'Frequently' },
-      { name: 'other', label: 'Other' },
+      { name: 'never', label: 'Never drink' },
+      { name: 'rarely', label: 'Rarely (Special occasions only)' },
+      { name: 'monthly', label: 'Monthly (1-3 times a month)' },
+      { name: 'weekly', label: 'Weekly (1-2 times a week)' },
+      { name: 'frequently', label: 'Frequently (3-4 times a week)' },
+      { name: 'daily', label: 'Daily or almost daily' },
     ],
   },
 ];
@@ -72,17 +77,13 @@ export default function Lifestyle() {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
     dailySleepPattern: {},
-    dietaryIntake: {},
+    dietaryHabits: {},
     physicalActivity: {},
     smokingHabits: {},
     alcoholConsumption: {},
   });
   const [customInputs, setCustomInputs] = useState({
-    dailySleepPattern: '',
-    dietaryIntake: '',
-    physicalActivity: '',
-    smokingHabits: '',
-    alcoholConsumption: '',
+    dietaryHabits: '',
   });
   const router = useRouter();
   const { user } = useAuth();
@@ -104,18 +105,30 @@ export default function Lifestyle() {
     setFormData(prev => ({
       ...prev,
       [currentStepKey]: {
-        ...prev[currentStepKey],
-        [name]: !prev[currentStepKey][name]
+        ...Object.keys(prev[currentStepKey]).reduce((acc, key) => {
+          acc[key] = key === name ? !prev[currentStepKey][key] : false;
+          return acc;
+        }, {})
       }
     }));
   };
 
   const handleCustomInputChange = (value) => {
-    const currentStepKey = Object.keys(customInputs)[step];
-    setCustomInputs(prev => ({ ...prev, [currentStepKey]: value }));
+    setCustomInputs(prev => ({ ...prev, dietaryHabits: value }));
+  };
+
+  const validateStep = () => {
+    const currentStepKey = Object.keys(formData)[step];
+    return Object.values(formData[currentStepKey]).some(Boolean) || 
+           (currentStepKey === 'dietaryHabits' && customInputs.dietaryHabits);
   };
 
   const handleSubmit = async () => {
+    if (!validateStep()) {
+      showToast('Input Required', 'Please select an option or provide a custom input', 'warning');
+      return;
+    }
+
     if (!user) {
       showToast('Authentication Error', 'Please log in to submit your lifestyle information', 'error');
       return;
@@ -127,24 +140,25 @@ export default function Lifestyle() {
       const data = {
         userId: user.uid,
         ...Object.entries(formData).reduce((acc, [key, value]) => {
-          if (key === 'dietaryIntake') {
+          if (key === 'dietaryHabits') {
             const selectedItems = Object.entries(value)
               .filter(([_, selected]) => selected)
-              .reduce((itemAcc, [itemKey, itemValue]) => ({ ...itemAcc, [itemKey]: itemValue }), {});
-            if (Object.keys(selectedItems).length > 0 || customInputs[key]) {
-              acc[key] = { ...selectedItems };
+              .map(([itemKey, _]) => steps[1].fields.find(field => field.name === itemKey).label);
+            if (selectedItems.length > 0 || customInputs[key]) {
+              acc[key] = selectedItems.join(', ');
               if (customInputs[key]) {
-                acc[key].custom = customInputs[key];
+                acc[key] += acc[key] ? `, ${customInputs[key]}` : customInputs[key];
               }
             } else {
-              acc[key] = false;
+              acc[key] = 'Not specified';
             }
           } else {
-            const selectedItems = Object.entries(value)
-              .filter(([_, selected]) => selected)
-              .map(([itemKey, _]) => itemKey)
-              .join(' ');
-            acc[key] = selectedItems || false;
+            const selectedItem = Object.entries(value)
+              .find(([_, selected]) => selected);
+            const stepIndex = Object.keys(formData).indexOf(key);
+            acc[key] = selectedItem 
+              ? steps[stepIndex].fields.find(field => field.name === selectedItem[0]).label 
+              : 'Not specified';
           }
           return acc;
         }, {}),
@@ -174,8 +188,8 @@ export default function Lifestyle() {
   };
 
   const handleNext = () => {
-    if (!Object.values(formData[Object.keys(formData)[step]]).some(Boolean) && !      customInputs[Object.keys(customInputs)[step]]) {
-      showToast('Input Required', 'Please select at least one option or provide a custom input', 'warning');
+    if (!validateStep()) {
+      showToast('Input Required', 'Please select an option or provide a custom input', 'warning');
       return;
     }
     setStep(step + 1);
@@ -214,7 +228,7 @@ export default function Lifestyle() {
           values={formData[currentStepKey]}
           handleChange={handleCheckboxChange}
           showFields={true}
-          customInput={customInputs[currentStepKey]}
+          customInput={customInputs.dietaryHabits}
           handleCustomInputChange={handleCustomInputChange}
           isLifestyle={true}
           allowCustomInput={step === 1} 
@@ -238,4 +252,3 @@ export default function Lifestyle() {
     </div>
   );
 }
-

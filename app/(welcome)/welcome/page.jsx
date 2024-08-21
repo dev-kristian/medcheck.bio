@@ -1,6 +1,6 @@
+//app/(welcome)/welcome/page.jsx
 'use client'
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button";
@@ -8,51 +8,10 @@ import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 
 import Image from 'next/image';
 
 export default function Welcome() {
-  const [loading, setLoading] = useState(true);
-  const [showContent, setShowContent] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
-  useEffect(() => {
-    async function checkProfileCompletion() {
-      if (user) {
-        try {
-          const idToken = await user.getIdToken();
-          const response = await fetch(`/api/users?userId=${user.uid}`, {
-            headers: {
-              'Authorization': `Bearer ${idToken}`
-            }
-          });
-          const data = await response.json();
-          
-          if (response.ok) {
-            if (data.profileCompleted) {
-              router.push('/');
-            } else {
-              setShowContent(true);
-            }
-          } else {
-            console.error('Error checking profile completion:', data.error);
-            setShowContent(true);
-          }
-        } catch (error) {
-          console.error('Error checking profile completion:', error);
-          setShowContent(true);
-        }
-      }
-      setLoading(false);
-    }
 
-    checkProfileCompletion();
-  }, [user, router]);
-
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen text-teal-600">Loading your profile...</div>;
-  }
-
-  if (!showContent) {
-    return null;
-  }
 
   return (
     <>

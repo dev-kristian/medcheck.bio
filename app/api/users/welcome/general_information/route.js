@@ -3,6 +3,12 @@ import { db } from '@/firebase/firebaseConfig';
 import { doc, collection, setDoc, updateDoc } from 'firebase/firestore';
 import { verifyIdToken } from '@/app/api/middleware/auth';
 import * as z from 'zod';
+import DOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
+
+// Create a DOMPurify instance with jsdom
+const window = new JSDOM('').window;
+const purify = DOMPurify(window);
 
 const ageSchema = z.number().min(18, 'Age must be at least 18').max(120, 'Age must be less than 120');
 const genderSchema = z.enum(['male', 'female', 'other']);
@@ -31,36 +37,56 @@ export async function PUT(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const userRef = doc(db, 'users', userId);
-    const profileDataRef = doc(collection(userRef, 'profileData'), 'profile');
+    // Sanitize inputs
+    const sanitizedAge = purify.sanitize(age.toString());
+    const sanitizedGender = purify.sanitize(gender);
+    const sanitizedHeight = purify.sanitize(JSON.stringify(height));
+    const sanitizedWeight = purify.sanitize(JSON.stringify(weight));
 
-    const ageValidation = ageSchema.safeParse(age);
-    const genderValidation = genderSchema.safeParse(gender);
+    // Parse sanitized inputs
+    const parsedAge = parseInt(sanitizedAge, 10);
+    const parsedGender = sanitizedGender;
+    const parsedHeight = JSON.parse(sanitizedHeight);
+    const parsedWeight = JSON.parse(sanitizedWeight);
+
+    const ageValidation = ageSchema.safeParse(parsedAge);
+    const genderValidation = genderSchema.safeParse(parsedGender);
 
     if (!ageValidation.success || !genderValidation.success) {
       return NextResponse.json({ error: 'Invalid age or gender' }, { status: 400 });
     }
 
-    let heightValidation, weightValidation;
+    let heightValidation, weightValidation, heightInMeters, weightInKg;
 
-    if ('cm' in height) {
-      heightValidation = heightSchemaMetric.safeParse(height);
-      weightValidation = weightSchemaMetric.safeParse(weight.kg);
+    if ('cm' in parsedHeight) {
+      heightValidation = heightSchemaMetric.safeParse(parsedHeight);
+      weightValidation = weightSchemaMetric.safeParse(parsedWeight.kg);
+      heightInMeters = parsedHeight.cm / 100;
+      weightInKg = parsedWeight.kg;
     } else {
-      heightValidation = heightSchemaImperial.safeParse(height);
-      weightValidation = weightSchemaImperial.safeParse(weight.lb);
+      heightValidation = heightSchemaImperial.safeParse(parsedHeight);
+      weightValidation = weightSchemaImperial.safeParse(parsedWeight.lb);
+      heightInMeters = (parsedHeight.ft * 0.3048) + (parsedHeight.inch * 0.0254);
+      weightInKg = parsedWeight.lb * 0.453592;
     }
 
     if (!heightValidation.success || !weightValidation.success) {
       return NextResponse.json({ error: 'Invalid height or weight' }, { status: 400 });
     }
 
+    // Calculate BMI
+    const bmi = weightInKg / (heightInMeters * heightInMeters);
+
     const restructuredData = {
-      age: { years_old: age },
-      gender,
-      height,
-      weight
+      age: { years_old: parsedAge },
+      gender: parsedGender,
+      height: parsedHeight,
+      weight: parsedWeight,
+      bmi: parseFloat(bmi.toFixed(2)) // Round BMI to 2 decimal places
     };
+
+    const userRef = doc(db, 'users', userId);
+    const profileDataRef = doc(collection(userRef, 'profileData'), 'profile');
 
     await setDoc(profileDataRef, restructuredData, { merge: true });
 

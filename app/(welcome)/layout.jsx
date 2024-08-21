@@ -3,6 +3,7 @@
 
 import { WithAuth } from "@/components/WithAuth";
 import { Stepper } from "@/components/Stepper";
+import { WithProfileUncompleted } from "@/components/WithProfileUncompleted";
 
 function WelcomeLayout({ children }) {
   return (
@@ -19,4 +20,4 @@ function WelcomeLayout({ children }) {
   );
 }
 
-export default WithAuth(WelcomeLayout);
+export default WithAuth(WithProfileUncompleted(WelcomeLayout));
