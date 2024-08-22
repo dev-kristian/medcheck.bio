@@ -4,15 +4,18 @@
 import HeaderBox from "@/components/HeaderBox";
 import { useAuth } from "@/hooks/useAuth";
 import { useTestContext } from '@/app/context/TestContext';
+import { useProfileContext } from '@/app/context/ProfileContext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import DoughnutChart from "@/components/DoughnutChart";
-import { Plus, MessageCircle } from "lucide-react";
+import RiskFactorsSummary from "@/components/RiskFactorsSummary";
+import { Plus, MessageCircle, User, Calendar } from "lucide-react";
 
 const Home = () => {
   const { user } = useAuth();
-  const { tests, loading } = useTestContext();
+  const { tests, loading: testsLoading } = useTestContext();
+  const { profileData, loading: profileLoading } = useProfileContext();
   const router = useRouter();
 
   const handleAddTestClick = (e) => {
@@ -20,7 +23,7 @@ const Home = () => {
     router.push('/my-tests/add-test');
   };
 
-  if (loading) {
+  if (testsLoading || profileLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-teal-500"></div>
@@ -30,7 +33,7 @@ const Home = () => {
 
   return (
     <section className='home-page h-[calc(100vh-50px)] md:h-screen'>
-      <div className='home-content  '>
+      <div className='home-content'>
         <header className='flex flex-col justify-between gap-8'>
           <HeaderBox
             type='greeting'
@@ -40,46 +43,79 @@ const Home = () => {
           />
         </header>
 
-        <div className="mt-8 md:mt-16 flex flex-col lg:flex-row justify-between items-center gap-8">
-          <Link href="/assistant" className="tests-card-link w-full lg:w-1/2">
-            <section className="tests-card flex flex-col md:flex-row justify-start items-center cursor-pointer border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 bg-white relative">
-              <div className="w-full md:w-80 h-40 flex items-center justify-center max-md:mb-4">
-                <img src='./images/bot.svg' alt="Bot" className="w-80 h-40" />
-              </div>
-              <div className="flex flex-col items-start pb-12 md:mb-0 md:ml-4 w-full">
-                <h2 className="text-2xl font-semibold text-gray-900">Your Personal AI Assistant</h2>
-                <p className="text-sm text-gray-600">Get insights and recommendations</p>
-              </div>
-              <div className="absolute bottom-4 right-4 flex items-center">
-                <MessageCircle className="mr-2 h-4 w-4 text-teal-500" />
-                <span className="text-teal-500">Chat Now</span>
-              </div>
-            </section>
-          </Link>
-          
-          <Link href="/my-tests" className="tests-card-link w-full lg:w-1/2">
-            <section className="tests-card flex flex-col md:flex-row justify-start items-center cursor-pointer border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 bg-white">
-              {tests.length > 0 && (
-                <div className="w-full md:w-40 h-40 p-2 flex items-center justify-center">
-                  <DoughnutChart tests={tests} />
+          <div className="mt-8 md:mt-16 flex flex-col lg:flex-row justify-between items-start gap-4">
+            <Link href="/medical-profile" className="tests-card-link w-full lg:w-3/5 h-full lg:h-auto">
+              <section className="tests-card flex flex-col justify-center items-center cursor-pointer border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 bg-white h-full">
+                <div className="flex flex-col items-start w-full">
+                  <div className="flex justify-between w-full">
+                    <h2 className="text-2xl font-semibold text-gray-900">My Medical Profile</h2>
+                    <div className="flex items-center text-teal-500">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>View Full Profile</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 mt-2">
+                    <div className="flex items-center gap-1">
+                      <User className="w-5 h-5 text-gray-600" />
+                      <span className="text-sm text-gray-600">{profileData?.profile?.gender || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-5 h-5 text-gray-600" />
+                      <span className="text-sm text-gray-600">{profileData?.profile?.age?.years_old || 'N/A'} years</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm text-gray-600">BMI:</span>
+                      <span className="text-sm text-gray-600">{profileData?.profile?.bmi || 'N/A'}</span>
+                    </div>
+                  </div>
+                  {profileData && profileData.riskFactors && (
+                    <RiskFactorsSummary riskFactors={profileData.riskFactors.riskFactors} />
+                  )}
                 </div>
-              )}
-              <div className="flex flex-col items-start md:mt-0 md:ml-4 w-full md:w-40 md:h-40 justify-center">
-                <h2 className="text-2xl font-semibold text-gray-900">My Tests</h2>
-                <p className="text-sm text-gray-600">{tests.length} analyses completed</p>
-                <Button 
-                  onClick={handleAddTestClick} 
-                  className="mt-4 md:mt-2 h-8 bg-teal-500 hover:bg-teal-600 rounded-xl flex items-center justify-center"
-                >
-                  <Plus className="mr-2 h-4 w-4" /> Add New Test
-                </Button>
-              </div>
-            </section>
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
+              </section>
+            </Link>
 
-export default Home;
+          <div className="flex flex-col gap-4 w-full lg:w-2/5">
+            <Link href="/assistant" className="tests-card-link w-full">
+              <section className="tests-card flex flex-col md:flex-row justify-start items-center cursor-pointer border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 bg-white relative">
+                <div className="w-full md:w-80 h-40 flex items-center justify-center max-md:mb-4">
+                  <img src='./images/bot.svg' alt="Bot" className="w-80 h-40" />
+                </div>
+                <div className="flex flex-col items-start pb-12 md:mb-0 md:ml-4 w-full">
+                  <h2 className="text-2xl font-semibold text-gray-900">Your Personal AI Assistant</h2>
+                  <p className="text-sm text-gray-600">Get insights and recommendations</p>
+                </div>
+                <div className="absolute bottom-4 right-4 flex items-center">
+                  <MessageCircle className="mr-2 h-4 w-4 text-teal-500" />
+                  <span className="text-teal-500">Chat Now</span>
+                </div>
+              </section>
+            </Link>
+            
+            <Link href="/my-tests" className="tests-card-link w-full">
+              <section className="tests-card flex flex-col md:flex-row justify-start items-center cursor-pointer border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 bg-white">
+                {tests.length > 0 && (
+                  <div className="w-full md:w-40 h-40 p-2 flex items-center justify-center">
+                    <DoughnutChart tests={tests} />
+                  </div>
+                )}
+                <div className="flex flex-col items-start md:mt-0 md:ml-4 w-full md:w-40 md:h-40 justify-center">
+                  <h2 className="text-2xl font-semibold text-gray-900">My Tests</h2>
+                  <p className="text-sm text-gray-600">{tests.length} analyses completed</p>
+                  <Button 
+                    onClick={handleAddTestClick} 
+                    className="mt-4 md:mt-2 h-8 bg-teal-500 hover:bg-teal-600 rounded-xl flex items-center justify-center"
+                  >
+                    <Plus className="mr-2 h-4 w-4" /> Add New Test
+                  </Button>
+                </div>
+                </section>
+             </Link>
+           </div>
+         </div>
+       </div>
+     </section>
+   );
+ }
+
+ export default Home;
