@@ -33,7 +33,7 @@ const Assistant = () => {
   ];
 
   return (
-    <section className='flex w-full  flex-col overflow-y-scroll h-full no-scrollbar md:p-6'>
+    <section className='flex w-full  flex-col h-screen px-2 py-4 lg:px-6  lg:py-6 overflow-y-auto no-scrollbar'>
       <header className='px-2 pb-2'>
         <Link href="/" className="back-link">
           <Button variant="ghost" size="sm">
@@ -43,16 +43,16 @@ const Assistant = () => {
         </Link>
       </header>
 
-      <div className="flex flex-col lg:flex-row  rounded-3xl lg:shadow-xl ">
-        <div className="hidden lg:block lg:w-1/4 border-r border-gray-100">
+      <div className="flex flex-col  lg:flex-row">
+        <div className="hidden lg:block lg:w-1/4 bg-gray-200 rounded-l-3xl">
           <ConversationsList setActiveTab={setActiveTab} />
         </div>
 
-        <div className="hidden lg:flex lg:flex-col lg:flex-1">
+        <div className="max-lg:hidden lg:w-3/4 rounded-r-3xl">
           <ChatInterface />
         </div>
 
-        <div className="lg:hidden flex flex-col h-full px-2">
+        <div className="lg:hidden ">
           <ModernTabs tabs={tabsContent} activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
       </div>

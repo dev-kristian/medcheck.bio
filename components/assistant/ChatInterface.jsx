@@ -51,8 +51,8 @@ const ChatInterface = () => {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-180px)] lg:h-[calc(100vh-100px)] lg:bg-gray-50 rounded-r-3xl pt-2 lg:shadow-xl">
-      <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-0 lg:px-4 py-2 no-scrollbar">
+    <div className="flex flex-col h-[calc(100vh-200px)] lg:h-[calc(100vh-92px)] lg:bg-white rounded-r-3xl lg:pt-2 lg:shadow-xl">
+      <div ref={chatContainerRef} className="overflow-y-auto px-0 lg:px-4 no-scrollbar">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
             <img src="/images/no-messages.svg" alt="No messages" className="w-32 h-32 mb-4" />
@@ -68,7 +68,7 @@ const ChatInterface = () => {
             }`}
           >
             <div
-              className={`max-w-[80%] p-3 rounded-xl shadow-lg ${
+              className={`max-w-[90%] p-3 rounded-xl shadow-lg ${
                 message.role === 'user'
                   ? 'bg-teal-500 text-white'
                   : 'bg-gray-200 text-gray-800'
@@ -88,7 +88,7 @@ const ChatInterface = () => {
         )}
         <div ref={scrollAnchorRef}></div>
       </div>
-      <div className="pb-4 pt-2 lg:pb-2 lg:px-4 sticky bottom-0 lg:rounded-br-3xl">
+      <div className="mt-auto pb-4 pt-2 lg:pb-2 lg:px-4 lg:rounded-br-3xl">
         <ChatInput onSendMessage={handleSendMessage} />
       </div>
     </div>

@@ -164,9 +164,11 @@
   .blur-sm {
     filter: blur(4px);
   }
+
   .page {
-    @apply flex w-full bg-gray-100 max-xl:max-h-screen flex-col overflow-y-scroll h-screen no-scrollbar  md:p-8 ;
+    @apply flex w-full bg-gray-100 flex-col h-full px-2 py-4 lg:px-6  lg:py-6 overflow-y-auto no-scrollbar; 
   }
+
   .header-box {
     @apply flex flex-col gap-1;
   }
@@ -177,34 +179,23 @@
     @apply text-14 lg:text-16 font-normal text-gray-600;
   }
 
-  /* Mobile nav */
-  .mobilenav-sheet {
-    @apply flex flex-col ;
-  }
-  .mobilenav-sheet_close {
-    @apply flex gap-2 items-center p-2 rounded-lg w-full max-w-60;
-  }
-  
   /* Home */
-  .home-content {
-    @apply  w-full flex-col h-full px-2 py-4 lg:px-6  lg:py-6 overflow-y-auto;
-  }
   .home-card {
     @apply justify-start items-start cursor-pointer p-2 lg:p-6 relative bg-white rounded-3xl shadow-creditCard cursor-pointer transition-all duration-300 hover:shadow-lg;
   }
 
   /* Sidebar */
-  .sidebar-logo {
-    @apply 2xl:text-26 font-ibm-plex-serif text-[26px] font-bold text-teal-500 max-md:hidden;
-  }
   .sidebar-link {
-    @apply flex gap-3 items-center py-1 md:p-3  rounded-xl justify-start;
+    @apply flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-gray-100;
   }
   .sidebar-link img.active {
     filter: brightness(0) invert(1);
   }
   .sidebar-label {
-    @apply text-16 font-semibold text-black-2 max-md:hidden;
+    @apply text-gray-700 text-base font-medium;
+  }
+  .sidebar-logo {
+    @apply text-2xl font-bold text-teal-500;
   }
 
 /* My Tests Page */

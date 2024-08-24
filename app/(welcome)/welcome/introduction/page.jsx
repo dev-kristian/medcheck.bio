@@ -43,7 +43,7 @@ export default function Introduction() {
       });
 
       if (response.ok) {
-        router.push('/welcome/general_information');
+        router.push('/welcome/general-information');
       } else {
         console.error('Failed to update introduction details');
       }

@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { verifyIdToken } from '@/app/api/middleware/auth';
 import { NextResponse } from 'next/server';
 import { db } from '@/firebase/firebaseConfig';
-import { doc, collection, updateDoc, arrayUnion, getDocs, query, where, addDoc, getDoc } from 'firebase/firestore';
+import { doc, collection, updateDoc, getDocs, addDoc, getDoc } from 'firebase/firestore';
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PRIVATE_OPENAI_API_KEY,
@@ -33,7 +33,15 @@ async function fetchBiomarkersReports(uid) {
   
   return reports;
 }
+async function saveMessages(chatDocRef, newMessages) {
+  const chatDoc = await getDoc(chatDocRef);
+  const existingMessages = chatDoc.exists() ? chatDoc.data().messages : [];
+  const updatedMessages = [...existingMessages, ...newMessages];
 
+  await updateDoc(chatDocRef, {
+    messages: updatedMessages
+  });
+}
 export async function POST(request) {
   try {
     const verifiedUid = await verifyIdToken(request);
@@ -133,12 +141,12 @@ export async function POST(request) {
       aiResponse = followUpCompletion.choices[0].message.content;
     }
 
-    await updateDoc(chatDocRef, {
-      messages: arrayUnion(
-        { role: 'user', content: message },
-        { role: 'assistant', content: aiResponse }
-      )
-    });
+    const newMessages = [
+      { role: 'user', content: message },
+      { role: 'assistant', content: aiResponse }
+    ];
+
+    await saveMessages(chatDocRef, newMessages);
 
     return NextResponse.json({ 
       content: aiResponse, 

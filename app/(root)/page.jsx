@@ -23,7 +23,7 @@ const Home = () => {
   }
 
   return (
-    <div className='home-content bg-gray-100 '>
+    <div className='page'>
       <header className='flex flex-col justify-between gap-8'>
         <HeaderBox
           type='greeting'

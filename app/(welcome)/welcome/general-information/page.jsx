@@ -8,8 +8,8 @@ import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 
 import Loader from '@/components/Loader';
 import * as z from 'zod';
 import { useCustomToast } from '@/hooks/useToast';
-import AgeGenderForm from '@/components/general_information/AgeGenderForm';
-import HeightWeightForm from '@/components/general_information/HeightWeightForm';
+import AgeGenderForm from '@/components/generalInformation/AgeGenderForm';
+import HeightWeightForm from '@/components/generalInformation/HeightWeightForm';
 import ModernTabs from '@/components/ModernTabs';
 import { convertCmToFtIn, convertFtInToCm, convertKgToLb, convertLbToKg } from '@/lib/utils';
 
@@ -135,7 +135,7 @@ export default function GeneralInformation() {
       });
   
       if (response.ok) {
-        router.push('/welcome/medical_history');
+        router.push('/welcome/medical-history');
       } else {
         showToast('Error', 'Failed to update general information', 'error');
       }

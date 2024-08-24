@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import UserFooter from './UserFooter';
 
-const Sidebar = ({ user }) => {
+const MobileSidebar = ({ user, isOpen, onClose }) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -23,20 +23,20 @@ const Sidebar = ({ user }) => {
   };
 
   return (
-    <section className='max-md:hidden flex flex-col h-screen'>
-      <div className='flex-grow flex flex-col overflow-y-auto'>
-      <div className="flex justify-between items-center p-4">
-        <Link href="/" className='flex items-center gap-2'>
-          <Image
-            src='/icons/logo.png'
-            width={34}
-            height={34}
-            alt='Medcheck logo'
-          />
-          <h1 className='sidebar-logo'> Medcheck</h1>
-        </Link>
+    <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl rounded-3xl transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:hidden`}>
+      <div className="flex flex-col h-full">
+        <div className="flex justify-between items-center p-4">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src='/icons/logo.png'
+              width={34}
+              height={34}
+              alt='Medcheck logo'
+            />
+            <h1 className='sidebar-logo'> Medcheck</h1>
+          </Link>
         </div>
-        <nav className='flex-grow px-2 py-2'>
+        <div className="flex-1 overflow-y-auto px-2 py-2">
           {sidebarLinks.map((item) => {
             const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`);
             return (
@@ -44,6 +44,7 @@ const Sidebar = ({ user }) => {
                 href={item.route}
                 key={item.label}
                 className={cn('sidebar-link mb-2', { 'bg-medical-gradient': isActive })}
+                onClick={onClose}
               >
                 <div className='relative size-6'>
                   <Image
@@ -59,11 +60,11 @@ const Sidebar = ({ user }) => {
               </Link>
             );
           })}
-        </nav>
+        </div>
+        <UserFooter user={user} handleSignOut={handleSignOut} />
       </div>
-      <UserFooter user={user} handleSignOut={handleSignOut} />
-    </section>
+    </div>
   );
 };
 
-export default Sidebar;
+export default MobileSidebar;

@@ -3,8 +3,8 @@ import React from 'react';
 import { useProfileContext } from '@/app/context/ProfileContext';
 import ModernTabs from '@/components/ModernTabs';
 import HeaderBox from '@/components/HeaderBox';
-import ProfileTab from '@/components/ProfileTab';
-import ConditionsTab from '@/components/ConditionsTab';
+import ProfileTab from '@/components/medicalProfile/ProfileTab';
+import ConditionsTab from '@/components/medicalProfile/ConditionsTab';
 
 const MedicalProfile = () => {
   const { profileData, loading } = useProfileContext();
@@ -27,7 +27,7 @@ const MedicalProfile = () => {
   ];
 
   return (
-    <div className=" px-2 md:px-4 py-4 font-inter overflow-y-auto no-scrollbar">
+    <div className="page">
       <HeaderBox 
         type="title"
         title="Medical Profile"

@@ -9,8 +9,8 @@ const ModernTabs = ({ tabs, activeTab: controlledActiveTab, setActiveTab: contro
   const setActiveTab = isControlled ? controlledSetActiveTab : setInternalActiveTab;
 
   return (
-    <div className="w-full mx-auto">
-      <div className="relative py-2 md:py-4">
+    <div className="w-full py-2 mx-auto">
+      <div className="relative md:py-4">
         <div className="flex space-x-1 bg-gray-200 p-1 rounded-2xl">
           {tabs.map((tab, index) => (
             <button
@@ -33,7 +33,7 @@ const ModernTabs = ({ tabs, activeTab: controlledActiveTab, setActiveTab: contro
           ))}
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-2">
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, y: 10 }}

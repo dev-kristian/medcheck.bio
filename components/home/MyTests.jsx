@@ -3,7 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import DoughnutChart from "@/components/DoughnutChart";
+import DoughnutChart from "@/components/home/DoughnutChart";
 import { Plus } from "lucide-react";
 
 const MyTests = ({ tests }) => {
