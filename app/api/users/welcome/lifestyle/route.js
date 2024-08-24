@@ -110,7 +110,7 @@ export async function PUT(request) {
 
     // Generate structured output using GPT model
     const completion = await client.beta.chat.completions.parse({
-      model: "gpt-4o-mini",
+      model: "gpt-4o-2024-08-06",
       messages: [
         { role: "system", content: "Generate potential health conditions and a health score based on the user's profile data." },
         { role: "user", content: JSON.stringify(profileData) },

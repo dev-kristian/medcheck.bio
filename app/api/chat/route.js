@@ -105,7 +105,7 @@ export async function POST(request) {
     ];
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o-2024-08-06",
       messages: apiMessages,
       tools: tools,
       tool_choice: "auto",
@@ -134,7 +134,7 @@ export async function POST(request) {
       }
 
       const followUpCompletion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4o-2024-08-06",
         messages: apiMessages,
       });
 

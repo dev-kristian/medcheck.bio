@@ -145,7 +145,7 @@ async function extractAndInterpretBiomarkers(images, profileData) {
 
     try {
       const completion = await openai.beta.chat.completions.parse({
-        model: "gpt-4o-mini",
+        model: "gpt-4o-2024-08-06",
         messages: messages,
         response_format: zodResponseFormat(BiomarkerReport, "biomarker_report"),
         temperature: 0.2,
