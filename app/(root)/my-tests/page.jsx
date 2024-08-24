@@ -65,7 +65,7 @@ export default function MyTestsPage() {
         <div className='flex items-center justify-center mt-12'>
           <div className="no-tests-message text-center rounded-3xl">
             <Image
-              src="/icons/my-tests.svg"
+              src="/images/empty.svg"
               alt="No tests"
               width={120}
               height={120}
