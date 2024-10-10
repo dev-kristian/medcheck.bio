@@ -1,6 +1,6 @@
 # MedCheck AI - Your Intelligent Health Companion
 
-![MedCheck AI Logo](public/images/logo.png)
+![MedCheck AI Logo](public/images/logo.jpg)
 
 MedCheck AI is a cutting-edge Next.js-based web application designed to revolutionize personal health management. By leveraging artificial intelligence and user-friendly interfaces, MedCheck AI provides personalized health insights, manages medical test results, and offers an AI-powered health assistant to address your health-related queries.
 
@@ -39,7 +39,7 @@ MedCheck AI is a cutting-edge Next.js-based web application designed to revoluti
    ```
 
 3. **Environment Setup:**
-   - Copy `.env.example` to `.env.local`
+   - Copy `.env.local.example` to `.env.local`
    - Fill in the required environment variables
 
 4. **Run the development server:**
