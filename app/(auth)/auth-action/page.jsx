@@ -12,7 +12,7 @@ import { z } from 'zod';
 import { useCustomToast } from '@/hooks/useToast';
 import PasswordStrengthIndicator from '@/components/PasswordStrengthIndicator';
 
-// Password validation schema
+// Password validation schema using Zod
 const passwordSchema = z.object({
   password: z.string()
     .min(8, 'Password must be at least 8 characters')
@@ -25,6 +25,7 @@ const passwordSchema = z.object({
 });
 
 function AuthAction() {
+  // State variables
   const [loading, setLoading] = useState(true);
   const [verificationStatus, setVerificationStatus] = useState('');
   const [password, setPassword] = useState('');
@@ -34,11 +35,14 @@ function AuthAction() {
   const [mode, setMode] = useState('');
   const [oobCode, setOobCode] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  
+  // Hooks
   const searchParams = useSearchParams();
   const router = useRouter();
   const verificationInitiated = useRef(false);
   const { showToast } = useCustomToast();
 
+  // Effect to handle URL parameters and initiate verification
   useEffect(() => {
     const mode = searchParams.get('mode');
     const oobCode = searchParams.get('oobCode');
@@ -58,6 +62,7 @@ function AuthAction() {
     }
   }, [searchParams, router]);
 
+  // Effect to validate password as user types
   useEffect(() => {
     try {
       passwordSchema.parse({ password, confirmPassword });
@@ -67,6 +72,7 @@ function AuthAction() {
     }
   }, [password, confirmPassword]);
 
+  // Function to handle email verification
   const handleEmailVerification = async (oobCode) => {
     try {
       await applyActionCode(auth, oobCode);
@@ -80,6 +86,7 @@ function AuthAction() {
     }
   };
 
+  // Function to handle password reset
   const handlePasswordReset = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -100,10 +107,11 @@ function AuthAction() {
         showToast("Password Reset Failed", "An error occurred while resetting your password. Please try again.", "error");
       }
     } finally {
-    setLoading(false);
-  }
-};
+      setLoading(false);
+    }
+  };
 
+  // Function to toggle password visibility
   const togglePasswordVisibility = (field) => {
     if (field === 'password') {
       setShowPassword(!showPassword);
@@ -223,6 +231,7 @@ function AuthAction() {
   return null;
 }
 
+// Wrap AuthAction component with Suspense for better loading experience
 export default function SuspenseWrapper() {
   return (
     <Suspense fallback={<Loader />}>

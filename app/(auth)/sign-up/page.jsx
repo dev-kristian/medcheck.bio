@@ -12,7 +12,7 @@ import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 
 import { useCustomToast } from '@/hooks/useToast';
 import { z } from 'zod';
 
-// Updated validation schema
+// Zod schema for form validation
 const signUpSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string()
@@ -37,25 +37,33 @@ export default function SignUp() {
   const [isFormValid, setIsFormValid] = useState(false);
   const { showToast } = useCustomToast();
 
+  // Effect to validate form in real-time
   useEffect(() => {
     const isPasswordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(password);
     const doPasswordsMatch = password === confirmPassword;
     setIsFormValid(isPasswordValid && doPasswordsMatch && agreeToTerms);
   }, [password, confirmPassword, agreeToTerms]);
 
+  // Handle form submission
   const handleSubmit = async (formData) => {
     try {
-      // Validate the form data
+      // Validate the form data using Zod schema
       const validatedData = signUpSchema.parse(formData);
 
       setLoading(true);
 
+      // Create user account
       const userCredential = await createUserWithEmailAndPassword(auth, validatedData.email, validatedData.password);
+      
+      // Check or create user profile
       await checkOrCreateUserProfile(userCredential.user);
+      
+      // Send email verification
       await sendEmailVerification(userCredential.user, {
         url: `${process.env.NEXT_PUBLIC_APP_URL}/auth-action`,
         handleCodeInApp: true,
       });
+      
       showToast("Sign Up Successful", "Verification email sent. Please check your inbox.", "success");
       router.push('/verify-email');
     } catch (error) {

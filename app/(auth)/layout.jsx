@@ -1,12 +1,12 @@
-// (auth)/layout.jsx
 import { Inter } from "next/font/google";
 import Image from 'next/image';
 
+// Initialize the Inter font with Latin subset
 const inter = Inter({ subsets: ["latin"] });
 
 export default function AuthLayout({ children }) {
   return (
-    <div className={`${inter.className}  min-h-screen md:bg-gray-100 flex items-center justify-center p-4`}>
+    <div className={`${inter.className} min-h-screen md:bg-gray-100 flex items-center justify-center p-4`}>
       <div className="max-w-6xl w-full bg-white rounded-3xl md:shadow-xl overflow-hidden flex flex-col md:flex-row">
         <div className="w-full md:w-1/2 md:p-2 ">
           <div className="text-center">

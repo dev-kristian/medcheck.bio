@@ -10,22 +10,29 @@ import { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 
 import Loader from '@/components/Loader';
 
 const ForgotPasswordPage = () => {
+  // State for email input and loading status
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Custom hook for showing toast notifications
   const { showToast } = useCustomToast();
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // Send password reset email using Firebase
       await sendPasswordResetEmail(auth, email, {
         url: `${process.env.NEXT_PUBLIC_APP_URL}/auth-action`,
         handleCodeInApp: true,
       });
+      // Show success toast
       showToast("Reset Link Sent", "Please check your email to reset your password.", "success");
     } catch (error) {
       console.error('Error sending password reset email:', error);
+      // Show error toast
       showToast("Error", "Failed to send reset link. Please try again.", "error");
     } finally {
       setLoading(false);
@@ -34,6 +41,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <div>
+      {/* Card Header */}
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center">Forgot Password</CardTitle>
         <CardDescription className='text-center'>
@@ -41,8 +49,10 @@ const ForgotPasswordPage = () => {
         </CardDescription>
       </CardHeader>
       
+      {/* Card Content */}
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email input field */}
           <input
             type="email"
             value={email}
@@ -52,6 +62,7 @@ const ForgotPasswordPage = () => {
             className='auth-input'
           />
           
+          {/* Submit button */}
           <Button
             type="submit"
             className="w-full bg-teal-500 hover:bg-teal-700 rounded-xl"
@@ -68,6 +79,7 @@ const ForgotPasswordPage = () => {
         </form>
       </CardContent>
       
+      {/* Card Footer */}
       <CardFooter className="flex justify-center">
         <Link href="/sign-in" className="font-medium text-teal-600 hover:text-teal-500">
           ← Back to login

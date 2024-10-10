@@ -53,7 +53,7 @@ const BiomarkerDisplay = ({ biomarker, interpretation }) => {
           {getStatusIcon(interpretation)}
         </span>
         <div>
-          <div className={`font-bold ${getStatusColor(interpretation)} flex flex-start`}>
+          <div className={`font-bold ${getStatusColor(interpretation)}`}>
             {value} {unit}
           </div>
           <div className="text-xs text-gray-500">Range: {reference_range}</div>

@@ -1,5 +1,3 @@
-//app/api/process-test/test-biomarker-extraction.js
-
 const fs = require('fs');
 const OpenAI = require('openai');
 const { z } = require('zod');
@@ -18,11 +16,10 @@ const Biomarker = z.object({
   unit: z.string().optional().describe("The unit of measurement for the biomarker, e.g., 'mg/dL'. This should specify the units in which the biomarker value is expressed."),
   reference_range: z.string().optional().describe("The reference range for the biomarker, e.g., '100-129 mg/dL'. This should indicate the normal range of values for the biomarker, providing context for the measured value."),
   info: z.string().describe("The description of what the biomarker is for, e.g., 'Hemoglobin is a protein in red blood cells that carries oxygen."),
-  trend: z.enum(['increasing', 'decreasing', 'stable', 'fluctuating', 'unknown']).optional().describe("The trend of this biomarker compared to previous measurements, if available in the user profile data."),
 });
 
 // Define the schema for biomarker interpretation
- const BiomarkerInterpretation = z.object({
+const BiomarkerInterpretation = z.object({
   name: z.string().describe("The short name of the biomarker, e.g., 'LDL'. This should match the name used in the biomarker extraction."),
   state: z.enum([
     "extremely low",
@@ -36,7 +33,6 @@ const Biomarker = z.object({
   state_description: z.string().describe("A professional interpretation of the biomarker state. For example, if the state of WBC is 'high', the description might be 'Elevated white blood cell count may indicate an ongoing infection or inflammatory process.' This should provide context and potential implications of the biomarker state."),
   personalized_context: z.string().describe("Detailed interpretation in the context of the user's profile data."),
 });
-
 
 // Define the schema for clinical significance
 const ClinicalSignificance = z.object({
@@ -97,7 +93,8 @@ const TestType = z.enum([
   "Heavy Metal Toxicity Screen",
   "Gut Microbiome Analysis",
   "Genomic Screening Panel",
-  "Cancer Marker Panel"
+  "Cancer Marker Panel",
+  "Other"
 ]).describe("The type of medical test.");
 
 // Define the schema for test date
@@ -106,67 +103,119 @@ const TestDate = z.union([
   z.null()
 ]).describe("The date and time when the test was conducted. This should be a timestamp in ISO 8601 format, or null if not available.");
 
-// Define the combined schema for the entire report
-const BiomarkerReport = z.object({
-  test_type: TestType.describe("The type of medical test that the biomarkers are extracted from."),
-  test_date: TestDate.describe("The date and time when the test was conducted."),
-  biomarkers: z.array(Biomarker).describe("A list of extracted biomarkers. Each biomarker should include detailed information about its name, long name, value, unit (if available), and reference range (if available)."),
-  interpretations: z.array(BiomarkerInterpretation).describe("A list of interpretations for the extracted biomarkers. Each interpretation should categorize the biomarker value into one of the specified levels, providing a clear assessment of whether the value is within normal limits or indicates a potential health concern."),
-  clinical_significance: z.array(ClinicalSignificance).describe("A list of clinical significances for the report. Each significance should provide a detailed explanation of the clinical implications of the biomarker values, including potential health risks and the importance of monitoring or addressing the condition."),
-  general_recommendations: z.array(GeneralRecommendation).describe("A list of general recommendations for the report. Each recommendation should suggest a specific action that the user can take to improve their health, along with a detailed explanation of why the recommendation is beneficial."),
-  dietary_recommendations: z.array(DietaryRecommendation).describe("A list of dietary recommendations for the report. Each recommendation should suggest a specific dietary change that the user can make to improve their health, along with a detailed explanation of why the dietary change is beneficial. Additionally, it should include a list of specific foods that are recommended or should be avoided based on the dietary recommendation."),
-  specialty_consultations: z.array(SpecialtyConsultation).describe("A list of specialty consultations for the report. Each consultation should identify the type of medical specialist that the user should consult, along with a detailed explanation of why consulting the specialist is important."),
-});
-
-async function extractAndInterpretBiomarkers(images, profileData) {
-  const results = await Promise.all(images.map(async (base64Image) => {
-    const messages = [
-      { role: "system", content: "You are an AI assistant that extracts biomarker information from medical test images and provides detailed interpretations for each biomarker." },
-      { 
-        role: "user", 
-        content: [
-          {
-            type: "text",
-            text: `Extract all biomarkers from the following medical test image. Include the name, long name, value, unit (if available), and reference range (if available) for each biomarker.
-            Then provide a detailed interpretation for each biomarker as one of the following categories: extremely low, very low, low, normal, high, very high, extremely high.
-            Additionally, provide detailed clinical significance, general recommendations, dietary recommendations, and specialty consultations for the entire report.
-            Ensure that each section is comprehensive and provides in-depth information. User profile data: Age: ${profileData.age}, Gender: ${profileData.gender}, Height: ${profileData.height}, Weight: ${profileData.weight}, Medical History: ${JSON.stringify(profileData.medicalHistory)}`
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image}`,
-              detail: "high"
-            }
+async function extractBiomarkers(image, profileData) {
+  console.log(`Starting biomarker extraction`);
+  const messages = [
+    { role: "system", content: "You are an AI assistant that extracts biomarker information from medical test images." },
+    { 
+      role: "user", 
+      content: [
+        {
+          type: "text",
+          text: `Extract all biomarkers from the following medical test image. Include the name, long name, value, unit (if available), and reference range (if available) for each biomarker.`
+        },
+        {
+          type: "image_url",
+          image_url: {
+            url: `data:image/jpeg;base64,${image}`,
+            detail: "high"
           }
-        ]
-      }
-    ];
+        }
+      ]
+    }
+  ];
 
-    try {
-      const completion = await openai.beta.chat.completions.parse({
-        model: "gpt-4o-2024-08-06",
-        messages: messages,
-        response_format: zodResponseFormat(BiomarkerReport, "biomarker_report"),
-        temperature: 0.2,
-      });
+  try {
+    const completion = await openai.beta.chat.completions.parse({
+      model: "gpt-4o-2024-08-06",
+      messages: messages,
+      response_format: zodResponseFormat(z.object({
+        test_type: TestType,
+        test_date: TestDate,
+        biomarkers: z.array(Biomarker)
+      }), "biomarker_extraction"),
+    });
 
-      const biomarkerReport = completion.choices[0].message;
-      if (biomarkerReport.parsed) {
-        return biomarkerReport.parsed;
-      } else if (biomarkerReport.refusal) {
-        console.log('Model refused to process the request:', biomarkerReport.refusal);
-        return null;
-      }
-    } catch (e) {
-      if (e.constructor.name === "LengthFinishReasonError") {
-        console.log("Too many tokens: ", e.message);
-      } else {
-        console.log("An error occurred: ", e.message);
-      }
+    const extractionResult = completion.choices[0].message;
+    if (extractionResult.parsed) {
+      console.log(`Biomarker extraction successful`);
+      return extractionResult.parsed;
+    } else if (extractionResult.refusal) {
+      console.log('Model refused to process the request:', extractionResult.refusal);
       return null;
     }
+  } catch (e) {
+    console.log("An error occurred during biomarker extraction: ", e.message);
+    return null;
+  }
+}
+
+async function interpretBiomarkers(extractedData, profileData) {
+  console.log(`Starting biomarker interpretation`);
+  const messages = [
+    { role: "system", content: "You are an AI assistant that provides detailed interpretations and recommendations based on biomarker information." },
+    { 
+      role: "user", 
+      content: `Provide detailed interpretations, clinical significance, general recommendations, dietary recommendations, and specialty consultations based on the following biomarker data: ${JSON.stringify(extractedData)}. User profile data: Age: ${profileData.age}, Gender: ${profileData.gender}, Height: ${profileData.height}, Weight: ${profileData.weight}, Medical History: ${JSON.stringify(profileData.medicalHistory)}`
+    }
+  ];
+
+  try {
+    const completion = await openai.beta.chat.completions.parse({
+      model: "gpt-4o-2024-08-06",
+      messages: messages,
+      response_format: zodResponseFormat(z.object({
+        interpretations: z.array(BiomarkerInterpretation),
+        clinical_significance: z.array(ClinicalSignificance),
+        general_recommendations: z.array(GeneralRecommendation),
+        dietary_recommendations: z.array(DietaryRecommendation),
+        specialty_consultations: z.array(SpecialtyConsultation)
+      }), "biomarker_interpretation"),
+    });
+
+    const interpretationResult = completion.choices[0].message;
+    if (interpretationResult.parsed) {
+      console.log(`Biomarker interpretation successful`);
+      return interpretationResult.parsed;
+    } else if (interpretationResult.refusal) {
+      console.log('Model refused to process the request:', interpretationResult.refusal);
+      return null;
+    }
+  } catch (e) {
+    console.log("An error occurred during biomarker interpretation: ", e.message);
+    return null;
+  }
+}
+
+async function extractAndInterpretBiomarkers(images, profileData) {
+  console.log(`Starting processing for ${images.length} images`);
+
+  const results = await Promise.all(images.map(async (base64Image, index) => {
+    console.log(`Processing image ${index + 1}`);
+
+    console.log(`Extracting biomarkers for image ${index + 1}`);
+    const extractedData = await extractBiomarkers(base64Image, profileData);
+    if (!extractedData) {
+      console.log(`Failed to extract biomarkers for image ${index + 1}`);
+      return null;
+    }
+    console.log(`Successfully extracted biomarkers for image ${index + 1}:`, JSON.stringify(extractedData, null, 2));
+
+    console.log(`Interpreting biomarkers for image ${index + 1}`);
+    const interpretationData = await interpretBiomarkers(extractedData, profileData);
+    if (!interpretationData) {
+      console.log(`Failed to interpret biomarkers for image ${index + 1}`);
+      return null;
+    }
+    console.log(`Successfully interpreted biomarkers for image ${index + 1}:`, JSON.stringify(interpretationData, null, 2));
+
+    return {
+      ...extractedData,
+      ...interpretationData
+    };
   }));
+
+  console.log(`Finished processing all images`);
 
   const groupedResults = results.reduce((acc, report) => {
     if (report) {
@@ -177,6 +226,8 @@ async function extractAndInterpretBiomarkers(images, profileData) {
     }
     return acc;
   }, {});
+
+  console.log(`Grouped results:`, JSON.stringify(groupedResults, null, 2));
 
   return groupedResults;
 }
