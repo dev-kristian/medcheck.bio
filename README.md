@@ -1,6 +1,6 @@
 # Medcheck.bio- Your Intelligent Health Companion
 
-![Medcheck.bio Logo](public/images/logo.png)
+![Medcheck.bio Logo](public/images/logo.jpg)
 
 Medcheck.bio is a cutting-edge Next.js-based web application designed to revolutionize personal health management. By leveraging artificial intelligence and user-friendly interfaces, Medcheck.bio provides personalized health insights, manages medical test results, and offers an AI-powered health assistant to address your health-related queries.
 
