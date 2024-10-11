@@ -19,9 +19,6 @@ Medcheck.bio is a cutting-edge Next.js-based web application designed to revolut
   - Historical view of all past tests
 - **Intelligent Health Assistant**: AI-driven chat interface for health-related queries and advice
 - **Responsive Design**: Seamless experience across desktop, tablet, and mobile devices
-- **Data Visualization**: Interactive charts and graphs for better understanding of health trends
-- **Appointment Scheduling**: Integrated calendar for managing medical appointments
-- **Medication Tracker**: Keep track of prescribed medications and dosage schedules
 
 ## 🛠 Technologies
 
