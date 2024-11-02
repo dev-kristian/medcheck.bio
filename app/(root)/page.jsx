@@ -32,15 +32,13 @@ const Home = () => {
           subtext='Take control of your health with easy-to-understand medical test insights.'
         />
       </header>
-
-      <div className="mt-8 md:mt-16 flex flex-col lg:flex-row justify-between items-start gap-4">
+        <div className='my-2'>
         <MedicalProfile profileData={profileData} />
-
-        <div className="flex flex-col gap-4 w-full lg:w-2/5">
+        </div>
+        <div className="flex flex-col md:flex-row gap-4 w-full my-2">
           <Assistant />
           <MyTests tests={tests} />
         </div>
-      </div>
     </div>
   );
 }
